@@ -1,0 +1,28 @@
+# Generated data - NEVER commit (may contain Ericsson material)
+out/
+data/
+*.db
+
+# Safety net: real media/documents may only live in tests/fixtures (synthetic)
+*.mp4
+*.mkv
+*.mov
+*.wav
+*.pdf
+*.pptx
+*.ppt
+!tests/fixtures/**/*.pdf
+!tests/fixtures/**/*.mp4
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>dso — Data Storage Optimization</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 2rem auto; max-width: 1000px; padding: 0 1rem; color: #1b1b1b; }
+    h1 { margin-bottom: 0.2rem; }
+    .muted { color: #666; }
+    .stats { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0; }
+    .stat { border: 1px solid #ddd; border-radius: 8px; padding: 0.6rem 1rem; }
+    .stat b { display: block; font-size: 1.4rem; }
+    input[type=search] { width: 70%; padding: 0.5rem; font-size: 1rem; }
+    table { border-collapse: collapse; width: 100%; margin-top: 0.5rem; }
+    td, th { border-bottom: 1px solid #eee; padding: 0.3rem 0.5rem; text-align: left; font-size: 0.9rem; }
+    .result { display: flex; gap: 1rem; border-bottom: 1px solid #eee; padding: 0.8rem 0; }
+    .result img { width: 240px; border: 1px solid #ddd; }
+  </style>
+</head>
+<body>
+  <h1>dso</h1>
+  <p class="muted">Recordings and documents → compact, searchable, AI-ready data. Local only.</p>
+
+  <div class="stats">
+    {% for name, n in counts.items() %}
+      <div class="stat"><b>{{ n }}</b>{{ name }}</div>
+    {% endfor %}
+  </div>
+
+  <form method="get">
+    <input type="search" name="q" value="{{ query }}" placeholder="Search transcripts and slides…" autofocus>
+    <button>Search</button>
+  </form>
+
+  {% if query %}
+    <h2>Results for “{{ query }}” ({{ results|length }})</h2>
+    {% for r in results %}
+      <div class="result">
+        {% if r.frame_image %}<img src="/out/{{ r.frame_image }}" alt="frame">{% endif %}
+        <div>
+          <b>{{ r.file }}</b>{% if r.t_sec is not none %} · {{ '%.0f'|format(r.t_sec) }} s{% endif %}
+          {% if r.slide_id %}<div class="muted">slide {{ r.slide_id }}</div>{% endif %}
+          <p>{{ r.snippet }}</p>
+        </div>
+      </div>
+    {% else %}
+      <p class="muted">No results (or search not implemented yet).</p>
+    {% endfor %}
+  {% endif %}
+
+  <h2>Savings</h2>
+  {% if savings %}
+    <table>
+      <tr><th>Scenario</th><th>Before</th><th>After</th><th>Saved</th></tr>
+      {% for s in savings %}
+        <tr><td>{{ s.scenario }}</td><td>{{ s.bytes_before }}</td><td>{{ s.bytes_after }}</td>
+            <td>{{ '%.1f'|format(100 - 100 * s.bytes_after / s.bytes_before) if s.bytes_before else '-' }} %</td></tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p class="muted">Run <code>dso savings</code> first.</p>
+  {% endif %}
+
+  <h2>Files</h2>
+  <table>
+    <tr><th>Name</th><th>Kind</th><th>Bytes</th><th>Source</th><th>SHA-256</th></tr>
+    {% for f in files %}
+      <tr><td>{{ f.name }}</td><td>{{ f.kind }}</td><td>{{ f.size_bytes }}</td><td>{{ f.source }}</td><td><code>{{ f.sha256[:12] }}</code></td></tr>
+    {% endfor %}
+  </table>
+</body>
+</html>
