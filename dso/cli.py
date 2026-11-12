@@ -47,6 +47,7 @@ def build_parser():
 
     p = sub.add_parser("web", help="start the local demo web UI")
     p.add_argument("--port", type=int, default=5000)
+    p.add_argument("--ui", default=None, help="folder with the built Lovable UI, e.g. ../dso-ui/dist")
 
     p = sub.add_parser("dhash", help="debug: dHash of images and their distance")
     p.add_argument("images", nargs="+")
