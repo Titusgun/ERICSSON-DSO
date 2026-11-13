@@ -12,7 +12,8 @@ Do not invent requirements; unclear things are questions for the organizers.
 ## 2. Stack (do not change without a team decision in docs/DECISIONS.md)
 - Python 3.12, managed with **uv** (`uv sync`, `uv run ...`). Same on Windows, macOS, Linux.
 - faster-whisper (transcripts), opencv-python-headless (video frames), pypdfium2 (PDF pages
-  + text), imagehash (dHash), Pillow (WebP), sqlite3 + FTS5 (stdlib), Flask (local UI).
+  + text), imagehash (dHash), Pillow (WebP), sqlite3 + FTS5 (stdlib), Flask (local UI),
+  sherpa-onnx (speaker diarization, local ONNX models; team decision 13 Nov).
 - No system ffmpeg needed. PPTX -> PDF uses LibreOffice or Microsoft PowerPoint, see issue #5.
 - Do not add dependencies without asking the team. Never add anything that sends data
   to an online service (no cloud APIs, no hosted AI, no telemetry).

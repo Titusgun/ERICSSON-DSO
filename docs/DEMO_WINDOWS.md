@@ -20,7 +20,7 @@ git clone https://github.com/Titusgun/screenshot-to-interface-670.git dso-ui
 cd C:\dso\dso-py
 uv sync
 uv run pytest -q                                   # must pass
-uv run python scripts/prefetch_models.py small     # Whisper model, ~480 MB, once
+uv run python scripts/prefetch_models.py           # Whisper small (~480 MB) + speaker models (~34 MB), once
 cd C:\dso\dso-ui; npm install; cd C:\dso\dso-py
 ```
 
@@ -49,6 +49,8 @@ uv run dso offboard "data/offboarding/Māris Līveris" --simulated
 uv run dso savings
 Copy-Item out\dso.db out\dso-before-demo.db        # backup: lets you reset the demo
 ```
+The FIRST run also analyses who speaks (`[speakers]`): about 25 minutes for the 2.5 h meeting,
+once (`out/speakers/` is reused afterwards; copying it from the Arch laptop skips it).
 Check in the output: every video says `transcript: reusing ...` (not `transcribing`), the PPTX
 files show a converter (see above), and `dedup` prints the `final -> final2` revision.
 

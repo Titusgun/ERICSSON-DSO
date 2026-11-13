@@ -315,9 +315,12 @@ def transcript_chunks(data, file_row, texts_of_slides):
                       or segment["end_sec"] - current["start_sec"] > CHUNK_MAX_SEC)
         if starts_new:
             current = {"frame_id": segment["frame_id"], "slide_id": segment["slide_id"],
-                       "start_sec": segment["start_sec"], "end_sec": segment["end_sec"], "texts": []}
+                       "start_sec": segment["start_sec"], "end_sec": segment["end_sec"], "texts": [],
+                       "speakers": []}
             chunks.append(current)
         current["texts"].append(segment["text"])
+        if segment["speaker"] not in current["speakers"]:
+            current["speakers"].append(segment["speaker"])     # who talks in this chunk, in order
         current["end_sec"] = segment["end_sec"]
 
     result = []
@@ -332,6 +335,7 @@ def transcript_chunks(data, file_row, texts_of_slides):
             "frame_image": frame_images.get(chunk["frame_id"]),
             "slide_id": slide_id,
             "slide_text": texts_of_slides.get(slide_id) if slide_id else None,
+            "speakers": chunk["speakers"],
             "source": source,
         })
     return result
