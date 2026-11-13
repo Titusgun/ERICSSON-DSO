@@ -41,6 +41,7 @@ transcript cache), so `dso all` / `dso watch` only work on new videos. Use
 Also sets files.duration_sec (DATA_CONTRACT v1.1).
 """
 import json
+import shutil
 from pathlib import Path
 
 import cv2
@@ -81,19 +82,26 @@ def format_time(seconds):
     return f"{minutes:02d}:{secs:02d}"
 
 
-def clear_old_frames(conn, file_id, frames_dir):
-    """Removes the frames of an earlier run of this video (rows + WebP files).
+def clear_old_frames(conn, file_id):
+    """Removes the frame ROWS of an earlier run of this video (not committed yet).
 
     segments.frame_id points into frames, and SQLite checks that link
     (PRAGMA foreign_keys = ON), so the segments are unlinked first. `dso link`
     sets them again for the new frames.
-    The WebP files are our own output in out/frames/, never user files.
+    The old WebP files are only replaced after the new rows are committed
+    (swap_frame_folders), so a run that is stopped halfway never leaves rows
+    that point at deleted pictures.
     """
     conn.execute("UPDATE segments SET frame_id = NULL WHERE file_id = ?", (file_id,))
     conn.execute("DELETE FROM frames WHERE file_id = ?", (file_id,))
+
+
+def swap_frame_folders(new_dir, frames_dir):
+    """Replaces out/frames/<sha12>/ with the freshly written <sha12>.new/.
+    Only our own output in out/frames/ is touched, never user files."""
     if frames_dir.is_dir():
-        for old_file in frames_dir.glob("f*.webp"):
-            old_file.unlink()
+        shutil.rmtree(frames_dir)
+    new_dir.rename(frames_dir)
 
 
 def keep_decision(prev, current, last_kept):
@@ -133,11 +141,12 @@ def keep_decision(prev, current, last_kept):
     return None
 
 
-def save_frame(conn, file_row, frames_dir, short_id, number, sample):
-    """Writes one key frame as WebP and inserts its row into `frames`."""
+def save_frame(conn, file_row, write_dir, short_id, number, sample):
+    """Writes one key frame as WebP into `write_dir` and inserts its row into
+    `frames` with its final path frames/<sha12>/fNNNN.webp."""
     file_name = f"f{number:04d}.webp"         # f0001.webp, f0002.webp, ...
-    sample["image"].save(frames_dir / file_name, "WEBP", quality=WEBP_QUALITY)
-    image_bytes = (frames_dir / file_name).stat().st_size
+    sample["image"].save(write_dir / file_name, "WEBP", quality=WEBP_QUALITY)
+    image_bytes = (write_dir / file_name).stat().st_size
     # Paths in the DB are relative to --out and use "/" (DATA_CONTRACT 3).
     image_path = f"frames/{short_id}/{file_name}"
     conn.execute(
@@ -173,8 +182,12 @@ def extract_key_frames(conn, file_row, out_dir, max_seconds):
         # The whole video's length, also with --max-seconds (DATA_CONTRACT v1.1).
         conn.execute("UPDATE files SET duration_sec = ? WHERE id = ?", (round(duration, 2), file_row["id"]))
 
-    clear_old_frames(conn, file_row["id"], frames_dir)
-    frames_dir.mkdir(parents=True, exist_ok=True)
+    clear_old_frames(conn, file_row["id"])
+    # Write the new pictures next to the old ones; swap after the commit.
+    new_dir = out_dir / "frames" / (short_id + ".new")
+    if new_dir.is_dir():
+        shutil.rmtree(new_dir)                  # left over from a stopped run
+    new_dir.mkdir(parents=True)
 
     kept = 0
     prev = None           # the sample one second ago: {"t_sec", "hash", "image"}
@@ -214,7 +227,7 @@ def extract_key_frames(conn, file_row, out_dir, max_seconds):
                 to_keep = None
         if to_keep is not None:
             kept = kept + 1
-            save_frame(conn, file_row, frames_dir, short_id, kept, to_keep)
+            save_frame(conn, file_row, new_dir, short_id, kept, to_keep)
             last_kept = to_keep
         prev = current
 
@@ -224,17 +237,35 @@ def extract_key_frames(conn, file_row, out_dir, max_seconds):
         frame_index = frame_index + 1
 
     cap.release()
+    # Save the new rows first, then replace the pictures: if the run stops
+    # before this point, the old rows and the old pictures are both still there.
+    conn.commit()
+    swap_frame_folders(new_dir, frames_dir)
     return kept
 
 
 # ---------- Step 2: transcript ----------
 
+def covers(cached_max_seconds, wanted_max_seconds):
+    """Does a transcript made with --max-seconds `cached` contain everything a
+    run with --max-seconds `wanted` needs? None means the whole video.
+    A full transcript covers every limit; a 2-minute one never covers a full run.
+    """
+    if cached_max_seconds is None:
+        return True
+    if wanted_max_seconds is None:
+        return False
+    return cached_max_seconds >= wanted_max_seconds
+
+
 def load_cached_transcript(json_path, model_name, max_seconds):
     """Returns the cached transcript dict if it fits this run, else None.
 
-    "Fits" = made with the same model and the same --max-seconds. A transcript
-    of the first 5 minutes must not be reused for a full run, and a tiny.en
-    transcript must not be reused when you ask for small.en.
+    "Fits" = made with the same model, and it covers the requested part (see
+    covers()). A transcript of the first 5 minutes must not be reused for a full
+    run, a tiny.en transcript not for small.en - but a FULL transcript is fine
+    for a `--max-seconds 120` run (so a demo with --max-seconds never replaces
+    finished full results).
     """
     if not json_path.is_file():
         return None
@@ -243,7 +274,7 @@ def load_cached_transcript(json_path, model_name, max_seconds):
             data = json.load(f)
     except (OSError, ValueError):
         return None                       # unreadable / half-written file: redo it
-    if data.get("model") != model_name or data.get("max_seconds") != max_seconds:
+    if data.get("model") != model_name or not covers(data.get("max_seconds"), max_seconds):
         return None
     return data
 
