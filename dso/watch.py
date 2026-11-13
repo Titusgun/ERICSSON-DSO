@@ -79,6 +79,85 @@ def describe_changes(old, new):
     return f"{added} new, {changed} changed, {removed} removed"
 
 
+# rclone sizes look like "224.061Ki" / "1.2Gi" (powers of 1024).
+RCLONE_UNITS = {"B": 1, "Ki": 1024, "Mi": 1024 ** 2, "Gi": 1024 ** 3, "Ti": 1024 ** 4}
+
+
+def parse_rclone_size(text):
+    """"224.061Ki" -> 229438 bytes (rounded); "512" -> 512."""
+    for unit in ["Ki", "Mi", "Gi", "Ti", "B"]:
+        if text.endswith(unit):
+            return round(float(text[:-len(unit)]) * RCLONE_UNITS[unit])
+    return round(float(text))
+
+
+def parse_dry_run(output):
+    """Counts the files a `rclone copy --dry-run` would copy and their total size.
+    Its lines look like:
+      2026/11/13 22:40:35 NOTICE: Brief.png: Skipped copy as --dry-run is set (size 224.061Ki)
+    Returns (number of files, bytes)."""
+    count = 0
+    total = 0
+    for line in output.splitlines():
+        if "Skipped copy as --dry-run is set" not in line:
+            continue
+        count += 1
+        if "(size " in line:
+            total += parse_rclone_size(line.rsplit("(size ", 1)[1].rstrip(")").strip())
+    return count, total
+
+
+def human_size(n):
+    """Bytes as a short readable string, e.g. 1.4 GB."""
+    for unit in ["B", "KB", "MB", "GB"]:
+        if n < 1024:
+            return f"{n:.1f} {unit}"
+        n = n / 1024
+    return f"{n:.1f} TB"
+
+
+def cloud_changes(remote, folder):
+    """What the next download would bring: (number of files, bytes), from a quick
+    `rclone copy --dry-run` (only lists, copies nothing). None if rclone failed."""
+    command = rclone_download_command(remote, folder) + ["--dry-run"]
+    try:
+        result = subprocess.run(command, capture_output=True, text=True, timeout=RCLONE_TIMEOUT_SEC)
+    except (OSError, subprocess.SubprocessError) as error:
+        print(f"[watch] rclone failed: {error}")
+        return None
+    if result.returncode != 0:
+        print(f"[watch] rclone failed: {result.stderr.strip()[:300]}")
+        return None
+    return parse_dry_run(result.stderr + result.stdout)
+
+
+def download_new_files(remote, folder):
+    """One check of the cloud folder. Quiet if nothing is new; otherwise says
+    what comes and shows rclone's progress line every 10 s while it downloads
+    (a 1.5 GB first download took minutes with no sign of life before).
+    Returns True if the check (and download) worked."""
+    changes = cloud_changes(remote, folder)
+    if changes is None:
+        return False
+    count, total = changes
+    if count == 0:
+        return True
+    print(f"[watch] downloading {count} new/changed file(s), {human_size(total)}, from {remote} ...")
+    command = rclone_download_command(remote, folder) + [
+        "--stats", "10s", "--stats-one-line", "--stats-log-level", "NOTICE"]
+    try:
+        # Not captured: rclone's progress lines go straight to the terminal.
+        result = subprocess.run(command, timeout=RCLONE_TIMEOUT_SEC)
+    except (OSError, subprocess.SubprocessError) as error:
+        print(f"[watch] rclone failed: {error}")
+        return False
+    if result.returncode != 0:
+        print("[watch] rclone failed during the download (see its message above)")
+        return False
+    print(f"[watch] download done: {count} file(s)")
+    return True
+
+
 def rclone_download_command(remote, folder):
     """`rclone copy` from the cloud into the local folder (only new/changed files).
     Our own _dso_distilled results are excluded."""
@@ -174,10 +253,9 @@ def watch_cycle(args, steps, last, rclone_state=None, cleanup=None):
             rclone_state = {"failures": 0, "next_try": 0.0, "remote": remote}
         now = time.time()
         if download_due(rclone_state, now):
-            # Silent when it works: a line every 10 s pushed the useful output
-            # (the pipeline) off the screen. "change detected" below shows
-            # when new files arrived; failures print their own line.
-            ok = run_rclone(rclone_download_command(remote, folder))
+            # Quiet when nothing is new (a line every 10 s pushed the pipeline
+            # output off the screen); progress while something downloads.
+            ok = download_new_files(remote, folder)
             record_download(rclone_state, ok, now, args.interval)
 
     current = snapshot(folder)
