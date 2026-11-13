@@ -8,7 +8,7 @@ import sys
 import tomllib
 from pathlib import Path
 
-from dso import cleanup, dedup, docs, export, ingest, link, offboard, savings, search, video, watch
+from dso import cleanup, dedup, docs, export, ingest, link, offboard, savings, search, speakers, video, watch
 
 
 def build_parser():
@@ -29,6 +29,7 @@ def build_parser():
                    help="only process the first N seconds of each video (for fast testing)")
     p.add_argument("--force", action="store_true", help="redo videos that were already processed")
 
+    sub.add_parser("speakers", help="who spoke when: Speaker 1, 2, ... for every transcript segment")
     sub.add_parser("docs", help="PDF -> slides with text hash + dHash")
     sub.add_parser("dedup", help="find exact, slide-level and revision duplicates")
     sub.add_parser("link", help="frames <-> slides, transcript -> frames")
@@ -47,7 +48,7 @@ def build_parser():
 
     sub.add_parser("savings", help="storage before/after report")
 
-    p = sub.add_parser("all", help="ingest, video, docs, dedup, link, index, export, savings")
+    p = sub.add_parser("all", help="ingest, video, speakers, docs, dedup, link, index, export, savings")
     p.add_argument("folder")
     p.add_argument("--source", default="local")
     p.add_argument("--owner", default=None)
@@ -138,7 +139,7 @@ def apply_settings(args, settings, defaults):
 
 def pipeline_steps():
     """The steps of `dso all` and `dso watch`, in order."""
-    return [ingest.run, video.run, docs.run, dedup.run, link.run,
+    return [ingest.run, video.run, speakers.run, docs.run, dedup.run, link.run,
             search.run_index, export.run, savings.run]
 
 
@@ -162,6 +163,8 @@ def main(argv=None):
         return ingest.run(args)
     elif command == "video":
         return video.run(args)
+    elif command == "speakers":
+        return speakers.run(args)
     elif command == "docs":
         return docs.run(args)
     elif command == "dedup":

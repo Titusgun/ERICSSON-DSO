@@ -12,6 +12,7 @@ dependencies = [
     "imagehash>=4.3",              # dHash (BSD)
     "pillow>=10",                  # save WebP/JPEG
     "flask>=3",                    # local demo web UI
+    "sherpa-onnx>=2.0.1",
 ]
 
 [dependency-groups]

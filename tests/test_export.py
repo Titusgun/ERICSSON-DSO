@@ -145,6 +145,7 @@ def test_corpus_transcript_chunks_follow_the_key_frame(run_export):
     assert latency["slide_id"] == SLIDE_2 and latency["slide_text"] == "Latency budget"
     assert latency["source"]["file_name"] == "talk.mp4" and latency["source"]["sha256"] == SHA_VIDEO
     assert latency["id"] == "3fa9c0d1e2b4:t96"
+    assert latency["speakers"] == ["Speaker ?"]           # filled by `dso speakers`
     assert transcript[2]["slide_id"] is None and transcript[2]["slide_text"] is None
 
 

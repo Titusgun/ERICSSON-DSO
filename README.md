@@ -8,6 +8,7 @@ duplicates — without losing information. Runs fully locally on Windows, macOS 
  folder (SharePoint / OneDrive / Play / leaver's folder)
    │ dso ingest            path, size, SHA-256
    ├─ video ─► dso video   key frames (1 fps + dHash, WebP) + faster-whisper transcript
+   │           dso speakers who spoke when: Speaker 1, 2, ... (sherpa-onnx)
    ├─ docs  ─► dso docs    PDF → slides (text SHA-256 + dHash + slide_id)
    ▼
  SQLite ─► dso dedup   exact / shared slides / revisions
