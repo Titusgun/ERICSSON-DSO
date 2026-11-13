@@ -64,7 +64,6 @@ def test_exact_duplicate_hashes_exist(db):
 
 # ---------- remove `skip` when your feature works ----------
 
-@pytest.mark.skip(reason="TODO owner A: key frames")
 def test_key_frames(db):
     times = [row[0] for row in db.execute("SELECT t_sec FROM frames ORDER BY t_sec")]
     assert len(times) == 3
