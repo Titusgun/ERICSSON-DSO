@@ -21,9 +21,9 @@ def test_speaker_for_picks_who_talks_longest():
 
 
 def test_short_speakers_dropped_and_numbered_by_first_appearance():
-    raw = [turn(0, 30, 7), turn(30, 32, 4), turn(32, 60, 2), turn(60, 70, 7)]   # sherpa's own numbers
+    raw = [turn(0, 60, 7), turn(60, 70, 4), turn(70, 130, 2), turn(130, 150, 7)]   # sherpa's own numbers
     turns = speakers.renumber(speakers.drop_short_speakers(raw))
-    assert [t["speaker"] for t in turns] == [1, 2, 1]       # 7 -> 1, 2 -> 2; 4 (2 s) is noise
+    assert [t["speaker"] for t in turns] == [1, 2, 1]       # 7 -> 1, 2 -> 2; 4 (10 s < 30 s) is noise
 
 
 def make_db(tmp_path, transcript_max_seconds):
@@ -36,7 +36,7 @@ def make_db(tmp_path, transcript_max_seconds):
     conn = connect(db_path)
     conn.execute("INSERT INTO files (id, path, name, ext, kind, size_bytes, sha256, scanned_at) "
                  "VALUES (1, 'v.mp4', 'v.mp4', 'mp4', 'video', 1, ?, 'now')", (SHA,))
-    for start, end in [(0, 5), (12, 18), (40, 45)]:
+    for start, end in [(0, 5), (50, 58), (100, 105)]:
         conn.execute("INSERT INTO segments (file_id, start_sec, end_sec, text) VALUES (1, ?, ?, 'x')", (start, end))
     conn.commit()
     conn.close()
@@ -66,7 +66,7 @@ def no_models(monkeypatch):
 
 def test_cached_turns_label_the_segments(tmp_path, monkeypatch):
     args, out = make_db(tmp_path, None)
-    write_speaker_cache(out, None, [turn(0, 10, 3), turn(10, 30, 0), turn(35, 50, 3)])
+    write_speaker_cache(out, None, [turn(0, 40, 3), turn(40, 90, 0), turn(95, 130, 3)])
     no_models(monkeypatch)                       # the cache is used, nothing is analysed
     assert speakers.run(args) == 0
     assert labels(args) == ["Speaker 1", "Speaker 2", "Speaker 1"]
