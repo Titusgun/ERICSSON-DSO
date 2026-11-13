@@ -1,4 +1,4 @@
-# Data contract v1.1
+# Data contract v1.2
 
 SHARED FILE. Change only in a `contract:` PR, together with `dso/common/schema.sql`.
 
@@ -9,6 +9,14 @@ new `files.duration_sec`; new duplicate kind `file_content`; `out/converted/`;
 After pulling v1.1, **delete your `out/dso.db` once** and rerun the pipeline: `schema.sql`
 only creates missing tables, so an old database keeps the old columns.
 
+**v1.2 (13 Nov, no schema change):** what was built and decided after v1.1 - `watch`
+command and `--force`; `video` skips already processed videos; key frames are kept when
+the screen settles; `docs` fills `files.author` / `files.doc_date`;
+`out/reports/offboarding.json` for the web UI; revisions are compared by slide words in any
+order, with identical / minor / changed slides in the note; `link` compares the Teams
+screen-share area and accepts 64-bit distance ≤ 13 (#10); new savings scenario `revisions`.
+No need to delete `out/dso.db`.
+
 ## 1. Pipeline order and who reads/writes what
 Every step is a `dso` subcommand (`uv run dso <command>`). Global options:
 `--db` (default `out/dso.db`) and `--out` (default `out`), given BEFORE the command:
@@ -17,21 +25,27 @@ Every step is a `dso` subcommand (`uv run dso <command>`). Global options:
 | # | Command | Owner | Reads | Writes |
 |---|---|---|---|---|
 | 1 | `ingest <folder> [--source S] [--owner O]` | B | files on disk | `files` |
-| 2 | `video [--model small] [--max-seconds N]` | A | `files` kind='video' | `frames`, `segments`, `files.duration_sec`, `out/frames/`, `out/transcripts/` |
-| 3 | `docs` | B | `files` kind='document' | `slides`, `out/slides/`, `out/converted/` |
+| 2 | `video [--model small] [--max-seconds N] [--force]` | A | `files` kind='video' | `frames`, `segments`, `files.duration_sec`, `out/frames/`, `out/transcripts/` |
+| 3 | `docs` | B | `files` kind='document' | `slides`, `files.author`, `files.doc_date`, `out/slides/`, `out/converted/` |
 | 4 | `dedup` | B | `files`, `slides` | `duplicates` |
 | 5 | `link` | C | `frames`, `slides`, `segments` | `frames.slide_id/match_dist`, `segments.frame_id` |
 | 6 | `index` | C | `segments`, `slides` | `search_fts` |
 | 7 | `search "<q>" [--json]` | C | `search_fts` + joins | stdout |
 | 8 | `export` | C | everything | `out/export/<sha12>.json` + `.md` |
-| 9 | `offboard <folder> [--simulated]` | D | `files` | `out/reports/offboarding.md` (DRY RUN) |
+| 9 | `offboard <folder> [--simulated]` | D | `files` | `out/reports/offboarding.md` + `.json` (DRY RUN) |
 | 10 | `savings` | D | `files`, sizes under `out/` | `savings`, `out/reports/savings.md` |
 | – | `web [--port 5000] [--ui DIST]` | D | DB + `out/` (read only) | – |
-| – | `all <folder> [--model small] [--max-seconds N]` | D | runs 1–6, 8, 10 | |
+| – | `all <folder> [--model small] [--max-seconds N] [--force]` | D | runs 1–6, 8, 10 | |
+| – | `watch <folder> [--interval 30] [--rclone REMOTE:PATH] [--upload]` + `all`'s options | D | runs `all` when the folder changes | with `--upload`: exports + reports to `REMOTE:PATH/_dso_distilled` |
 
 `--max-seconds N`: `video` (and `all`) process only the first N seconds of each video,
 for fast testing (#17). Default: the whole file. Default whisper model is the multilingual
 `small` (recordings contain Swedish during breaks).
+
+`video` skips a video that already has key frames in the DB and a transcript cache
+(`out/transcripts/<sha12>.json`) for the same model and `--max-seconds`; `--force` redoes it.
+So `all` and `watch` only spend time on new videos. `watch` never deletes anything, locally
+or in the cloud; `--upload` (opt-in) only writes into `_dso_distilled/`.
 
 Every command must be safe to run twice. Delete your own old rows first; links from other
 tables to them become NULL automatically (`ON DELETE SET NULL`, see `schema.sql`) and are
@@ -62,7 +76,8 @@ out/
   converted/<sha12>.pdf            PPTX/DOCX converted to PDF (also the manual-export path)
   slides/<sha12>/p001.webp         rendered PDF pages
   export/<sha12>.json, <sha12>.md  AI-ready export per recording / document
-  reports/savings.md, offboarding.md
+  reports/savings.md, offboarding.md, offboarding.json (offboarding.json = the same result
+                                   for GET /api/offboarding, written by `offboard`)
 ```
 If `out/converted/<sha12>.pdf` already exists, `docs` uses it and does not convert again.
 That is also how a manual export works: save the PDF there yourself, rerun `docs`.
@@ -91,15 +106,20 @@ Identical slides in two different decks have different slide_ids but the same
 | Name | Value | Used by |
 |---|---|---|
 | frame sampling | 1 per second | `video` |
-| keep a sampled frame if distance to last kept frame ≥ | 6 | `video` |
-| frame ↔ slide match if closest slide distance ≤ | 6 | `link` |
+| keep a sampled frame if distance to last kept frame ≥ … and the next sample is < 6 from it (screen settled); else one every | 6 / 60 s | `video` |
+| frame ↔ slide: views compared per frame | full frame + Teams screen share (left 85 %, 3–93 % of the height) | `link` |
+| frame ↔ slide: skip nearly empty pictures (brightness std-dev, 0–255) < | 20 | `link` |
+| frame ↔ slide: best slide picked by 256-bit dHash (16×16); match if its 64-bit distance ≤ | 13 | `link` |
 | slide_visual duplicate if distance ≤ | 3 | `dedup` |
-| revision: same deck, slide text similarity (difflib ratio) > | 0.8 | `dedup` |
+| two slides match if word-set overlap (any order) ≥ / or dHash distance ≤ | 0.8 / 3 | `dedup` |
+| revision: average best word overlap of the smaller deck's slides > | 0.8 | `dedup` |
 
 Measured with imagehash on fixtures: same slide in two decks = 0; video frame vs its
 own slide = 1–4; vs a different slide = 8–20; two different slides = 8–19.
 A revision changing "4 ms" → "3 ms" has distance **0** — dHash cannot see small text
-edits, so revisions are detected from text. ffmpeg scene scores for a slide change
+edits, so revisions are detected from text - from the slide's WORDS in any order, because
+LibreOffice extracted the text boxes of identical-looking real slides in another order
+(real final/final2: 1 of 22 slides equal as one string, 22 of 22 by words, score ≥ 0.89). ffmpeg scene scores for a slide change
 were only 0.19–0.25 (the usual 0.3 finds nothing), which is why we sample at 1 fps.
 
 ## 7. Duplicates
@@ -111,10 +131,15 @@ were only 0.19–0.25 (the usual 0.3 finds nothing), which is why we sample at 1
   differ, e.g. the same deck saved twice. Refs = `files.id` as text.
 - `slide_text`: same non-empty `text_sha256` in different files (refs = slide_ids).
 - `slide_visual`: distance ≤ 3, text hash differs or text empty. `distance` = Hamming.
-- `revision` (MUST): same doc_number, or ≥ 50% shared slides, different file hash.
-  Canonical = highest revision / newest date. Refs = `files.id` as text.
+- `revision` (MUST): same doc_number, or ≥ 50% of the smaller deck's slides matched, and
+  the score above > 0.8; different file hash. Canonical (`b_ref`, keep) = highest
+  revision, then newest `doc_date`, then file name ("final2" > "final"), then ingest
+  order. Refs = `files.id` as text.
 - `distance` is the Hamming distance for `slide_visual` only; NULL for every other kind.
-  For `revision` the text similarity goes into `note`, e.g. `"text ratio 0.93"`.
+  For `revision` the note lists the slides, e.g. `"text similarity 0.92; 1 of 22 slides
+  identical; minor (numbers/footer only): 1, 2; changed text: none; added: none;
+  removed: 4, 12, 18; newest: deck_final2.pptx (by date)"`. minor = only digits, single
+  letters or word fragments differ (slide numbers, footer, values).
 
 ## 8. AI-ready export (`out/export/<sha12>.json`)
 ```json
@@ -152,5 +177,6 @@ same content for humans: one heading per frame, timestamp, image, transcript und
 | `video_distill` | each distinct video (sha256) once, only videos that have output | their frames + transcript JSON + export JSON/MD under `out/` |
 | `dedup` | all files | one copy per distinct sha256 |
 | `offboarding` | files with `source='offboarding'` | those whose sha256 exists in no file with another source (each kept once) |
+| `revisions` | every version in a `revision` / `file_content` pair, each distinct sha256 once | the versions never superseded (never an `a_ref`) + the superseded versions' `out/slides/<sha12>/` and export files |
 
 A scenario with no input (no processed video, no offboarding files) has no row.
