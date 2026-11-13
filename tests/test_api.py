@@ -96,3 +96,44 @@ def test_serves_built_ui(tmp_path):
     assert b"dso-ui" in client.get("/recording/abc").data      # React route -> index.html
     assert client.get("/api/stats").get_json()["files"] == 0   # API still wins over the fallback
     assert b"Search" in client.get("/simple").data             # built-in page still reachable
+
+
+# ---------- /api/offboarding ----------
+
+def test_offboarding_before_any_run(client):
+    data = client.get("/api/offboarding").get_json()
+    assert data["total_files"] == 0 and data["files"] == [] and data["dry_run"] is True
+
+
+def test_offboarding_after_dso_offboard(tmp_path):
+    """Real flow on the jane fixture: ingest, offboard --simulated, then the API."""
+    from dso.cli import main
+    db_path = tmp_path / "dso.db"
+    out = tmp_path / "out"
+    base = ["--db", str(db_path), "--out", str(out)]
+    jane = FIXTURES / "offboarding" / "jane"
+    assert main(base + ["ingest", str(FIXTURES / "docs"), "--source", "sharepoint"]) == 0
+    assert main(base + ["ingest", str(jane), "--source", "offboarding", "--owner", "jane"]) == 0
+    assert main(base + ["offboard", str(jane), "--simulated"]) == 0
+
+    client = create_app(db_path, out).test_client()
+    data = client.get("/api/offboarding").get_json()
+    copy_size = (jane / "deck_b - Copy.pdf").stat().st_size
+    notes_size = (jane / "my_notes.pdf").stat().st_size
+    assert data["dry_run"] is True and data["simulated"] is True
+    assert data["owners"] == ["jane"]
+    assert data["total_files"] == 2 and data["safe_files"] == 1 and data["keep_files"] == 1
+    assert data["total_bytes"] == copy_size + notes_size
+    assert data["freeable_bytes"] == copy_size
+    assert data["percent_freed"] == round(100.0 * copy_size / (copy_size + notes_size), 1)
+
+    by_name = {}
+    for f in data["files"]:
+        by_name[f["name"]] = f
+    assert set(by_name["deck_b - Copy.pdf"].keys()) == {
+        "name", "path", "owner", "size_bytes", "sha256", "verdict", "copy_at"}
+    assert by_name["deck_b - Copy.pdf"]["verdict"] == "safe to delete"
+    assert by_name["deck_b - Copy.pdf"]["copy_at"].endswith("docs/deck_b.pdf")
+    assert by_name["deck_b - Copy.pdf"]["owner"] == "jane"
+    assert by_name["my_notes.pdf"]["verdict"] == "keep"
+    assert by_name["my_notes.pdf"]["copy_at"] is None

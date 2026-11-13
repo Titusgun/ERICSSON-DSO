@@ -6,10 +6,12 @@
     GET /api/duplicates             [{"kind", "a", "b", "note", "distance"}]
     GET /api/search?q=latency       DATA_CONTRACT 9 (+ "sha12" of the file)
     GET /api/recording/<sha12>      DATA_CONTRACT 8 shape, built live from the DB
+    GET /api/offboarding            the last `dso offboard` result (out/reports/offboarding.json)
     GET /video/<file name>          the original video (supports seeking, for "Play at mm:ss")
 
 A Blueprint is a group of routes that app.py attaches to the Flask app.
 """
+import json
 from pathlib import Path
 
 from flask import Blueprint, abort, current_app, jsonify, request, send_file
@@ -139,6 +141,35 @@ def video_duration(path):
     except Exception:
         pass
     return None
+
+
+def empty_offboarding():
+    """What /api/offboarding returns before any leaver folder was analysed.
+    total_files = 0 makes the UI show "No leaver folder has been analysed yet"."""
+    return {
+        "dry_run": True, "simulated": False, "owners": [],
+        "total_files": 0, "total_bytes": 0, "safe_files": 0, "keep_files": 0,
+        "freeable_bytes": 0, "percent_freed": 0.0, "files": [],
+    }
+
+
+@api.route("/api/offboarding")
+def offboarding():
+    """The last offboarding dry run, exactly as `dso offboard` wrote it.
+
+    `dso offboard` decides the verdicts and writes out/reports/offboarding.json;
+    this route only reads that file (modules share data through out/, AGENTS.md 3),
+    so the web page and the Markdown report always show the same result.
+    """
+    path = Path(current_app.config["DSO_OUT"]) / "reports" / "offboarding.json"
+    if not path.is_file():
+        return jsonify(empty_offboarding())
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+    except (OSError, ValueError):
+        return jsonify(empty_offboarding())     # half-written or broken file
+    return jsonify(data)
 
 
 @api.route("/api/recording/<sha12>")
