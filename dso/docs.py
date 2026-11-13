@@ -21,6 +21,8 @@ to the original, not to "deck (1).pdf".
 import shutil
 import subprocess
 import sys
+import xml.etree.ElementTree as ElementTree
+import zipfile
 from pathlib import Path
 
 import pypdfium2 as pdfium
@@ -46,6 +48,66 @@ SOFFICE_PLACES = [
     "/usr/lib/libreoffice/program/soffice",
     "/snap/bin/libreoffice",
 ]
+
+
+# ---------- Metadata: author + last-modified date (issue #14) ----------
+
+# XML namespaces used in docProps/core.xml of .pptx/.docx files.
+OFFICE_NAMESPACES = {
+    "dc": "http://purl.org/dc/elements/1.1/",
+    "dcterms": "http://purl.org/dc/terms/",
+}
+
+
+def iso_seconds(text):
+    """"2024-03-01T10:15:00Z" -> "2024-03-01T10:15:00" (same format for every
+    source, so dates can be compared as text). None if it is not a date."""
+    text = text.strip()
+    if len(text) < 10 or text[4] != "-":
+        return None
+    return text[:19]
+
+
+def read_office_metadata(path):
+    """Author and last-modified date of a .pptx/.docx/.xlsx.
+
+    These files are zip archives; docProps/core.xml inside holds dc:creator and
+    dcterms:modified. Old .ppt/.doc files are not zips -> nothing found.
+    Returns {"author": str or None, "date": "YYYY-MM-DDTHH:MM:SS" or None}.
+    """
+    try:
+        with zipfile.ZipFile(path) as archive:
+            xml_bytes = archive.read("docProps/core.xml")
+        root = ElementTree.fromstring(xml_bytes)
+    except (OSError, KeyError, zipfile.BadZipFile, ElementTree.ParseError):
+        return {"author": None, "date": None}
+    author = root.findtext("dc:creator", default="", namespaces=OFFICE_NAMESPACES).strip()
+    modified = root.findtext("dcterms:modified", default="", namespaces=OFFICE_NAMESPACES)
+    return {"author": author or None, "date": iso_seconds(modified)}
+
+
+def pdf_date_to_iso(text):
+    """PDF date "D:20240301101500+01'00'" -> "2024-03-01T10:15:00", or None."""
+    digits = text.strip()
+    if digits.startswith("D:"):
+        digits = digits[2:]
+    digits = digits[:14]
+    if len(digits) < 8 or not digits.isdigit():
+        return None
+    digits = digits.ljust(14, "0")           # a date without a time -> 00:00:00
+    return (f"{digits[0:4]}-{digits[4:6]}-{digits[6:8]}T"
+            f"{digits[8:10]}:{digits[10:12]}:{digits[12:14]}")
+
+
+def read_pdf_metadata(pdf):
+    """Author and last-modified date from the PDF's info dictionary."""
+    try:
+        info = pdf.get_metadata_dict()
+    except Exception:
+        return {"author": None, "date": None}
+    author = (info.get("Author") or "").strip()
+    date = pdf_date_to_iso(info.get("ModDate") or "") or pdf_date_to_iso(info.get("CreationDate") or "")
+    return {"author": author or None, "date": date}
 
 
 # ---------- PPTX / DOCX -> PDF (issue #5) ----------
@@ -307,6 +369,18 @@ def run(args):
 
         # Safe re-run: delete existing slides for this file
         clear_old_slides(conn, file_id)
+
+        # Author + last-modified date, so `dedup` knows which revision is newest
+        # (#14). For a converted file, read the ORIGINAL: the converted PDF's
+        # dates are just the time of the conversion.
+        if pdf_path == file_path:
+            meta = read_pdf_metadata(pdf)
+        else:
+            meta = read_office_metadata(file_path)
+        conn.execute("UPDATE files SET author = ?, doc_date = ? WHERE id = ?",
+                     (meta["author"], meta["date"], file_id))
+        if meta["date"] is not None:
+            print(f"[docs]   last modified {meta['date']}, author {meta['author'] or 'unknown'}")
 
         # The 'doc' part of the slide_id is always the file's sha12 (DATA_CONTRACT
         # 5, v1.1); a doc_number could be shared by two revisions -> same slide_ids.
