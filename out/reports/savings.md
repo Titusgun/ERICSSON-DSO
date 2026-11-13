@@ -1,6 +1,6 @@
 # Storage savings
 
-Generated 2026-11-13 14:54 UTC by `dso savings`. Measured on the files in the database.
+Generated 2026-11-13 20:19 UTC by `dso savings`. Measured on the files in the database.
 
 | Scenario | Before | After | Saved | Saved % |
 |---|---:|---:|---:|---:|
