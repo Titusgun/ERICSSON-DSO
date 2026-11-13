@@ -61,6 +61,7 @@ def test_recording(client):
     assert data["source"]["file_name"] == "talk.mp4"
     assert data["duration_sec"] == pytest.approx(24, abs=1)
     assert data["frames"][0]["image"] == "frames/3fa9c0d1e2b4/f0002.webp"
+    assert data["frames"][0]["slide_image"] == "slides/9b1c22aa01ff/p002.webp"   # matched slide picture
     assert data["segments"][0]["frame_id"] == 1
     assert data["segments"][0]["slide_id"] == "9b1c22aa01ff:2:9f2c01ab"
     assert client.get("/api/recording/ffffffffffff").status_code == 404

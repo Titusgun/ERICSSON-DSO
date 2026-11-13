@@ -66,11 +66,13 @@ def test_search_finds_segment_and_slide(db_path):
     assert segment == {
         "kind": "segment", "file": "talk.mp4", "sha12": "3fa9c0d1e2b4", "t_sec": 99.4,   # word at 62% of 96.0-101.5
         "frame_image": "frames/3fa9c0d1e2b4/f0012.webp", "slide_id": SLIDE,
+        "slide_image": "slides/9b1c22aa01ff/p002.webp",
         "snippet": "As you see here, the [latency] drops",
     }
     slide = by_kind["slide"]
     assert slide["file"] == "deck_a.pdf" and slide["slide_id"] == SLIDE
     assert slide["t_sec"] is None and slide["frame_image"] is None
+    assert slide["slide_image"] == "slides/9b1c22aa01ff/p002.webp"     # the UI shows + enlarges it
     assert "[Latency]" in slide["snippet"]
 
 
