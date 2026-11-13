@@ -63,7 +63,7 @@ uv run dso watch data/inbox --max-seconds 120   # live demo: only the first 2 mi
 ```
 
 ## Live demo with OneDrive / SharePoint
-**Step by step for the Windows demo laptop: [docs/DEMO_WINDOWS.md](docs/DEMO_WINDOWS.md).**
+**Step by step: [Windows demo laptop](docs/DEMO_WINDOWS.md) · [Arch Linux](docs/DEMO_LINUX.md).**
 
 **A. With the OneDrive sync client** (Windows/macOS, built in): sync a OneDrive folder or a
 SharePoint library ("Sync" button in SharePoint) and watch the synced folder:
