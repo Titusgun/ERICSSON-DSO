@@ -1,4 +1,4 @@
-# Data contract v1.2
+# Data contract v1.3
 
 SHARED FILE. Change only in a `contract:` PR, together with `dso/common/schema.sql`.
 
@@ -16,6 +16,11 @@ the screen settles; `docs` fills `files.author` / `files.doc_date`;
 order, with identical / minor / changed slides in the note; `link` compares the Teams
 screen-share area and accepts 64-bit distance ≤ 13 (#10); new savings scenario `revisions`.
 No need to delete `out/dso.db`.
+
+**v1.3 (13 Nov, no schema change):** `export` also writes `export/corpus.jsonl` (AI-ready
+chunks, section 8) and `reports/ai_readiness.md`; `db.connect()` adds columns that a newer
+contract added to an existing table (`ADDED_COLUMNS` in `dso/common/db.py`), so an old
+`out/dso.db` keeps working - a new column only needs a line there, no deleting the DB.
 
 ## 1. Pipeline order and who reads/writes what
 Every step is a `dso` subcommand (`uv run dso <command>`). Global options:
@@ -76,7 +81,8 @@ out/
   converted/<sha12>.pdf            PPTX/DOCX converted to PDF (also the manual-export path)
   slides/<sha12>/p001.webp         rendered PDF pages
   export/<sha12>.json, <sha12>.md  AI-ready export per recording / document
-  reports/savings.md, offboarding.md, offboarding.json (offboarding.json = the same result
+  export/corpus.jsonl              all chunks of all files, one JSON object per line (section 8)
+  reports/savings.md, ai_readiness.md, offboarding.md, offboarding.json (offboarding.json = the same result
                                    for GET /api/offboarding, written by `offboard`)
 ```
 If `out/converted/<sha12>.pdf` already exists, `docs` uses it and does not convert again.
@@ -162,6 +168,20 @@ were only 0.19–0.25 (the usual 0.3 finds nothing), which is why we sample at 1
 `duration_sec` comes from `files.duration_sec` (set by `video`).
 Documents use the same shape with empty `frames`/`segments`. The `.md` file is the
 same content for humans: one heading per frame, timestamp, image, transcript under it.
+
+**Corpus (`out/export/corpus.jsonl`)**: JSON Lines, UTF-8, one chunk per line, each
+distinct file once. Two kinds:
+```json
+{"id": "e970fee4cdc0:t977", "type": "transcript", "text": "…", "start_sec": 977.2, "end_sec": 1003.2,
+ "frame_image": "frames/e970fee4cdc0/f0033.webp", "slide_id": "a0ce9da497f5:1:230d0be7",
+ "slide_text": "…", "source": {"file_name": "…", "path": "…", "sha256": "…", "kind": "video", "system": "play"}}
+{"id": "a0ce9da497f5:1:230d0be7", "type": "slide", "page": 1, "text": "…", "image": "slides/a0ce9da497f5/p001.webp",
+ "shown_in": [{"file_name": "…", "t_sec": 975.0}], "superseded_by": null, "source": {…}}
+```
+A transcript chunk = consecutive segments while the same key frame is on screen, at most
+60 s; `slide_id`/`slide_text` are null without a matched slide. Slide chunks only for slides
+with text; `superseded_by` = name of the newer version if `dedup` found this document to be
+an older revision. `reports/ai_readiness.md` lists the measured coverage.
 
 ## 9. Search result (`dso.search.search(conn, q)` → list of dicts; `--json` prints it)
 ```json
