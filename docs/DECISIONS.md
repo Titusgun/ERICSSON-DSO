@@ -15,3 +15,4 @@ Append one line per decision, newest at the bottom: `YYYY-MM-DD HH:MM | who | de
 2026-11-13 12:10 | Kristofers | `video` and `all` get --max-seconds N for fast testing | the main recording is very large; Ericsson suggests testing on smaller pieces (#17)
 2026-11-13 12:10 | Kristofers | Offboarding scenario is simulated (data/offboarding/<name>/) and the report says so | Ericsson provided no leaver's folder (#12)
 2026-11-13 13:00 | Kristofers | Transcribe with the multilingual Whisper model `small` (multilingual=True), not base.en | recordings are English but people speak Swedish during breaks; base.en turns Swedish into English nonsense (#2, #4)
+2026-11-13 15:00 | Kristofers | Key frames: keep a changed frame only once the screen stays still for 1 s (next sample within distance 6); if it never settles, keep one every 60 s; no crop for now | Teams recording kept 840 frames, 625 of them <=2 s apart (transitions, layout switches, camera); slides stay still (#3)

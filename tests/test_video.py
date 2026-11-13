@@ -148,3 +148,68 @@ def test_whisper_options():
     # Multilingual models re-detect the language per window (Swedish breaks).
     assert video.whisper_options("small") == {"vad_filter": True, "multilingual": True}
     assert video.whisper_options("base") == {"vad_filter": True, "multilingual": True}
+
+
+# ---------- which samples become key frames (keep_decision) ----------
+
+A = "0000000000000000"
+A_NOISE = "000000000000000f"     # 4 bits from A: same slide, a bit of noise
+B = "ffffffffffffffff"
+C = "00000000ffffffff"           # 32 bits from A and from B: a third picture
+
+
+def kept_times(hashes):
+    """Runs the same loop as extract_key_frames() on one hash per second and
+    returns the times (= list positions) of the kept frames."""
+    kept = []
+    prev = None
+    last_kept = None
+    for t, h in enumerate(hashes):
+        current = {"t_sec": float(t), "hash": h}
+        if last_kept is None:
+            to_keep = current
+        else:
+            decision = video.keep_decision(prev, current, last_kept)
+            to_keep = {"prev": prev, "current": current, None: None}[decision]
+        if to_keep is not None:
+            kept.append(to_keep["t_sec"])
+            last_kept = to_keep
+        prev = current
+    return kept
+
+
+def test_slide_change_kept_at_the_time_it_happened():
+    assert kept_times([A] * 5 + [B] * 5) == [0.0, 5.0]
+
+
+def test_noise_on_the_same_slide_is_ignored():
+    assert kept_times([A, A_NOISE, A, A_NOISE, A, A_NOISE]) == [0.0]
+
+
+def test_one_second_transition_is_skipped():
+    # A, then a 1-second blend/animation C, then B stays: keep A and B, not C.
+    assert kept_times([A, A, C, B, B, B]) == [0.0, 3.0]
+
+
+def test_short_flicker_is_skipped():
+    # Teams shows the speaker (B) for one second, then the slide again.
+    assert kept_times([A, A, B, A, A, A]) == [0.0]
+
+
+def test_going_back_to_an_earlier_slide_is_kept():
+    # A -> B -> A: the second A must be a key frame, or `dso link` would
+    # say B was on screen.
+    assert kept_times([A] * 3 + [B] * 3 + [A] * 3) == [0.0, 3.0, 6.0]
+
+
+def test_never_settling_screen_keeps_one_frame_per_max_gap():
+    # The picture changes every second (camera, video): fallback every 60 s.
+    hashes = []
+    for t in range(130):
+        if t % 2 == 0:
+            hashes.append(A)
+        else:
+            hashes.append(B)
+    assert video.MAX_GAP_SEC == 60
+    # 61 = first B after 60 s; 121 is B again (no change), so the next one is A at 122.
+    assert kept_times(hashes) == [0.0, 61.0, 122.0]
