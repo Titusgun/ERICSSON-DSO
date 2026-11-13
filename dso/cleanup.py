@@ -6,9 +6,9 @@ cost" and "deleted only if a duplicate already exists". For files that
 `dso watch --rclone` downloaded from OneDrive / SharePoint into <folder>, the
 cloud original is removed when its information is safe elsewhere:
 
-  video            the transcript covers the WHOLE video, and its key frames and
-                   AI export exist (a --max-seconds run that stopped early does
-                   not count)
+  video            the transcript AND the key frames cover the WHOLE video,
+                   and its AI export exists (a --max-seconds run that stopped
+                   early does not count)
   exact copy       `dedup` found it as a file_exact copy, and the kept copy
                    still exists
   older revision   `dedup` found a newer version (revision / file_content), the
@@ -72,6 +72,21 @@ def transcript_covers_video(out_dir, sha256, duration_sec):
     return duration_sec is not None and limit >= duration_sec - 1     # 1 s rounding
 
 
+def frames_cover_video(out_dir, sha256, duration_sec):
+    """True if the key frames were taken for the whole video (frames_info.json
+    written by `dso video`; frames from before that file existed were always
+    taken for the whole video)."""
+    path = out_dir / "frames" / sha12(sha256) / "frames_info.json"
+    try:
+        with open(path, encoding="utf-8") as f:
+            limit = json.load(f).get("max_seconds")
+    except (OSError, ValueError):
+        return True
+    if limit is None:
+        return True
+    return duration_sec is not None and limit >= duration_sec - 1
+
+
 def reference_map(conn, kinds):
     """{older/copy file id: kept file id} from `duplicates` rows of these kinds
     (a_ref = the one that can go, b_ref = the one that stays)."""
@@ -113,8 +128,9 @@ def plan(conn, folder, out_dir):
         elif row["kind"] == "video":
             frames = conn.execute("SELECT COUNT(*) FROM frames WHERE file_id = ?", (file_id,)).fetchone()[0]
             export = out_dir / "export" / f"{sha12(row['sha256'])}.md"
-            if frames > 0 and export.is_file() and transcript_covers_video(
-                    out_dir, row["sha256"], row["duration_sec"]):
+            if (frames > 0 and export.is_file()
+                    and frames_cover_video(out_dir, row["sha256"], row["duration_sec"])
+                    and transcript_covers_video(out_dir, row["sha256"], row["duration_sec"])):
                 reason = f"video distilled: {frames} key frames + full transcript + AI export"
                 kept_at = f"_dso_distilled/export/{sha12(row['sha256'])}.md"
         if reason is not None:

@@ -295,3 +295,19 @@ def test_transcript_progress_step():
     assert video.transcript_progress_step(120) == 30          # demo video: a line every 30 s
     assert video.transcript_progress_step(1200) == 120        # 20 min: every 10 %
     assert video.transcript_progress_step(9300) == 300        # 2.5 h: every 5 min
+
+
+def test_frames_for_a_shorter_part_are_redone(paths):
+    """Transcript already complete, but key frames only for the first 5 s: a run
+    for the whole video must take the key frames again (the 13 Nov gap)."""
+    db_path, out = paths
+    run_video(db_path, out, max_seconds=5, force=True)     # frames for 5 s only
+    short_id = [p for p in (out / "frames").iterdir() if p.is_dir()][0].name
+    info = json.loads((out / "frames" / short_id / "frames_info.json").read_text(encoding="utf-8"))
+    assert info == {"max_seconds": 5}
+    cache = out / "transcripts" / f"{short_id}.json"
+    data = json.loads(cache.read_text(encoding="utf-8"))
+    data["max_seconds"] = None                             # pretend: full transcript exists
+    cache.write_text(json.dumps(data), encoding="utf-8")
+    run_video(db_path, out)                                # whole video
+    assert len(frame_rows(db_path)) == 3                   # all slides, not just the first
