@@ -8,10 +8,13 @@
     GET /api/recording/<sha12>      DATA_CONTRACT 8 shape, built live from the DB
     GET /api/offboarding            the last `dso offboard` result (out/reports/offboarding.json)
     GET /video/<file name>          the original video (supports seeking, for "Play at mm:ss")
+    GET /document/<sha12>           a document as PDF (original PDF, or the converted PPTX/DOCX),
+                                    to open at a page: /document/<sha12>#page=10
 
 A Blueprint is a group of routes that app.py attaches to the Flask app.
 """
 import json
+import re
 from pathlib import Path
 
 from flask import Blueprint, abort, current_app, jsonify, request, send_file
@@ -231,3 +234,33 @@ def video(name):
         abort(404)
     # conditional=True enables HTTP range requests, which the browser needs to jump to #t=96.
     return send_file(path, conditional=True)
+
+
+@api.route("/document/<sha12>")
+def document(sha12):
+    """Serves a document as PDF so the browser's PDF viewer can open it at a page
+    (/document/<sha12>#page=10 - the page is in the slide_id, DATA_CONTRACT 5).
+
+    PDFs: the original file. PPTX/DOCX: the converted PDF from out/converted/,
+    whose pages are exactly the slides we index. Only documents registered in
+    the files table are served, nothing else from disk.
+    """
+    if re.fullmatch(r"[0-9a-f]{12}", sha12) is None:
+        abort(404)                       # also keeps "%" / "_" out of the LIKE below
+    conn = open_db()
+    row = conn.execute(
+        "SELECT path, ext FROM files WHERE kind = 'document' AND sha256 LIKE ? ORDER BY id LIMIT 1",
+        (sha12 + "%",)).fetchone()
+    conn.close()
+    if row is None:
+        abort(404)
+    original = Path(row["path"]).resolve()
+    converted = (Path(current_app.config["DSO_OUT"]) / "converted" / f"{sha12}.pdf").resolve()
+    if row["ext"] == "pdf" and original.is_file():
+        target = original
+    elif converted.is_file():
+        target = converted
+    else:
+        abort(404)
+    # Not an attachment: the browser shows it in its PDF viewer instead of downloading.
+    return send_file(target, mimetype="application/pdf", conditional=True)
