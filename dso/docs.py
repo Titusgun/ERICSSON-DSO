@@ -1,11 +1,16 @@
 """`dso docs` (owner: B)
 
 For every file with kind='document' in the DB:
-1. If it is not a PDF (pptx, docx, odp): convert with LibreOffice if it is installed.
+1. If it is not a PDF (pptx, ppt, odp, docx, doc): convert it to
+   out/converted/<sha12>.pdf, see convert_to_pdf() (issue #5).
 2. For every page: render to image + extract text.
 3. text_sha256 = sha256_text(normalize_text(text)); dhash = dhash_image(image)
 4. Save image as out/slides/<sha12>/p001.webp
-5. slide_id = f"{doc}:{page_no}:{text_sha256[:8]}" (DATA_CONTRACT 5).
+5. slide_id = f"{sha12}:{page_no}:{text_sha256[:8]}" (DATA_CONTRACT 5, v1.1).
+
+One machine, one converter (DATA_CONTRACT v1.1): LibreOffice and PowerPoint render
+slides slightly differently, so the final demo uses one machine and one converter.
+That is why every conversion prints which converter was used.
 
 Exact duplicate files (same sha256) are processed ONCE: their slides would get
 the same slide_ids (slide_id is built from the sha12), and they are identical
@@ -13,7 +18,9 @@ anyway; `dso dedup` records the copies as file_exact. The copy whose name has
 no copy hint ("(1)", " - Copy", "Copy of") is processed, so the slides belong
 to the original, not to "deck (1).pdf".
 """
+import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 import pypdfium2 as pdfium
@@ -23,6 +30,195 @@ from dso.common.hashing import sha256_text, normalize_text, dhash_image, sha12
 
 # DATA_CONTRACT 7: names with these hints are copies.
 COPY_HINTS = ["(1)", " - copy", "copy of"]
+
+# Word documents need Word; everything else (pptx, ppt, odp) PowerPoint.
+WORD_EXT = ["docx", "doc"]
+
+# A big deck can take a while; a converter that hangs longer is stopped.
+CONVERT_TIMEOUT_SEC = 300
+
+# Where LibreOffice is usually installed if `soffice` is not on PATH.
+SOFFICE_PLACES = [
+    r"C:\Program Files\LibreOffice\program\soffice.exe",
+    r"C:\Program Files (x86)\LibreOffice\program\soffice.exe",
+    "/Applications/LibreOffice.app/Contents/MacOS/soffice",
+    "/usr/bin/soffice",
+    "/usr/lib/libreoffice/program/soffice",
+    "/snap/bin/libreoffice",
+]
+
+
+# ---------- PPTX / DOCX -> PDF (issue #5) ----------
+
+def app_name(ext):
+    """Which Office program opens this file type: "Word" or "PowerPoint"."""
+    if ext in WORD_EXT:
+        return "Word"
+    return "PowerPoint"
+
+
+def is_good_pdf(path):
+    """True if the converter really produced a non-empty file."""
+    return path.is_file() and path.stat().st_size > 0
+
+
+def find_soffice():
+    """Path of the LibreOffice program, or None if it is not installed.
+
+    First PATH (soffice / libreoffice), then the standard install folders on
+    Windows, macOS and Linux, then /opt/libreoffice*/ (LibreOffice's own .deb/.rpm).
+    """
+    for program in ["soffice", "libreoffice"]:
+        found = shutil.which(program)
+        if found is not None:
+            return found
+    for place in SOFFICE_PLACES:
+        if Path(place).is_file():
+            return place
+    opt = Path("/opt")
+    if opt.is_dir():
+        for candidate in sorted(opt.glob("libreoffice*/program/soffice")):
+            return str(candidate)
+    return None
+
+
+def convert_with_soffice(soffice, source, target):
+    """LibreOffice: `soffice --headless --convert-to pdf`. Returns True on success.
+
+    LibreOffice names its output <source name>.pdf, so it writes into its own
+    temporary folder and we move the result to `target`. It also gets its own
+    settings folder (-env:UserInstallation): otherwise it silently does nothing
+    while you have LibreOffice open yourself.
+    """
+    work_dir = target.parent / ("tmp-" + target.stem)
+    profile_dir = (work_dir / "profile").resolve()
+    work_dir.mkdir(parents=True, exist_ok=True)
+    command = [soffice, "-env:UserInstallation=" + profile_dir.as_uri(),
+               "--headless", "--convert-to", "pdf", "--outdir", str(work_dir), str(source)]
+    ok = False
+    try:
+        subprocess.run(command, capture_output=True, timeout=CONVERT_TIMEOUT_SEC)
+        produced = work_dir / (source.stem + ".pdf")
+        if is_good_pdf(produced):
+            produced.replace(target)
+            ok = True
+    except (OSError, subprocess.SubprocessError):
+        ok = False
+    # Only our own temporary folder inside out/converted/ is removed.
+    shutil.rmtree(work_dir, ignore_errors=True)
+    return ok
+
+
+def powershell_quote(path):
+    """A path as a PowerShell string: 'C:\\x\\it''s.pptx' (a ' is written twice)."""
+    return "'" + str(path).replace("'", "''") + "'"
+
+
+def convert_with_office_windows(source, target, ext):
+    """Windows + Microsoft Office, remote-controlled through COM from PowerShell.
+
+    PowerPoint: Presentations.Open(file, ReadOnly=-1, Untitled=0, WithWindow=0),
+    SaveAs(target, 32)   (32 = ppSaveAsPDF).
+    Word: Documents.Open(file, ConfirmConversions=$false, ReadOnly=$true),
+    SaveAs2(target, 17)  (17 = wdFormatPDF).
+    No window opens and the original file is opened read-only.
+    UNTESTED on our machines so far - verify on a teammate's Windows laptop.
+    """
+    if sys.platform != "win32":
+        return False
+    src = powershell_quote(source.resolve())
+    dst = powershell_quote(target.resolve())
+    if app_name(ext) == "Word":
+        script = ("$app = New-Object -ComObject Word.Application; $app.Visible = $false; "
+                  f"try {{ $doc = $app.Documents.Open({src}, $false, $true); "
+                  f"$doc.SaveAs2({dst}, 17); $doc.Close($false) }} finally {{ $app.Quit() }}")
+    else:
+        script = ("$app = New-Object -ComObject PowerPoint.Application; "
+                  f"try {{ $deck = $app.Presentations.Open({src}, -1, 0, 0); "
+                  f"$deck.SaveAs({dst}, 32); $deck.Close() }} finally {{ $app.Quit() }}")
+    command = ["powershell", "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass",
+               "-Command", script]
+    try:
+        subprocess.run(command, capture_output=True, timeout=CONVERT_TIMEOUT_SEC)
+    except (OSError, subprocess.SubprocessError):
+        return False
+    return is_good_pdf(target)
+
+
+def applescript_quote(path):
+    """A path as an AppleScript string: backslashes and quotes escaped."""
+    return '"' + str(path).replace("\\", "\\\\").replace('"', '\\"') + '"'
+
+
+def convert_with_office_mac(source, target, ext):
+    """macOS + Microsoft Office, remote-controlled with AppleScript (osascript).
+
+    Best effort: macOS may ask once for permission to control PowerPoint/Word
+    or to access the folder. UNTESTED on our machines so far - verify on a
+    teammate's Mac.
+    """
+    if sys.platform != "darwin":
+        return False
+    src = applescript_quote(source.resolve())
+    dst = applescript_quote(target.resolve())
+    if app_name(ext) == "Word":
+        lines = ['tell application "Microsoft Word"',
+                 f"open POSIX file {src}",
+                 "set theDoc to active document",
+                 f"save as theDoc file name {dst} file format format PDF",
+                 "close theDoc saving no",
+                 "end tell"]
+    else:
+        lines = ['tell application "Microsoft PowerPoint"',
+                 f"open POSIX file {src}",
+                 "set theDeck to active presentation",
+                 f"save theDeck in POSIX file {dst} as save as PDF",
+                 "close theDeck saving no",
+                 "end tell"]
+    command = ["osascript"]
+    for line in lines:
+        command = command + ["-e", line]       # one -e per line of the script
+    try:
+        subprocess.run(command, capture_output=True, timeout=CONVERT_TIMEOUT_SEC)
+    except (OSError, subprocess.SubprocessError):
+        return False
+    return is_good_pdf(target)
+
+
+def convert_to_pdf(file_path, name, file_sha, out_dir):
+    """Returns the path of a PDF version of a PPTX/DOCX file, or None.
+
+    Tries, in this order (issue #5), and prints which one worked:
+      1. out/converted/<sha12>.pdf already exists -> use it (also a manual export)
+      2. LibreOffice
+      3. Windows: PowerPoint / Word through PowerShell + COM
+      4. macOS:   PowerPoint / Word through AppleScript
+      5. nothing worked -> print the exact manual step, return None
+    """
+    ext = file_path.suffix.lower().lstrip(".")
+    target = out_dir / "converted" / f"{sha12(file_sha)}.pdf"
+    if is_good_pdf(target):
+        print(f"[docs]   using {target.as_posix()} (already converted)")
+        return target
+    target.parent.mkdir(parents=True, exist_ok=True)
+
+    soffice = find_soffice()
+    if soffice is not None:
+        print(f"[docs]   converting with LibreOffice ({soffice}) ...")
+        if convert_with_soffice(soffice, file_path, target):
+            print("[docs]   converter used: LibreOffice")
+            return target
+    if convert_with_office_windows(file_path, target, ext):
+        print(f"[docs]   converter used: {app_name(ext)} (Windows)")
+        return target
+    if convert_with_office_mac(file_path, target, ext):
+        print(f"[docs]   converter used: {app_name(ext)} (macOS)")
+        return target
+
+    print(f"[docs]   could not convert {name} - no working converter found.")
+    print(f"[docs]   Manual step: Open {file_path.as_posix()} in {app_name(ext)}, export as PDF, "
+          f"save it as {target.as_posix()}, then run `dso docs` again.")
+    return None
 
 
 def has_copy_hint(name):
@@ -71,9 +267,7 @@ def run(args):
     # Ensure output directory exists
     out_dir = Path(args.out)
     slides_dir = out_dir / "slides"
-    tmp_dir = out_dir / "tmp"
     slides_dir.mkdir(parents=True, exist_ok=True)
-    tmp_dir.mkdir(parents=True, exist_ok=True)
 
     total_slides = 0
     done_hashes = set()     # sha256 of documents already processed in this run
@@ -83,7 +277,6 @@ def run(args):
         path_str = row[1]
         name = row[2]
         file_sha = row[3]
-        doc_number = row[4]
 
         if file_sha in done_hashes:
             # Exact copy of a document we already did: no slides of its own.
@@ -100,18 +293,10 @@ def run(args):
         # --- 1. Convert to PDF if necessary ---
         pdf_path = file_path
         if not path_str.lower().endswith(".pdf"):
-            print(f"[docs] Converting {name} to PDF via LibreOffice...")
-            try:
-                # Windows default installation path for LibreOffice
-                soffice_path = r"C:\Program Files\LibreOffice\program\soffice.exe"
-                subprocess.run([
-                    soffice_path, "--headless", "--convert-to", "pdf",
-                    "--outdir", str(tmp_dir), str(file_path)
-                ], check=True, capture_output=True)
-                pdf_path = tmp_dir / (file_path.stem + ".pdf")
-            except Exception as e:
-                print(f"[docs] Warning: Could not convert {name}. Skipping. (Error: {e})")
-                continue
+            print(f"[docs] {name}: not a PDF, converting")
+            pdf_path = convert_to_pdf(file_path, name, file_sha, out_dir)
+            if pdf_path is None:
+                continue                # skipped; the manual step was printed
 
         # --- 2. Open PDF ---
         try:
@@ -123,9 +308,9 @@ def run(args):
         # Safe re-run: delete existing slides for this file
         clear_old_slides(conn, file_id)
 
-        # Determine the 'doc' part of the slide_id
-        # DATA CONTRACT: <doc> = files.doc_number if known, else the file's sha12
-        doc_ref = doc_number if doc_number else sha12(file_sha)
+        # The 'doc' part of the slide_id is always the file's sha12 (DATA_CONTRACT
+        # 5, v1.1); a doc_number could be shared by two revisions -> same slide_ids.
+        doc_ref = sha12(file_sha)
         # --- 3. Process every page ---
         for page_idx in range(len(pdf)):
             page_no = page_idx + 1 # DATA CONTRACT requires 1-based page numbers

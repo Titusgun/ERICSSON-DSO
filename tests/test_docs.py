@@ -1,9 +1,13 @@
-"""Tests for re-running `dso docs` and for picture-only slides in `dso dedup`.
-The main slide checks are in test_pipeline.py (fixtures in tests/fixtures/docs)."""
+"""Tests for `dso docs` (re-runs, PPTX/DOCX -> PDF) and picture-only slides in
+`dso dedup`. The main slide checks are in test_pipeline.py (tests/fixtures/docs)."""
+import shutil
+import subprocess
 from pathlib import Path
 
+import pytest
 from PIL import Image, ImageDraw
 
+from dso import docs
 from dso.cli import main
 from dso.common.db import connect
 
@@ -67,3 +71,86 @@ def test_picture_only_slides_are_not_text_duplicates(tmp_path):
     run(db_path, out, "dedup")
     assert count(db_path, "SELECT COUNT(*) FROM slides") == 2
     assert count(db_path, "SELECT COUNT(*) FROM duplicates WHERE kind = 'slide_text'") == 0
+
+
+# ---------- PPTX / DOCX -> PDF (issue #5) ----------
+
+def ingest_one(tmp_path, file_name, content_from=None):
+    """Puts one document into a fresh DB. Returns (db_path, out, sha12)."""
+    folder = tmp_path / "in"
+    folder.mkdir()
+    target = folder / file_name
+    if content_from is None:
+        target.write_bytes(b"not a real office file " + file_name.encode("utf-8"))
+    else:
+        shutil.copy(content_from, target)
+    db_path = tmp_path / "dso.db"
+    out = tmp_path / "out"
+    run(db_path, out, "ingest", str(folder))
+    conn = connect(db_path)
+    sha = conn.execute("SELECT sha256 FROM files").fetchone()[0]
+    conn.close()
+    return db_path, out, sha[:12]
+
+
+def no_converters(monkeypatch):
+    """Pretend this machine has no LibreOffice and no Office."""
+    monkeypatch.setattr(docs, "find_soffice", lambda: None)
+    monkeypatch.setattr(docs, "convert_with_office_windows", lambda source, target, ext: False)
+    monkeypatch.setattr(docs, "convert_with_office_mac", lambda source, target, ext: False)
+
+
+def test_existing_converted_pdf_is_used(tmp_path, monkeypatch, capsys):
+    """A PDF saved as out/converted/<sha12>.pdf (e.g. a manual export) is used as is."""
+    no_converters(monkeypatch)
+    db_path, out, short_id = ingest_one(tmp_path, "deck.pptx")
+    (out / "converted").mkdir(parents=True)
+    shutil.copy(FIXTURE_DOCS / "deck_a.pdf", out / "converted" / f"{short_id}.pdf")
+    run(db_path, out, "docs")
+    assert "already converted" in capsys.readouterr().out
+    assert count(db_path, "SELECT COUNT(*) FROM slides") == 3
+    assert count(db_path, f"SELECT COUNT(*) FROM slides WHERE slide_id LIKE '{short_id}:%'") == 3
+
+
+def test_no_converter_prints_manual_step(tmp_path, monkeypatch, capsys):
+    no_converters(monkeypatch)
+    db_path, out, short_id = ingest_one(tmp_path, "notes.docx")
+    run(db_path, out, "docs")                       # skips the file, does not fail
+    printed = capsys.readouterr().out
+    assert "Manual step: Open" in printed
+    assert "in Word" in printed                     # .docx -> Word, .pptx -> PowerPoint
+    assert f"converted/{short_id}.pdf" in printed
+    assert count(db_path, "SELECT COUNT(*) FROM slides") == 0
+
+
+def test_quoting_for_powershell_and_applescript():
+    assert docs.powershell_quote("C:\\talks\\it's.pptx") == "'C:\\talks\\it''s.pptx'"
+    assert docs.applescript_quote('/talks/say "hi".pptx') == '"/talks/say \\"hi\\".pptx"'
+    assert docs.app_name("docx") == "Word" and docs.app_name("pptx") == "PowerPoint"
+
+
+@pytest.mark.skipif(docs.find_soffice() is None, reason="LibreOffice is not installed here")
+def test_libreoffice_converts_a_real_docx(tmp_path, capsys):
+    """End to end with real LibreOffice: make a .docx, then `dso docs` converts it."""
+    source_dir = tmp_path / "make"
+    source_dir.mkdir()
+    (source_dir / "memo.txt").write_text("Latency budget for the radio network\n", encoding="utf-8")
+    # Let LibreOffice turn the text file into a real .docx (our test input).
+    subprocess.run([docs.find_soffice(), "-env:UserInstallation=" + (tmp_path / "profile").resolve().as_uri(),
+                    "--headless", "--convert-to", "docx", "--outdir", str(source_dir),
+                    str(source_dir / "memo.txt")], capture_output=True, timeout=120)
+    assert (source_dir / "memo.docx").is_file(), "LibreOffice could not create the test .docx"
+
+    db_path, out, short_id = ingest_one(tmp_path, "memo.docx", content_from=source_dir / "memo.docx")
+    run(db_path, out, "docs")
+    printed = capsys.readouterr().out
+    assert "converter used: LibreOffice" in printed
+    assert (out / "converted" / f"{short_id}.pdf").is_file()
+    assert not (out / "converted" / f"tmp-{short_id}").exists()     # temp folder cleaned up
+    conn = connect(db_path)
+    text = conn.execute("SELECT text FROM slides").fetchone()[0]
+    conn.close()
+    assert "Latency budget" in text
+
+    run(db_path, out, "docs")                       # second run: no new conversion
+    assert "already converted" in capsys.readouterr().out
