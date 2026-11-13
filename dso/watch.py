@@ -16,8 +16,12 @@ Where the files come from:
   - --upload (only with --rclone): after a run, the AI-ready exports and the
     reports are copied back to REMOTE:PATH/_dso_distilled. This WRITES to the
     cloud, so it is off unless asked for (decision in docs/DECISIONS.md).
+  - --delete-originals (only with --rclone and --upload): after the upload,
+    `dso cleanup` moves cloud originals whose content is kept in reduced form
+    (distilled videos, exact copies, older revisions) to the cloud recycle bin.
+    See dso/cleanup.py for the safety rules.
 
-Nothing is ever deleted - not locally, not in the cloud.
+Local files are never deleted.
 Stop it with Ctrl+C.
 
 This file does not import the other modules (AGENTS.md 3): dso/cli.py passes
@@ -156,11 +160,13 @@ def record_download(state, ok, now, interval):
           f"Check the login: rclone lsd {name}:")
 
 
-def watch_cycle(args, steps, last, rclone_state=None):
+def watch_cycle(args, steps, last, rclone_state=None, cleanup=None):
     """One check: download (if --rclone), compare with the last snapshot, run
     the pipeline if something changed. Returns the snapshot to remember: the
     new one after a run, the old one if nothing was done (so we try again).
-    rclone_state remembers failed downloads between checks (back-off)."""
+    rclone_state remembers failed downloads between checks (back-off).
+    cleanup is dso.cleanup.cleanup (passed in by cli.py), used for
+    --delete-originals."""
     folder = Path(args.folder)
     remote = getattr(args, "rclone", None)
     if remote:
@@ -194,14 +200,23 @@ def watch_cycle(args, steps, last, rclone_state=None):
 
     if ok and remote and getattr(args, "upload", False):
         print(f"[watch] uploading results to {remote.rstrip('/')}/{DISTILLED_FOLDER} ...")
+        uploaded = True
         for command in rclone_upload_commands(Path(args.out), remote):
-            run_rclone(command)
+            if not run_rclone(command):
+                uploaded = False
+        # --delete-originals: only after the reduced form is safely in the cloud.
+        if cleanup is not None and getattr(args, "delete_originals", False):
+            if not uploaded:
+                print("[watch] upload failed - originals are NOT deleted this time")
+            elif cleanup(args, True) > 0:
+                for command in rclone_upload_commands(Path(args.out), remote):
+                    run_rclone(command)             # the cleanup log too
     if not ok:
         return last                         # try again at the next check
     return current
 
 
-def run_watch(args, steps):
+def run_watch(args, steps, cleanup=None):
     """`dso watch`: repeat watch_cycle() every --interval seconds until Ctrl+C."""
     folder = Path(args.folder)
     remote = getattr(args, "rclone", None)
@@ -211,6 +226,10 @@ def run_watch(args, steps):
         return 1
     if getattr(args, "upload", False) and not remote:
         print("[watch] --upload only works together with --rclone REMOTE:PATH")
+        return 1
+    if getattr(args, "delete_originals", False) and not (remote and getattr(args, "upload", False)):
+        print("[watch] --delete-originals needs --rclone REMOTE:PATH and --upload: the reduced "
+              "form must be in the cloud before an original is removed")
         return 1
     if remote:
         kind = remote_type(remote)
@@ -239,7 +258,7 @@ def run_watch(args, steps):
     rclone_state = {"failures": 0, "next_try": 0.0, "remote": remote or ""}
     try:
         while True:
-            last = watch_cycle(args, steps, last, rclone_state)
+            last = watch_cycle(args, steps, last, rclone_state, cleanup)
             if getattr(args, "once", False):
                 break
             time.sleep(args.interval)

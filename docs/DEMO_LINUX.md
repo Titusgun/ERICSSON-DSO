@@ -70,11 +70,17 @@ Three terminals:
 Terminal 3 (`systemd-inhibit` keeps the laptop awake while it runs):
 ```fish
 cd ~/Projects/dso-py
-# cloud: download new uploads, write the AI-ready results back to DSO demo/_dso_distilled
-systemd-inhibit --what=sleep:idle --why="dso demo" uv run dso watch data/cloud --rclone "onedrive:DSO demo" --source onedrive --interval 10 --max-seconds 120 --upload
+# cloud: download new uploads, write the AI-ready results back to DSO demo/_dso_distilled,
+# then move the originals whose content is kept (distilled videos, copies, old revisions)
+# to the OneDrive recycle bin
+systemd-inhibit --what=sleep:idle --why="dso demo" uv run dso watch data/cloud --rclone "onedrive:DSO demo" --source onedrive --interval 10 --max-seconds 120 --upload --delete-originals
 # offline fallback
 systemd-inhibit --what=sleep:idle --why="dso demo" uv run dso watch data/inbox --interval 10 --max-seconds 120
 ```
+`--delete-originals` frees the space for real (recycle bin, restorable 93 days; log in
+`_dso_distilled/reports/cleanup.md`). A video is only removed if it was transcribed WHOLE, so
+upload demo videos of at most 2 minutes (or raise `--max-seconds`). Leave the flag out for a
+show-only run; `uv run dso cleanup data/cloud --rclone "onedrive:DSO demo"` shows the plan.
 `--interval 10` checks every 10 s; `--max-seconds 120` transcribes only the first 2 minutes
 of a new video so it finishes on stage. The UI reloads its data every 10 s by itself.
 
@@ -91,7 +97,9 @@ of a new video so it finishes on stage. The UI reloads its data every 10 s by it
 5. Terminal 3 prints `change detected: 2 new ...` and runs the pipeline; within ~1–2 min the UI
    shows the new files, the `(1)` copy as an exact duplicate, the higher savings and the new
    video's transcript is searchable.
-6. In OneDrive, open `DSO demo/_dso_distilled/export/*.md`: the AI-ready text that replaces
+6. In OneDrive: the uploaded video and the `(1)` copy are gone (recycle bin), and
+   `_dso_distilled/reports/cleanup.md` says why and how much space was freed. Open
+   `DSO demo/_dso_distilled/export/*.md`: the AI-ready text that replaces
    the video.
 
 ### If something goes wrong
