@@ -86,11 +86,15 @@ Window 3, depending on part 3:
 ```powershell
 # A: OneDrive / SharePoint sync folder
 uv run dso watch "$env:OneDriveCommercial\DSO demo" --source onedrive --interval 10 --max-seconds 120
-# B: rclone, and write the results back to the cloud (_dso_distilled)
-uv run dso watch data\cloud --rclone "onedrive:DSO demo" --source onedrive --interval 10 --max-seconds 120 --upload
+# B: rclone, write the results back to the cloud (_dso_distilled) and move originals whose
+#    content is kept (distilled videos, copies, old revisions) to the OneDrive recycle bin
+uv run dso watch data\cloud --rclone "onedrive:DSO demo" --source onedrive --interval 10 --max-seconds 120 --upload --delete-originals
 # offline fallback
 uv run dso watch data\inbox --interval 10 --max-seconds 120
 ```
+`--delete-originals` (only with B) frees the space for real: recycle bin, restorable 93 days,
+log in `_dso_distilled/reports/cleanup.md`. A video is only removed if it was transcribed WHOLE,
+so upload demo videos of at most 2 minutes (or raise `--max-seconds`).
 `--interval 10` checks every 10 s; `--max-seconds 120` transcribes only the first 2 minutes of a
 new video, so it finishes on stage. The UI reloads its data every 10 s by itself.
 
@@ -107,7 +111,9 @@ new video, so it finishes on stage. The UI reloads its data every 10 s by itself
 5. Window 3 prints `change detected: 2 new ...`, then the pipeline. Within ~1–2 min the UI shows
    the new files, the `(1)` copy as an exact duplicate, the higher savings %, and the new
    video's transcript is searchable.
-6. With B + `--upload`: show `DSO demo/_dso_distilled/export/*.md` in OneDrive - the
+6. With B + `--delete-originals`: in OneDrive the uploaded video and the `(1)` copy are gone
+   (recycle bin), `_dso_distilled/reports/cleanup.md` says why and how much was freed; and
+   `DSO demo/_dso_distilled/export/*.md` - the
    AI-ready text that would replace the video.
 
 ### If something goes wrong

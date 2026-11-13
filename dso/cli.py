@@ -6,7 +6,7 @@ already calls `run(args)` in the owner's file.
 import argparse
 import sys
 
-from dso import dedup, docs, export, ingest, link, offboard, savings, search, video, watch
+from dso import cleanup, dedup, docs, export, ingest, link, offboard, savings, search, video, watch
 
 
 def build_parser():
@@ -67,7 +67,16 @@ def build_parser():
                    help="download new files from OneDrive/SharePoint with rclone before each check")
     p.add_argument("--upload", action="store_true",
                    help="with --rclone: copy exports + reports back to REMOTE:PATH/_dso_distilled")
+    p.add_argument("--delete-originals", action="store_true",
+                   help="with --rclone and --upload: move cloud originals that are kept in reduced form "
+                        "(distilled videos, exact copies, older revisions) to the cloud recycle bin")
     p.add_argument("--once", action="store_true", help="check once and stop (for tests)")
+
+    p = sub.add_parser("cleanup", help="free cloud storage: plan (dry run) or --apply")
+    p.add_argument("folder", help="the folder `dso watch --rclone` downloads into, e.g. data/cloud")
+    p.add_argument("--rclone", required=True, metavar="REMOTE:PATH", help="the cloud folder, e.g. \"onedrive:DSO demo\"")
+    p.add_argument("--apply", action="store_true",
+                   help="really move the files to the cloud recycle bin (default: only show the plan)")
 
     p = sub.add_parser("web", help="start the local demo web UI")
     p.add_argument("--port", type=int, default=5000)
@@ -126,7 +135,9 @@ def main(argv=None):
         from dso.web.app import run_web
         return run_web(args)
     elif command == "watch":
-        return watch.run_watch(args, pipeline_steps())
+        return watch.run_watch(args, pipeline_steps(), cleanup.cleanup)
+    elif command == "cleanup":
+        return cleanup.run(args)
     elif command == "all":
         for step in pipeline_steps():
             result = step(args)
