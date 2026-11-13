@@ -13,7 +13,9 @@ only creates missing tables, so an old database keeps the old columns.
 command and `--force`; `video` skips already processed videos; key frames are kept when
 the screen settles; `docs` fills `files.author` / `files.doc_date`;
 `out/reports/offboarding.json` for the web UI; revisions are compared by slide words in any
-order, with identical / minor / changed slides in the note. No need to delete `out/dso.db`.
+order, with identical / minor / changed slides in the note; `link` compares the Teams
+screen-share area and accepts 64-bit distance ≤ 13 (#10); new savings scenario `revisions`.
+No need to delete `out/dso.db`.
 
 ## 1. Pipeline order and who reads/writes what
 Every step is a `dso` subcommand (`uv run dso <command>`). Global options:
@@ -105,7 +107,9 @@ Identical slides in two different decks have different slide_ids but the same
 |---|---|---|
 | frame sampling | 1 per second | `video` |
 | keep a sampled frame if distance to last kept frame ≥ … and the next sample is < 6 from it (screen settled); else one every | 6 / 60 s | `video` |
-| frame ↔ slide match if closest slide distance ≤ | 6 | `link` |
+| frame ↔ slide: views compared per frame | full frame + Teams screen share (left 85 %, 3–93 % of the height) | `link` |
+| frame ↔ slide: skip nearly empty pictures (brightness std-dev, 0–255) < | 20 | `link` |
+| frame ↔ slide: best slide picked by 256-bit dHash (16×16); match if its 64-bit distance ≤ | 13 | `link` |
 | slide_visual duplicate if distance ≤ | 3 | `dedup` |
 | two slides match if word-set overlap (any order) ≥ / or dHash distance ≤ | 0.8 / 3 | `dedup` |
 | revision: average best word overlap of the smaller deck's slides > | 0.8 | `dedup` |
@@ -173,5 +177,6 @@ same content for humans: one heading per frame, timestamp, image, transcript und
 | `video_distill` | each distinct video (sha256) once, only videos that have output | their frames + transcript JSON + export JSON/MD under `out/` |
 | `dedup` | all files | one copy per distinct sha256 |
 | `offboarding` | files with `source='offboarding'` | those whose sha256 exists in no file with another source (each kept once) |
+| `revisions` | every version in a `revision` / `file_content` pair, each distinct sha256 once | the versions never superseded (never an `a_ref`) + the superseded versions' `out/slides/<sha12>/` and export files |
 
 A scenario with no input (no processed video, no offboarding files) has no row.
