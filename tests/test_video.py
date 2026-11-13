@@ -22,10 +22,9 @@ def paths(tmp_path):
     return db_path, out
 
 
-def run_video(db_path, out, max_seconds=None):
-    """Calls video.run() directly, so --max-seconds can be tested before
-    dso/cli.py has the option (#17)."""
-    args = Namespace(db=str(db_path), out=str(out), model="tiny.en", max_seconds=max_seconds)
+def run_video(db_path, out, max_seconds=None, force=False):
+    """Calls video.run() directly with the given options."""
+    args = Namespace(db=str(db_path), out=str(out), model="tiny.en", max_seconds=max_seconds, force=force)
     assert video.run(args) == 0
 
 
@@ -60,11 +59,12 @@ def test_max_seconds(paths):
 def test_rerun_replaces_frames_and_files(paths):
     db_path, out = paths
     run_video(db_path, out)
-    run_video(db_path, out, max_seconds=10)     # second run with fewer frames
+    run_video(db_path, out, max_seconds=10, force=True)     # forced second run with fewer frames
     rows = frame_rows(db_path)
     assert len(rows) == 2
     frames_dir = (out / rows[0]["image_path"]).parent
     assert len(list(frames_dir.glob("*.webp"))) == 2    # stale f0003.webp is gone
+    assert not (out / "frames" / (frames_dir.name + ".new")).exists()   # temp folder swapped in
 
 
 def test_rerun_with_linked_segments(paths):
@@ -242,3 +242,50 @@ def test_duration_is_stored(paths):
     duration = conn.execute("SELECT duration_sec FROM files WHERE kind = 'video'").fetchone()[0]
     conn.close()
     assert duration == pytest.approx(24, abs=1)
+
+
+
+# ---------- never replace finished results by a shorter run ----------
+
+def test_max_seconds_run_keeps_full_results(paths, capsys):
+    """Like `dso watch --max-seconds 120` on a DB with fully processed videos:
+    the full results must stay (the bug of 13 Nov that cut real videos to 2 min)."""
+    db_path, out = paths
+    run_video(db_path, out)                               # full run
+    capsys.readouterr()
+    run_video(db_path, out, max_seconds=5)                # demo-style short run
+    assert "already processed - skipped" in capsys.readouterr().out
+    assert len(frame_rows(db_path)) == 3                  # not cut to the first 5 s
+    cache_files = list((out / "transcripts").glob("*.json"))
+    cache = json.loads(cache_files[0].read_text(encoding="utf-8"))
+    assert cache["max_seconds"] is None                   # full transcript cache kept
+
+
+def test_covers():
+    assert video.covers(None, None) and video.covers(None, 120)      # full covers everything
+    assert video.covers(300, 120) and not video.covers(120, 300)
+    assert not video.covers(120, None)                               # 2 min never covers a full run
+
+
+def test_stopped_run_keeps_old_frames_and_rows(paths, monkeypatch):
+    """A run that stops halfway (Ctrl+C, crash) must not delete the old pictures
+    while the DB still points at them."""
+    import gc
+    db_path, out = paths
+    run_video(db_path, out)
+    before = frame_rows(db_path)
+    calls = []
+
+    def crash_after_two(image):
+        calls.append(1)
+        if len(calls) > 2:
+            raise KeyboardInterrupt
+        return "0000000000000000"
+    monkeypatch.setattr(video, "dhash_image", crash_after_two)
+    with pytest.raises(KeyboardInterrupt):
+        run_video(db_path, out, force=True)
+    gc.collect()                                           # closes the interrupted connection
+    after = frame_rows(db_path)
+    assert [r["image_path"] for r in after] == [r["image_path"] for r in before]
+    for row in after:
+        assert (out / row["image_path"]).is_file()        # every row still has its picture
