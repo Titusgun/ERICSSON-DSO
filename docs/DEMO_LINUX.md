@@ -70,8 +70,8 @@ Three terminals:
 | 3 | see below | `dso watch`: processes new uploads automatically |
 
 **Settings once, then no flags:** `cp dso.example.toml dso.toml` (it already has the demo
-settings below: data/cloud, onedrive:DSO demo, interval 10, max 600 s, upload, delete originals).
-Then terminal 3 is just `uv run dso watch`. Typed flags still win, e.g. `uv run dso watch --max-seconds 0`.
+settings below: data/cloud, onedrive:DSO demo, interval 10, whole videos, upload, delete originals).
+Then terminal 3 is just `uv run dso watch`. Typed flags still win, e.g. `uv run dso watch --max-seconds 600`.
 
 Terminal 3 with all flags written out (`systemd-inhibit` keeps the laptop awake while it runs):
 ```fish
@@ -79,16 +79,15 @@ cd ~/Projects/dso-py
 # cloud: download new uploads, write the AI-ready results back to DSO demo/_dso_distilled,
 # then move the originals whose content is kept (distilled videos, copies, old revisions)
 # to the OneDrive recycle bin
-systemd-inhibit --what=sleep:idle --why="dso demo" uv run dso watch data/cloud --rclone "onedrive:DSO demo" --source onedrive --interval 10 --max-seconds 600 --upload --delete-originals
+systemd-inhibit --what=sleep:idle --why="dso demo" uv run dso watch data/cloud --rclone "onedrive:DSO demo" --source onedrive --interval 10 --upload --delete-originals
 # offline fallback
-systemd-inhibit --what=sleep:idle --why="dso demo" uv run dso watch data/inbox --interval 10 --max-seconds 600
+systemd-inhibit --what=sleep:idle --why="dso demo" uv run dso watch data/inbox --interval 10
 ```
 `--delete-originals` frees the space for real (recycle bin, restorable 93 days; log in
-`_dso_distilled/reports/cleanup.md`). A video is only removed if it was transcribed WHOLE, so
-demo videos must be shorter than `--max-seconds` (600 = 10 min). Leave the flag out for a
-show-only run; `uv run dso cleanup data/cloud --rclone "onedrive:DSO demo"` shows the plan.
-`--interval 10` checks every 10 s; `--max-seconds 600` caps a new video at 10 minutes, so a long
-upload cannot block the stage (5 minutes of audio take about a minute). The UI reloads its data every 10 s by itself.
+`_dso_distilled/reports/cleanup.md`). Videos are processed whole by default and only then
+removed. Leave the flag out for a show-only run; `uv run dso cleanup data/cloud --rclone "onedrive:DSO demo"` shows the plan.
+`--interval 10` checks every 10 s. Plan the time: 5 minutes of audio take about a minute; a
+long upload can be capped with `--max-seconds 600` (first 10 min only - then it is NOT deleted). The UI reloads its data every 10 s by itself.
 
 ### The script (≈ 5 min)
 1. **Real data** (already processed): savings per scenario (video 98 %, old revisions 40 %,
@@ -131,7 +130,7 @@ still runs in a terminal.
 - **Nothing happens after an upload**: read terminal 3. `rclone failed` → `rclone lsd onedrive:`
   (login expired? `rclone config reconnect onedrive:`). `files are still being copied` → wait.
 - **The UI shows sample (mock) data**: terminal 1 (`dso web`) is not running.
-- **A new video takes too long**: use a shorter one or a smaller `--max-seconds`.
+- **A new video takes too long**: use a shorter one, or restart with `--max-seconds 120` (then it stays in the cloud).
 - **Reset the demo**: Ctrl+C in terminal 3, `cp out/dso-before-demo.db out/dso.db`, delete the
   uploaded files from `DSO demo` (and `data/cloud/`), start terminal 3 again.
 - **Stop everything**: Ctrl+C in each terminal. Nothing was deleted or moved anywhere.

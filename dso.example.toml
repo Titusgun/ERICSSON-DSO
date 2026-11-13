@@ -8,8 +8,8 @@ folder = "data/cloud"             # where new files are (rclone downloads into i
 rclone = "onedrive:DSO demo"      # cloud folder (rclone remote "onedrive", type onedrive)
 source = "onedrive"               # stored with every file (files.source)
 interval = 10                     # seconds between checks
-max_seconds = 600                 # transcribe at most the first 10 min of NEW videos (0 = whole video).
-                                  # Only a video transcribed WHOLE can be deleted, so demo videos must
-                                  # be shorter than this; 5 min of audio take about a minute.
+# Whole videos are processed (the default). Only if needed, e.g. to keep a long upload from
+# blocking a live demo:  max_seconds = 600   (or `uv run dso watch --max-seconds 600`).
+# A video processed only partly is never deleted from the cloud.
 upload = true                     # write exports + reports back to the cloud (_dso_distilled)
 delete_originals = true           # move cloud originals kept in reduced form to the recycle bin

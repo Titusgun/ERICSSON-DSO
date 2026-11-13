@@ -91,18 +91,18 @@ Then window 3 is just `uv run dso watch`. Typed flags still win.
 Window 3 with all flags written out, depending on part 3:
 ```powershell
 # A: OneDrive / SharePoint sync folder
-uv run dso watch "$env:OneDriveCommercial\DSO demo" --source onedrive --interval 10 --max-seconds 600
+uv run dso watch "$env:OneDriveCommercial\DSO demo" --source onedrive --interval 10
 # B: rclone, write the results back to the cloud (_dso_distilled) and move originals whose
 #    content is kept (distilled videos, copies, old revisions) to the OneDrive recycle bin
-uv run dso watch data\cloud --rclone "onedrive:DSO demo" --source onedrive --interval 10 --max-seconds 600 --upload --delete-originals
+uv run dso watch data\cloud --rclone "onedrive:DSO demo" --source onedrive --interval 10 --upload --delete-originals
 # offline fallback
-uv run dso watch data\inbox --interval 10 --max-seconds 600
+uv run dso watch data\inbox --interval 10
 ```
 `--delete-originals` (only with B) frees the space for real: recycle bin, restorable 93 days,
-log in `_dso_distilled/reports/cleanup.md`. A video is only removed if it was transcribed WHOLE,
-so demo videos must be shorter than `--max-seconds` (600 = 10 min).
-`--interval 10` checks every 10 s; `--max-seconds 600` caps a new video at 10 minutes, so a long
-upload cannot block the stage (5 minutes of audio take about a minute). The UI reloads its data every 10 s by itself.
+log in `_dso_distilled/reports/cleanup.md`. Videos are processed whole by default and only then
+removed.
+`--interval 10` checks every 10 s. Plan the time: 5 minutes of audio take about a minute; a
+long upload can be capped with `--max-seconds 600` (first 10 min only - then it is NOT deleted). The UI reloads its data every 10 s by itself.
 
 ### The script (≈ 5 min)
 1. **Real data first** (already processed): dashboard with the savings %, the 2.5 h Teams
@@ -143,7 +143,7 @@ Stop: `Stop-ScheduledTask -TaskName "dso watch"`; remove: `Unregister-ScheduledT
   sync is not finished (OneDrive cloud icon). Option A: is the folder set to "Always keep on
   this device"? Option B: `rclone lsd onedrive:` still works?
 - **The UI shows sample (mock) data**: window 1 (`dso web`) is not running.
-- **A new video takes too long**: use a shorter one or a smaller `--max-seconds`.
+- **A new video takes too long**: use a shorter one, or restart with `--max-seconds 120` (then it stays in the cloud).
 - **Reset the demo**: Ctrl+C in window 3, `Copy-Item out\dso-before-demo.db out\dso.db -Force`,
   delete the uploaded files from the demo folder, start window 3 again.
 - **Stop everything**: Ctrl+C in each window. Nothing was deleted or moved anywhere.
