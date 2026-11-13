@@ -22,7 +22,11 @@ For every file with kind='video' in the DB:
    The first run downloads the model from Hugging Face (tiny.en ~75 MB, base.en ~145 MB,
    small.en ~480 MB) - do this at home before the event.
    The fixture audio is only a tone (no speech), so 0 segments there is expected.
-   -> NOT DONE YET (issue #4). Only step 1 runs for now.
+
+   Transcribing hours of audio on a CPU takes a long time, so the result is CACHED:
+   if out/transcripts/<sha12>.json exists and was made with the same model and the
+   same --max-seconds, it is loaded instead of transcribing again. Delete that
+   file to force a new transcription.
 
 --max-seconds N (issue #17): only the first N seconds of each video are processed.
    dso/cli.py (owner D) still has to add the option; until then args has no
@@ -30,9 +34,12 @@ For every file with kind='video' in the DB:
 
 Re-run safe: DELETE FROM frames / segments WHERE file_id = ? before inserting.
 """
+import json
 from pathlib import Path
 
 import cv2
+from faster_whisper import WhisperModel
+from faster_whisper.audio import decode_audio
 from PIL import Image
 
 from dso.common.db import connect
@@ -47,6 +54,9 @@ WEBP_QUALITY = 60
 
 # Print a progress line every N seconds of video (= every 5 minutes).
 PROGRESS_EVERY_SEC = 300
+
+# Whisper works on 16 kHz mono audio: 16000 numbers per second of sound.
+SAMPLE_RATE = 16000
 
 
 def format_time(seconds):
@@ -150,6 +160,132 @@ def extract_key_frames(conn, file_row, out_dir, max_seconds):
     return kept
 
 
+# ---------- Step 2: transcript ----------
+
+def load_cached_transcript(json_path, model_name, max_seconds):
+    """Returns the cached transcript dict if it fits this run, else None.
+
+    "Fits" = made with the same model and the same --max-seconds. A transcript
+    of the first 5 minutes must not be reused for a full run, and a tiny.en
+    transcript must not be reused when you ask for small.en.
+    """
+    if not json_path.is_file():
+        return None
+    try:
+        with open(json_path, encoding="utf-8") as f:
+            data = json.load(f)
+    except (OSError, ValueError):
+        return None                       # unreadable / half-written file: redo it
+    if data.get("model") != model_name or data.get("max_seconds") != max_seconds:
+        return None
+    return data
+
+
+def is_multilingual(model_name):
+    """True for models that know many languages ("small", "base"), False for
+    English-only models ("base.en", "small.en")."""
+    return not model_name.endswith(".en")
+
+
+def whisper_options(model_name):
+    """Options for model.transcribe().
+
+    vad_filter=True: "voice activity detection" skips silence, which is faster
+    and stops Whisper from inventing text during long pauses.
+
+    multilingual=True: detect the language again for every 30-second window,
+    instead of once at the start. Our recordings are English, but people speak
+    Swedish during breaks (decision 2026-11-13 in DECISIONS.md); without this the
+    Swedish parts would be forced into English nonsense. English-only (.en)
+    models cannot do this, so the option is only set for multilingual models.
+    """
+    options = {"vad_filter": True}
+    if is_multilingual(model_name):
+        options["multilingual"] = True
+    return options
+
+
+def run_whisper(model, model_name, video_path, max_seconds):
+    """Transcribes one video. Returns the transcript dict that is cached as JSON.
+
+    faster-whisper decodes the audio track from the mp4 itself (no ffmpeg).
+    We decode it first so --max-seconds can cut it: the audio is a list of
+    numbers, 16000 per second, so the first N seconds = the first N * 16000.
+    """
+    audio = decode_audio(str(video_path), sampling_rate=SAMPLE_RATE)
+    if max_seconds is not None:
+        audio = audio[:int(max_seconds * SAMPLE_RATE)]
+    audio_sec = len(audio) / SAMPLE_RATE
+    print(f"[video]   transcribing {format_time(audio_sec)} of audio (this is the slow part)")
+
+    segments, info = model.transcribe(audio, **whisper_options(model_name))
+    # With a multilingual model this is the language of the START of the video;
+    # later windows (e.g. Swedish breaks) are detected separately.
+    print(f"[video]   language at the start: {info.language} "
+          f"(probability {info.language_probability:.2f})")
+    if not is_multilingual(model_name):
+        print(f"[video]   note: {model_name} is English-only; other languages become nonsense")
+
+    result_segments = []
+    next_progress = PROGRESS_EVERY_SEC
+    # `segments` is a generator: the actual transcription happens while we loop.
+    for s in segments:
+        text = s.text.strip()
+        if text != "":
+            result_segments.append({"start": round(s.start, 2), "end": round(s.end, 2), "text": text})
+        if s.end >= next_progress:
+            print(f"[video]   {format_time(s.end)} / {format_time(audio_sec)}, "
+                  f"{len(result_segments)} segments")
+            next_progress = next_progress + PROGRESS_EVERY_SEC
+    return {
+        "model": None,                    # filled in by the caller
+        "max_seconds": max_seconds,
+        "language": info.language,
+        "language_probability": round(info.language_probability, 3),
+        "audio_sec": round(audio_sec, 2),
+        "segments": result_segments,
+    }
+
+
+def transcribe(conn, file_row, out_dir, model_name, max_seconds, model_holder):
+    """Step 2 for one video: fills `segments` and out/transcripts/<sha12>.json.
+
+    model_holder is a dict {"model": None}. The Whisper model is loaded on first
+    use only (it takes a few seconds), and never if every transcript is cached.
+    Returns the number of segments, or None if the video has no readable audio.
+    """
+    short_id = sha12(file_row["sha256"])
+    json_path = out_dir / "transcripts" / f"{short_id}.json"
+
+    data = load_cached_transcript(json_path, model_name, max_seconds)
+    if data is not None:
+        print(f"[video]   transcript: reusing {json_path.as_posix()} (delete it to transcribe again)")
+    else:
+        if model_holder["model"] is None:
+            print(f"[video]   loading Whisper model {model_name} ...")
+            model_holder["model"] = WhisperModel(model_name, device="cpu", compute_type="int8")
+        try:
+            data = run_whisper(model_holder["model"], model_name, Path(file_row["path"]), max_seconds)
+        except Exception as error:
+            # e.g. a video without an audio track. Skip it, do not stop the whole run.
+            print(f"[video]   transcript skipped, cannot read audio: {error}")
+            return None
+        data["model"] = model_name
+        json_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(json_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+
+    # Replace the old rows of this video (re-run safe). Their frame links are
+    # set again by `dso link`.
+    conn.execute("DELETE FROM segments WHERE file_id = ?", (file_row["id"],))
+    for s in data["segments"]:
+        conn.execute(
+            """INSERT INTO segments (file_id, start_sec, end_sec, speaker, text)
+               VALUES (?, ?, ?, 'Speaker ?', ?)""",
+            (file_row["id"], s["start"], s["end"], s["text"]))
+    return len(data["segments"])
+
+
 def run(args):
     conn = connect(args.db)
     out_dir = Path(args.out)
@@ -162,6 +298,7 @@ def run(args):
     if max_seconds is not None:
         print(f"[video] only the first {max_seconds} seconds of each video (--max-seconds)")
 
+    model_holder = {"model": None}      # Whisper model, loaded on first use
     done_hashes = set()     # exact duplicate videos are processed only once
     for file_row in videos:
         if file_row["sha256"] in done_hashes:
@@ -171,11 +308,17 @@ def run(args):
 
         print(f"[video] {file_row['name']}")
         kept = extract_key_frames(conn, file_row, out_dir, max_seconds)
-        # Commit after every video, so a crash in video 3 keeps videos 1 and 2.
+        # Commit after every step, so a crash in video 3 keeps videos 1 and 2,
+        # and a crash in the transcript keeps the key frames.
         conn.commit()
-        if kept is not None:
-            print(f"[video]   {kept} key frames -> out/frames/{sha12(file_row['sha256'])}/")
+        if kept is None:
+            continue                        # could not open the video at all
+        print(f"[video]   {kept} key frames -> out/frames/{sha12(file_row['sha256'])}/")
 
-    print("[video] transcript: not implemented yet (issue #4)")
+        count = transcribe(conn, file_row, out_dir, args.model, max_seconds, model_holder)
+        conn.commit()
+        if count is not None:
+            print(f"[video]   {count} transcript segments")
+
     conn.close()
     return 0
