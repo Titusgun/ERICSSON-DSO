@@ -21,7 +21,10 @@ def build_parser():
     p.add_argument("--owner", default=None, help="employee who owns these files")
 
     p = sub.add_parser("video", help="key frames + transcript for every video")
-    p.add_argument("--model", default="base.en", help="whisper model: tiny.en, base.en, small.en, ...")
+    p.add_argument("--model", default="small",
+                   help="whisper model (default small, multilingual): tiny, base, small, base.en, ...")
+    p.add_argument("--max-seconds", type=float, default=None,
+                   help="only process the first N seconds of each video (for fast testing)")
 
     sub.add_parser("docs", help="PDF -> slides with text hash + dHash")
     sub.add_parser("dedup", help="find exact, slide-level and revision duplicates")
@@ -36,6 +39,8 @@ def build_parser():
 
     p = sub.add_parser("offboard", help="DRY-RUN report for a departing employee's folder")
     p.add_argument("folder")
+    p.add_argument("--simulated", action="store_true",
+                   help="mark the report as a simulated scenario (not a real leaver)")
 
     sub.add_parser("savings", help="storage before/after report")
 
@@ -43,7 +48,9 @@ def build_parser():
     p.add_argument("folder")
     p.add_argument("--source", default="local")
     p.add_argument("--owner", default=None)
-    p.add_argument("--model", default="base.en")
+    p.add_argument("--model", default="small", help="whisper model (default small, multilingual)")
+    p.add_argument("--max-seconds", type=float, default=None,
+                   help="only process the first N seconds of each video (for fast testing)")
 
     p = sub.add_parser("web", help="start the local demo web UI")
     p.add_argument("--port", type=int, default=5000)

@@ -64,7 +64,6 @@ def test_exact_duplicate_hashes_exist(db):
 
 # ---------- remove `skip` when your feature works ----------
 
-@pytest.mark.skip(reason="TODO owner A: key frames")
 def test_key_frames(db):
     times = [row[0] for row in db.execute("SELECT t_sec FROM frames ORDER BY t_sec")]
     assert len(times) == 3
@@ -109,3 +108,17 @@ def test_savings(db):
     # jane: "deck_b - Copy.pdf" exists elsewhere, my_notes.pdf is unique -> keep only my_notes.
     my_notes = (FIXTURES / "offboarding" / "jane" / "my_notes.pdf").stat().st_size
     assert rows["offboarding"][1] == my_notes
+
+
+def test_offboard_plan(db):
+    from dso.offboard import plan
+    jane = FIXTURES / "offboarding" / "jane"
+    verdicts = {}
+    for item in plan(db, jane):
+        verdicts[item["name"]] = item
+    assert verdicts["deck_b - Copy.pdf"]["verdict"] == "safe to delete"
+    assert verdicts["deck_b - Copy.pdf"]["copy_at"].endswith("deck_b.pdf")
+    assert verdicts["my_notes.pdf"]["verdict"] == "keep"
+    # Dry run: the leaver's files are still there.
+    assert (jane / "deck_b - Copy.pdf").is_file()
+    assert (jane / "my_notes.pdf").is_file()

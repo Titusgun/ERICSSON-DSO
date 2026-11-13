@@ -30,7 +30,17 @@ duplicates — without losing information. Runs fully locally on Windows, macOS 
    uv run pytest                               # should pass (feature tests are skipped)
    uv run python scripts/prefetch_models.py    # Whisper models, do this at home
    ```
-4. Optional: LibreOffice (only needed if samples contain PPTX).
+4. PPTX → PDF needs **LibreOffice or Microsoft PowerPoint**. If you have PowerPoint,
+   install nothing. Otherwise install LibreOffice:
+   - Arch: `sudo pacman -S libreoffice-fresh`
+   - macOS: `brew install --cask libreoffice`
+   - Windows: `winget install TheDocumentFoundation.LibreOffice`
+
+   Manual fallback: if no converter works, `dso docs` skips the file and prints what to do:
+   open it in PowerPoint, export as PDF, save it as `out/converted/<sha12>.pdf`, then run
+   `dso docs` again.
+5. Download the sample archive from the team chat and unpack it into `data/`
+   (git-ignored; never commit or upload it).
 
 ## Daily use
 ```bash
