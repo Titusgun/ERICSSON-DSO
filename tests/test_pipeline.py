@@ -70,28 +70,38 @@ def test_key_frames(db):
     assert abs(times[1] - 8) <= 1 and abs(times[2] - 16) <= 1
 
 
-@pytest.mark.skip(reason="TODO owner B: slides")
 def test_slides(db):
-    assert count(db, "SELECT COUNT(*) FROM slides") == 16
+    # 16 pages on disk, 10 unique: deck_a, deck_a_rev2, deck_b (3 each) + my_notes (1).
+    # The exact copies "deck_a (1).pdf" and jane's "deck_b - Copy.pdf" have the same
+    # sha256 as deck_a / deck_b, so their slides would get the same slide_ids
+    # (built from the sha12, DATA_CONTRACT 5): stored once, copies are file_exact.
+    assert count(db, "SELECT COUNT(*) FROM slides") == 10
+    # slide_id = "<sha12>:<page>:<text hash 8>" - no extra parts (DATA_CONTRACT 5).
+    for (slide_id,) in db.execute("SELECT slide_id FROM slides"):
+        doc, page, text_hash = slide_id.split(":")
+        assert len(doc) == 12 and page.isdigit() and len(text_hash) == 8
+    # Copies have no slides of their own; the originals do.
+    names = [row[0] for row in db.execute(
+        "SELECT DISTINCT files.name FROM slides JOIN files ON files.id = slides.file_id")]
+    assert "deck_a (1).pdf" not in names and "deck_a.pdf" in names
+    # Original text is stored (not lowercased) - search and export show it.
+    texts = [row[0] for row in db.execute("SELECT text FROM slides")]
+    assert any(text != text.lower() for text in texts)
 
 
-@pytest.mark.skip(reason="TODO owner B: dedup")
 def test_duplicates(db):
     assert count(db, "SELECT COUNT(*) FROM duplicates WHERE kind='file_exact'") == 2
     assert count(db, "SELECT COUNT(*) FROM duplicates WHERE kind='slide_text'") >= 2
 
 
-@pytest.mark.skip(reason="TODO owner B: revisions (SHOULD)")
 def test_revision(db):
     assert count(db, "SELECT COUNT(*) FROM duplicates WHERE kind='revision'") >= 1
 
 
-@pytest.mark.skip(reason="TODO owner C: link")
 def test_frames_linked_to_slides(db):
     assert count(db, "SELECT COUNT(*) FROM frames WHERE slide_id IS NOT NULL") == 3
 
 
-@pytest.mark.skip(reason="TODO owner C: search")
 def test_search(db):
     from dso.search import search
     results = search(db, "latency")
