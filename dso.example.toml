@@ -1,0 +1,13 @@
+# Settings for `uv run dso watch`, so you do not have to type the flags every time.
+# Copy this file to dso.toml (in the project folder) and adapt it to this machine.
+# dso.toml is git-ignored: the remote name and folders differ per laptop.
+# Anything typed on the command line wins over this file.
+
+[watch]
+folder = "data/cloud"             # where new files are (rclone downloads into it)
+rclone = "onedrive:DSO demo"      # cloud folder (rclone remote "onedrive", type onedrive)
+source = "onedrive"               # stored with every file (files.source)
+interval = 10                     # seconds between checks
+max_seconds = 120                 # transcribe only the first N seconds of NEW videos (0 = whole video)
+upload = true                     # write exports + reports back to the cloud (_dso_distilled)
+delete_originals = true           # move cloud originals kept in reduced form to the recycle bin

@@ -26,3 +26,6 @@ __pycache__/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Per-machine settings for `dso watch` (see dso.example.toml)
+dso.toml

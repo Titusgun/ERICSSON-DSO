@@ -1,0 +1,19 @@
+# systemd user service: `dso watch` starts at login and restarts if it stops.
+# Settings come from dso.toml in the project folder (see dso.example.toml).
+# Install: see docs/DEMO_LINUX.md, "Run it automatically".
+[Unit]
+Description=dso watch - distill new OneDrive/SharePoint uploads
+After=network-online.target
+
+[Service]
+# /usr/bin/uv is replaced by your real `which uv` when installing (docs/DEMO_LINUX.md).
+# Change if the project is somewhere else (%h = your home folder).
+WorkingDirectory=%h/Projects/dso-py
+ExecStart=/usr/bin/uv run dso watch
+# Print every line at once, so `journalctl --user -u dso-watch -f` is live.
+Environment=PYTHONUNBUFFERED=1
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=default.target

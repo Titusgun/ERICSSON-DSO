@@ -5,6 +5,8 @@ already calls `run(args)` in the owner's file.
 """
 import argparse
 import sys
+import tomllib
+from pathlib import Path
 
 from dso import cleanup, dedup, docs, export, ingest, link, offboard, savings, search, video, watch
 
@@ -54,23 +56,29 @@ def build_parser():
                    help="only process the first N seconds of each video (for fast testing)")
     p.add_argument("--force", action="store_true", help="redo videos that were already processed")
 
-    p = sub.add_parser("watch", help="run `all` automatically whenever files in the folder change")
-    p.add_argument("folder", help="folder to watch, e.g. data/inbox or a OneDrive sync folder")
-    p.add_argument("--interval", type=float, default=30, help="seconds between checks (default 30)")
-    p.add_argument("--source", default="local", help="sharepoint | onedrive | play | local | offboarding")
+    # Every watch option defaults to None = "not typed": then dso.toml or WATCH_DEFAULTS
+    # decides (see apply_settings). So the demo laptop can run plain `dso watch`.
+    p = sub.add_parser("watch", help="run `all` automatically whenever files in the folder change "
+                                     "(settings from dso.toml, flags win)")
+    p.add_argument("folder", nargs="?", default=None,
+                   help="folder to watch, e.g. data/inbox or a OneDrive sync folder (or `folder` in dso.toml)")
+    p.add_argument("--config", default="dso.toml", help="settings file (default dso.toml, if it exists)")
+    p.add_argument("--interval", type=float, default=None, help="seconds between checks (default 30)")
+    p.add_argument("--source", default=None, help="sharepoint | onedrive | play | local | offboarding")
     p.add_argument("--owner", default=None)
-    p.add_argument("--model", default="small", help="whisper model (default small, multilingual)")
+    p.add_argument("--model", default=None, help="whisper model (default small, multilingual)")
     p.add_argument("--max-seconds", type=float, default=None,
-                   help="only process the first N seconds of each video (for a fast live demo)")
-    p.add_argument("--force", action="store_true", help="redo videos that were already processed")
+                   help="only process the first N seconds of each video (for a fast live demo); "
+                        "0 = whole video, overrides dso.toml")
+    p.add_argument("--force", action="store_true", default=None, help="redo videos that were already processed")
     p.add_argument("--rclone", default=None, metavar="REMOTE:PATH",
                    help="download new files from OneDrive/SharePoint with rclone before each check")
-    p.add_argument("--upload", action="store_true",
+    p.add_argument("--upload", action="store_true", default=None,
                    help="with --rclone: copy exports + reports back to REMOTE:PATH/_dso_distilled")
-    p.add_argument("--delete-originals", action="store_true",
+    p.add_argument("--delete-originals", action="store_true", default=None,
                    help="with --rclone and --upload: move cloud originals that are kept in reduced form "
                         "(distilled videos, exact copies, older revisions) to the cloud recycle bin")
-    p.add_argument("--once", action="store_true", help="check once and stop (for tests)")
+    p.add_argument("--once", action="store_true", default=None, help="check once and stop (for tests)")
 
     p = sub.add_parser("cleanup", help="free cloud storage: plan (dry run) or --apply")
     p.add_argument("folder", help="the folder `dso watch --rclone` downloads into, e.g. data/cloud")
@@ -85,6 +93,47 @@ def build_parser():
     p = sub.add_parser("dhash", help="debug: dHash of images and their distance")
     p.add_argument("images", nargs="+")
     return parser
+
+
+# Built-in watch settings, used when neither the command line nor dso.toml sets them.
+# Deleting is never on by default here: it is switched on per machine in dso.toml.
+WATCH_DEFAULTS = {
+    "folder": None, "interval": 30.0, "source": "local", "owner": None, "model": "small",
+    "max_seconds": None, "force": False, "rclone": None, "upload": False,
+    "delete_originals": False, "once": False,
+}
+
+
+def load_settings(path, section):
+    """The [section] table of a TOML settings file as a dict ({} if the file does
+    not exist). tomllib is part of Python 3.11+, no extra dependency."""
+    path = Path(path)
+    if not path.is_file():
+        return {}
+    with open(path, "rb") as f:
+        data = tomllib.load(f)           # raises tomllib.TOMLDecodeError on a typo
+    return data.get(section, {})
+
+
+def apply_settings(args, settings, defaults):
+    """For every option: the typed flag wins, then the settings file, then the
+    built-in default. Returns the keys that came from the settings file."""
+    from_file = []
+    for key, default in defaults.items():
+        if getattr(args, key, None) is not None:
+            continue                     # typed on the command line
+        if key in settings:
+            setattr(args, key, settings[key])
+            from_file.append(key)
+        else:
+            setattr(args, key, default)
+    for key in settings:
+        if key not in defaults:
+            print(f"[watch] unknown setting '{key}' in the settings file - ignored "
+                  f"(known: {', '.join(defaults)})")
+    if args.max_seconds == 0:
+        args.max_seconds = None          # --max-seconds 0 = the whole video
+    return from_file
 
 
 def pipeline_steps():
@@ -135,6 +184,21 @@ def main(argv=None):
         from dso.web.app import run_web
         return run_web(args)
     elif command == "watch":
+        try:
+            settings = load_settings(args.config, "watch")
+        except tomllib.TOMLDecodeError as error:
+            print(f"[watch] cannot read {args.config}: {error}")
+            return 1
+        from_file = apply_settings(args, settings, WATCH_DEFAULTS)
+        if from_file:
+            shown = []
+            for key in from_file:
+                shown.append(f"{key}={getattr(args, key)}")
+            print(f"[watch] settings from {args.config}: {', '.join(shown)}")
+        if args.folder is None:
+            print("[watch] which folder? Give it (`dso watch data/inbox`) or set `folder` "
+                  "under [watch] in dso.toml (see dso.example.toml)")
+            return 1
         return watch.run_watch(args, pipeline_steps(), cleanup.cleanup)
     elif command == "cleanup":
         return cleanup.run(args)
