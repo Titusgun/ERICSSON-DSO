@@ -43,16 +43,18 @@ EMBEDDING_MODEL = MODEL_DIR / "wespeaker_en_voxceleb_resnet34_LM.onnx"
 MODEL_ID = "pyannote-segmentation-3.0 + wespeaker-en-voxceleb-resnet34-LM"
 
 # How different two voices must be to count as two speakers (cosine distance,
-# sherpa-onnx's FastClustering). Lower = more speakers. 0.5 is sherpa-onnx's
-# example value; re-tune on real recordings if one person is split in two or
-# two people are merged.
-CLUSTER_THRESHOLD = 0.5
+# sherpa-onnx's FastClustering). Lower = more speakers. Measured 14 Nov on 12 min
+# of the real Teams meeting (a song, a Q&A with several people, a presenter
+# taking questions - about 4-6 real voices): 0.5 -> 6 voices, 0.65 -> 3,
+# 0.8 -> 2 (Q&A people merged), 0.95 -> 1. 0.6: a bit more merging of one
+# person over 2.5 h than 0.5, without lumping the Q&A speakers together.
+CLUSTER_THRESHOLD = 0.6
 
 # A "speaker" heard for less than this in a whole video is noise (a cough, a
 # music sting, one line of a film clip): its lines go to the speaker who overlaps
-# them, or "Speaker ?". Measured on 10 min of the real Teams meeting: 8 voices,
-# 3 of them with only 2-4 s in total.
-MIN_SPEAKER_SEC = 5.0
+# them, or "Speaker ?". Real Teams meeting with 5 s: 41 speakers, 17 of them with
+# under 30 s in total (2.5 h) - too many to read. With 30 s those disappear.
+MIN_SPEAKER_SEC = 30.0
 
 SAMPLE_RATE = 16000
 UNKNOWN = "Speaker ?"
