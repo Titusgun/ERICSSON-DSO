@@ -8,7 +8,11 @@
 import re
 import difflib
 from dso.common.db import connect
-from dso.common.hashing import hamming
+from dso.common.hashing import hamming, normalize_text, sha256_text
+
+# A slide without text (only a picture) still has a text hash: the hash of "".
+# All such slides share it, so they must not count as "same text".
+EMPTY_TEXT_SHA256 = sha256_text(normalize_text(""))
 
 def run(args):
     conn = connect(args.db)
@@ -54,10 +58,10 @@ def run(args):
         SELECT s1.slide_id, s2.slide_id 
         FROM slides s1
         JOIN slides s2 ON s1.text_sha256 = s2.text_sha256
-        WHERE s1.file_id != s2.file_id 
-          AND s1.text_sha256 != '' 
+        WHERE s1.file_id != s2.file_id
+          AND s1.text_sha256 != ?
           AND s1.slide_id < s2.slide_id
-    """)
+    """, (EMPTY_TEXT_SHA256,))
     for row in cursor.fetchall():
         conn.execute("""
             INSERT INTO duplicates (kind, a_ref, b_ref) 

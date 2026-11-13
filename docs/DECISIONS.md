@@ -15,3 +15,4 @@ Append one line per decision, newest at the bottom: `YYYY-MM-DD HH:MM | who | de
 2026-11-13 12:10 | Kristofers | `video` and `all` get --max-seconds N for fast testing | the main recording is very large; Ericsson suggests testing on smaller pieces (#17)
 2026-11-13 12:10 | Kristofers | Offboarding scenario is simulated (data/offboarding/<name>/) and the report says so | Ericsson provided no leaver's folder (#12)
 2026-11-13 13:00 | Kristofers | Transcribe with the multilingual Whisper model `small` (multilingual=True), not base.en | recordings are English but people speak Swedish during breaks; base.en turns Swedish into English nonsense (#2, #4)
+2026-11-13 15:30 | Kristofers (with B) | Exact duplicate documents get slides only once (the copy without "(1)"/" - Copy" in its name); copies are only file_exact duplicates. test_slides: 16 -> 10 | slide_id is built from the sha12 (DATA_CONTRACT 5), so copies would get the same slide_ids
