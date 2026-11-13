@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "source": {
+    "file_name": "Ericsson Response Introduction[64]  -  Read-Only.pdf",
+    "path": "data/Ericsson Response Introduction[64]  -  Read-Only.pdf",
+    "sha256": "a0ce9da497f54799f1377cc0143ae4e8023725d46a843aca7e8823bff64272da",
+    "size_bytes": 8780449,
+    "kind": "document",
+    "system": "local",
+    "doc_number": null,
+    "revision": null,
+    "author": null,
+    "date": null
+  },
+  "generated_at": "2026-11-13T14:40:02Z",
+  "duration_sec": null,
+  "frames": [],
+  "segments": [],
+  "slides_referenced": [
+    {
+      "slide_id": "a0ce9da497f5:1:230d0be7",
+      "text": "Ericsson Internal | 2018-02-21\nEricsson Response",
+      "image": "slides/a0ce9da497f5/p001.webp"
+    },
+    {
+      "slide_id": "a0ce9da497f5:2:1b016b75",
+      "text": "Ericsson Internal | 2018-02-21\nEricsson Sustainability\nAmbition and strategic areas\nResponsible \nBusiness\nEnvironmental\nsustainability\nDigital \ninclusion\nTo be a responsible and relevant driver of positive change in society",
+      "image": "slides/a0ce9da497f5/p002.webp"
+    },
+    {
+      "slide_id": "a0ce9da497f5:3:1655f564",
+      "text": "Ericsson Internal | 2018-02-21\nEricsson Response in brief\nMotivation\nMission\n• In 1876 Lars Magnus Ericsson founded the company on the premise that\ncommunication as a basic human need and should be available for all.\n• In 2000, a group of employees understood that technology and skills were\nextremely powerful in humanitarian emergencies and founded Ericsson Response.\nWhen called by our partners in times of need, Ericsson Response uses its volunteers, technology\nand competence to support humanitarian relief operations.\n50+\nDifferent relief efforts in\n40 countries\nOur Principles\n• Non-profit\n• Non-commercial\n• Non-political\nSince\n2000",
+      "image": "slides/a0ce9da497f5/p003.webp"
+    },
+    {
+      "slide_id": "a0ce9da497f5:4:8adf7a9b",
+      "text": "Ericsson Internal | 2018-02-21\nThree key elements\nVolunteers\n140+ trained volunteers are ready to \nsupport, either by deploying \nemergency telecoms equipment in \nthe field or working back home, using \ntheir expertise to respond to crises as \neffectively as possible. \nTechnology\nThe Ericsson Response WiFi solution\nis our most deployed technology in \nemergencies, providing connectivity\nto the humanitarian community and \npeople in need, allowing access to \nthe internet. \nIn addition, Mobile Technology \nSolutions, like 2G, 3G and 4G\nequipment is on stock – ready to\ndeploy.\nPartners\nEricsson Response supports primarily \nthe UN partner networks UNHCR \nRefugee Emergency Telcom Sector \n(RETS) and the WFP-led Emergency \nTelecom Cluster\nBoth are mandated to provide\nservices to humanitarian responders\nin large scale emergencies.\n1 2 3\n29 \nLanguages\nGlobal Ericsson\nProgram:\n30 \nCountries\n140+ \nVolunteers",
+      "image": "slides/a0ce9da497f5/p004.webp"
+    },
+    {
+      "slide_id": "a0ce9da497f5:5:a3f3eb99",
+      "text": "Ericsson Internal | 2018-02-21\nEricsson Response Telco Solutions\nQuickLink",
+      "image": "slides/a0ce9da497f5/p005.webp"
+    },
+    {
+      "slide_id": "a0ce9da497f5:6:8e918313",
+      "text": "Ericsson Internal | 2018-02-21\nWIDER: WiFi in Disaster and Emergency Response\nEdge Router\n• Modem\n• Traffic mgmt.\n• Splash page\nOutdoor\nAccess Point\nIndoor\nAccess Point\nPanel Antenna\nCloud AAA\n• User mgmt.\nVoucher, Single-Sign-on, registration\n• AAA \nAccounting, Authorization, Authentication\nAccess Control and Cyber security WiFi Network for links and access",
+      "image": "slides/a0ce9da497f5/p006.webp"
+    },
+    {
+      "slide_id": "a0ce9da497f5:7:2f580155",
+      "text": "Ericsson Internal | 2018-02-21\n— What does it look like on the \nground? what is available? \n(can we buy stuff?) \ntransportation? (would we \nneed to carry everything?) \nSecurity? etc. etc.\n— What locations need to be \nconnected, LOS between the \ndifferent locations, power, etc.\n— Find a good location to setup \nVSAT LOS to the sky, stable \npower, security\nPreparation before and on the \nground: we use tools like Google \nEarth or Radio Mobile (to help us \nfind LOS for links). But in the end \nyou will have to do a site survey \non the ground. Since the tools tend \nto miss Buildings, Trees, etc.\nThe problems we face\nGoogle Earth Radio Mobile Tana Island, Vanuatu Backpacks ( 23kg)",
+      "image": "slides/a0ce9da497f5/p007.webp"
+    },
+    {
+      "slide_id": "a0ce9da497f5:8:2f3584fa",
+      "text": "Ericsson Internal | 2018-02-21\nDrone worship: Why sky’s the limit for humanitarian WiFi | World Food Programme (wfp.org)\nEvolving….",
+      "image": "slides/a0ce9da497f5/p008.webp"
+    },
+    {
+      "slide_id": "a0ce9da497f5:9:7b6b860a",
+      "text": "Ericsson Internal | 2018-02-21\nHighlight of missions 2000 –2021\n2000 – Extreme floods in Algeria & severe drought in Tajikistan\n2001 – Flooding in Hungary and earthquakes in Pakistan, Peru, El Salvador. First \nemergency response on large scale to Kabul, Afghanistan\n2002 – Rail disaster in Tanzania and food crisis in Lesotho. Humanitarian Aid to \nAfghanistan. \n2003 – Earthquakes strike Algeria and Iran. Hurricane in Caribbean. Aid to \nLiberia. \n2004 – Tsunami devastates Indonesia and Sri Lanka.\n2005 – Hurricane Katrina hits the US. Earthquakes in Pakistan.\n2006 – ICT support for aid workers in South Sudan. Earthquake victims in \nPakistan.\n2007 – Establish connectivity for aid worker in Central African Republic and in \nPeruvian Earthquake. \n2008 – Establish connectivity for Save the Children in South Sudan.\n2009 – Assessment of ICT needs in Philippines. ICT support in demining mission \nin DRC.\n2010 – Earthquake strikes Haiti.\n2011 – ”One UN” initiative.\n2012 – ICT support in South Sudan, Mozambique, Tanzania and Uganda.\n2013 – Super typhoon Haiyan hits the Philippines.\n2014 – West Africa during the Ebola crisis. Continuous support in South Sudan.\n2015 – Earthquakes in Nepal. \n2016 – Hurricane Matthew struck Haiti. Mission in South Sudan ended. \n2017 – Hurricane Irma and Maria, relief efforts in the Dominica, Caribbean. \n2018 – WFP IT support in Libya\n2019 – Cyclone Idai, Mozambique.\n2019 – Refugee crisis in Bangladesh – Cox’s Bazar\n2019 – Hurricane Dorian – Bahamas\n2019 – Venezualian Refugees – Colombia\n2020 – Explosion in Beirut port – Lebanon\n2020 – 20 Years Annivresary Ericsson Response\n2021 – Ending Bangladesh support– Cox’s Bazar\n2021 – Fooding in western Germany– Germany\n2021 – Earthquake – Haiti\n2021 – Connectivity for Refugee registration – Colombia\n2022 – Typhoon Odette – Philippines\n2022 – Refugee support – Moldova\n2022 – Refugee support – Colombia\nImpact",
+      "image": "slides/a0ce9da497f5/p009.webp"
+    },
+    {
+      "slide_id": "a0ce9da497f5:10:08efcdb3",
+      "text": "Ericsson Internal | 2018-02-21\n— ETC Earthquake Response February/March \nmainly Gaziantep, Hatay province.\n— Charging station units are operational in \ntwo temporary settlements in Hatay. \nAffected populations and the Ministry of \nEducation (which is managing the \nsettlement) are using the service to power \ncommunications devices for improved \naccess to critical communications services \nand information\nTürkiye | Emergency Telecommunications \nCluster (ETC) (etcluster.org)\nTürkiye 2023",
+      "image": "slides/a0ce9da497f5/p010.webp"
+    },
+    {
+      "slide_id": "a0ce9da497f5:11:5c664158",
+      "text": "Ericsson Internal | 2018-02-21\n— Right after the Ukraine war started Feb 24th, \nrefugees started to leave the war-torn \ncountry\n— Connectivity to over 35 location cooperation \nwith RETS partners, supporting services to \nrefugees, like Blue Dots, transit points and \naccommodation centers\nMoldova 2022",
+      "image": "slides/a0ce9da497f5/p011.webp"
+    },
+    {
+      "slide_id": "a0ce9da497f5:12:1fb51f01",
+      "text": "Ericsson Internal | 2018-02-21\n— Government of Colombia offered Temporary \nProtection Status (TPS) for refugees from \nVenezuela, giving access to healthcare, \neducation and job market\n— 170 sites were connected by RETS and \npartners where 2.4 million refugees \nregistered for TPS\n— In 2021 Ericsson Response and RETS \npartner implemented a community \nconnectivity project\n— 7 points of internet access\n— 1200 people got access to internet\nColombia 2021/2022",
+      "image": "slides/a0ce9da497f5/p012.webp"
+    },
+    {
+      "slide_id": "a0ce9da497f5:13:1e1d370f",
+      "text": "Ericsson Internal | 2018-02-21\n— The Rohingya refugee crises, in August 2017 \nmore than 773,000 fled the Rakhine State, \nMyanmar. \n— Ericsson Response Volunteers were \nembedded in the WFP response for almost a \nyear, proving connectivity for the WFP SCOP \n(web-based beneficiary management \nplatform)\n— October 2022, 5 years later approximately 1 \nmillion stateless Rohingyas still live in the 34 \nextremely congested camps. \nSCOPE: wfp272586.pdf\nBangladesh 2019",
+      "image": "slides/a0ce9da497f5/p013.webp"
+    },
+    {
+      "slide_id": "a0ce9da497f5:14:66a9af91",
+      "text": "Ericsson Internal | 2018-02-21\n— Connectivity to over 2900 users (peak data) \nfrom over 50 relief organizations in \ncooperation with ETC partners, including \nlimited access for the local population\n— Covers both major airports in the country, as \nwell as health care facilities and the main \nport\n— GSMA Global Mobile Award for Best Mobile \nInnovation supporting Emergency or \nHumanitarian Situations at the 2018 Mobile \nWorld Congress \nCaribbean 2017\nCase film",
+      "image": "slides/a0ce9da497f5/p014.webp"
+    },
+    {
+      "slide_id": "a0ce9da497f5:15:14f3254b",
+      "text": "Ericsson Internal | 2018-02-21\n— In 2016, Hurricane Matthew struck Haiti\n— Ericsson Response was deployed under the ICT \nHumanitarian Response Working Group for \nHaiti\n— 19 sites were established\n— Supporting over 900 humanitarian users \nand 30 agencies\nHaiti 2016",
+      "image": "slides/a0ce9da497f5/p015.webp"
+    },
+    {
+      "slide_id": "a0ce9da497f5:16:291b20a7",
+      "text": "Ericsson Internal | 2018-02-21\n— On April 25, 2015 a devastating earthquake \nstruck Nepal \n— Ericsson Response as part of the Emergency \nTelecommunications Cluster was immediately \ndeployed to assist in the relief efforts\n— During the first month, supporting more than \n1000 users from over 130 humanitarian \norganizations aiding the millions of people \naffected by the disaster\nNepal 2015\nCase film\n24H\nWithin 24 hours of arrival Ericsson \nresponse had established the first \ninternet access",
+      "image": "slides/a0ce9da497f5/p016.webp"
+    },
+    {
+      "slide_id": "a0ce9da497f5:17:8cd73d46",
+      "text": "Ericsson Internal | 2018-02-21\n— 6 months presence in Tacloban, Guiuan and \nRoxas\n— Working with partners WFP, UN OCHA\n— 3 WIDER (WLAN) kits deployed\n— Services provided across 12 locations to 6 400+ \nhumanitarian workers from 40 different \norganizations\n— More than 35 000 metric tons of relief items \nmoved by land, sea and air\n— 2.8 million people reached with food assistance \nby WFP\nPhilippines 2013\n24\nVolunteers from\n10 countries deployed",
+      "image": "slides/a0ce9da497f5/p017.webp"
+    },
+    {
+      "slide_id": "a0ce9da497f5:18:de939782",
+      "text": "Ericsson Internal | 2018-02-21\n— Connecting Communities\n— Supplying connectivity not only to UN, \nNGO’s and Governmental organizations.\n— The backhaul has previously always been \nthe bottleneck in a deployment with \ngeostationary satellite, but with the \nintroduction of LEO (Low-Earth Orbit) \nSatellite and more stable ISP’s and NMO \n(network mobile operators) the backhaul \ncan be quite good. \nS4C/Service for \ncommunities\nCase Film",
+      "image": "slides/a0ce9da497f5/p018.webp"
+    },
+    {
+      "slide_id": "a0ce9da497f5:19:2f10973c",
+      "text": "Characters for Embedded characters:\n!\"#$%&'()*+,./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~¡¢£¤¥¦§¨©ª«¬®¯°±²³´¶·¸¹º»¼½À\nÁÂÃÄÅÆÇÈËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿĀāĂăąĆćĊċČčĎďĐđĒĖėĘęĚěĞğĠġĢģĪīĮįİıĶķĹĺĻļĽľŁłŃńŅņŇňŌŐő\nŒœŔŕŖŗŘřŚśŞşŠšŢţŤťŪūŮůŰűŲųŴŵŶŷŸŹźŻżŽžƒȘșˆˇ˘˙˚˛˜˝ẀẁẃẄẅỲỳ‘’‚“”„†‡•…‰‹›⁄€™ĀĀĂĂĄĄĆĆĊĊČČĎĎĐĐĒĒĖĖĘĘĚĚĞĞĠĠĢĢĪĪĮĮİĶĶĹĹĻ\nĻĽĽŃŃŅŅŇŇŌŌŐŐŔŔŖŖŘŘŚŚŞŞŢŢŤŤŪŪŮŮŰŰŲŲŴŴŶŶŹŹŻŻȘș−≤≥fiflΆΈΉΊΌΎΏΐΑΒΓΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΪΫΆΈΉΊΰαβγδεζηθικλνξορς\nΣΤΥΦΧΨΩΪΫΌΎΏЁЂЃЄЅІЇЈЉЊЋЌЎЏАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯЁЂЃ\nЄЅІЇЈЉЊЋЌЎЏѢѢѲѲѴѴҐҐәǽẀẁẂẃẄẅỲỳ№—–-\n!\"#$%&'()*+,./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~¡¢£¤¥¦§¨©ª«¬®¯°±²³´¶·¸¹º»¼\n½ÀÁÂÃÄÅÆÇÈËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿĀāĂăąĆćĊċČčĎďĐđĒĖėĘęĚěĞğĠġĢģĪīĮįİıĶķĹĺĻļĽľŁłŃńŅņ\nŇňŌŐőŒœŔŕŖŗŘřŚśŞşŠšŢţŤťŪūŮůŰűŲųŴŵŶŷŸŹźŻżŽžƒȘșˆˇ˘˙˚˛˜˝ẀẁẃẄẅỲỳ‘’‚“”„†‡•…‰‹›⁄€™ĀĀĂĂĄĄĆĆĊĊČČĎĎĐĐĒĒĖĖĘĘĚĚĞĞĠĠĢĢ\nĪĪĮĮİĶĶĹĹĻĻĽĽŃŃŅŅŇŇŌŌŐŐŔŔŖŖŘŘŚŚŞŞŢŢŤŤŪŪŮŮŰŰŲŲŴŴŶŶŹŹŻŻȘș−≤≥fiflΆΈΉΊΌΎΏΐΑΒΓΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΪΫΆΈΉΊΰαβ\nγδεζηθικλνξορςΣΤΥΦΧΨΩΪΫΌΎΏЁЂЃЄЅІЇЈЉЊЋЌЎЏАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯАБВГДЕЖЗИЙКЛМНОПРСТУФХЦ\nЧШЩЪЫЬЭЮЯЁЂЃЄЅІЇЈЉЊЋЌЎЏѢѢѲѲѴѴҐҐәǽẀẁẂẃẄẅỲỳ№—–-\n!\"#$%&'()*+,./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~¡¢£¤¥¦§¨©ª«¬®¯°±²³´¶·¸¹º»¼½ÀÁ\nÂÃÄÅÆÇÈËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿĀāĂăąĆćĊċČčĎďĐđĒĖėĘęĚěĞğĠġĢģĪīĮįİıĶķĹĺĻļĽľŁłŃńŅņŇňŌŐőŒœ\nŔŕŖŗŘřŚśŞşŠšŢţŤťŪūŮůŰűŲųŴŵŶŷŸŹźŻżŽžƒȘșˆˇ˘˙˚˛˜˝ẀẁẃẄẅỲỳ‘’‚“”„†‡•…‰‹›⁄€™ĀĀĂĂĄĄĆĆĊĊČČĎĎĐĐĒĒĖĖĘĘĚĚĞĞĠĠĢĢĪĪĮĮİĶĶĹĹĻĻĽĽŃŃ\nŅŅŇŇŌŌŐŐŔŔŖŖŘŘŚŚŞŞŢŢŤŤŪŪŮŮŰŰŲŲŴŴŶŶŹŹŻŻȘș−≤≥fiflΆΈΉΊΌΎΏΐΑΒΓΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΪΫΆΈΉΊΰαβγδεζηθικλνξορςΣΤΥΦΧΨ\nΩΪΫΌΎΏЁЂЃЄЅІЇЈЉЊЋЌЎЏАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯЁЂЃЄЅІЇЈЉЊЋ\nЌЎЏѢѢѲѲѴѴҐҐәǽẀẁẂẃẄẅỲỳ№—–-\n!\"#$%&'()*+,./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~¡¢£¤¥¦§¨©ª«¬®¯°±²³´¶·¸¹º»¼\n½ÀÁÂÃÄÅÆÇÈËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿĀāĂăąĆćĊċČčĎďĐđĒĖėĘęĚěĞğĠġĢģĪīĮįİıĶķĹĺĻļĽľŁłŃńŅņŇ\nňŌŐőŒœŔŕŖŗŘřŚśŞşŠšŢţŤťŪūŮůŰűŲųŴŵŶŷŸŹźŻżŽžƒȘșˆˇ˘˙˚˛˜˝ẀẁẃẄẅỲỳ‘’‚“”„†‡•…‰‹›⁄€™ĀĀĂĂĄĄĆĆĊĊČČĎĎĐĐĒĒĖĖĘĘĚĚĞĞĠĠĢĢĪĪĮĮ\nİĶĶĹĹĻĻĽĽŃŃŅŅŇŇŌŌŐŐŔŔŖŖŘŘŚŚŞŞŢŢŤŤŪŪŮŮŰŰŲŲŴŴŶŶŹŹŻŻȘș−≤≥fiflΆΈΉΊΌΎΏΐΑΒΓΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΪΫΆΈΉΊΰαβγδεζ\nηθικλνξορςΣΤΥΦΧΨΩΪΫΌΎΏЁЂЃЄЅІЇЈЉЊЋЌЎЏАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩ\nЪЫЬЭЮЯЁЂЃЄЅІЇЈЉЊЋЌЎЏѢѢѲѲѴѴҐҐәǽẀẁẂẃẄẅỲỳ№—–-\nhttps://www.ericsson.com",
+      "image": "slides/a0ce9da497f5/p019.webp"
+    }
+  ]
+}

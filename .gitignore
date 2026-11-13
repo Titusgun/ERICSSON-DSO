@@ -1,7 +1,7 @@
 # Generated data - NEVER commit (may contain Ericsson material)
 #out/
 data/
-*.db
+#*.db
 
 # Safety net: real media/documents may only live in tests/fixtures (synthetic)
 *.mp4

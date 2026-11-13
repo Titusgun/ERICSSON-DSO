@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "source": {
+    "file_name": "SD-WAN Orchestration_commercial presentation_final2.pptx",
+    "path": "data/SD-WAN Orchestration_commercial presentation_final2.pptx",
+    "sha256": "15bc427d71afd320d094a24a6037e6773ebffe1c725228ac71ba86aaa953824a",
+    "size_bytes": 3461991,
+    "kind": "document",
+    "system": "local",
+    "doc_number": null,
+    "revision": null,
+    "author": null,
+    "date": null
+  },
+  "generated_at": "2026-11-13T14:40:02Z",
+  "duration_sec": null,
+  "frames": [],
+  "segments": [],
+  "slides_referenced": []
+}

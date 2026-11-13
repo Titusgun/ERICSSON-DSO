@@ -1,0 +1,90 @@
+[video] 3 videos
+[video] GraalVMs_Ahead-of-Time_Compilation_(Source).mp4
+[video]   16:00 at 30.0 fps -> 1 sample per second
+[video]   05:00 / 16:00, 7 key frames
+[video]   10:00 / 16:00, 11 key frames
+[video]   15:00 / 16:00, 16 key frames
+[video]   16 key frames -> out/frames/56788476f81d/
+[video]   loading Whisper model small ...
+[video]   transcribing 16:00 of audio (this is the slow part)
+[video]   language at the start: en (probability 0.59)
+[video]   05:04 / 16:00, 65 segments
+[video]   10:01 / 16:00, 146 segments
+[video]   15:01 / 16:00, 218 segments
+[video]   235 transcript segments
+[video] Jury and prizes.mp4
+[video]   06:02 at 16.0 fps -> 1 sample per second
+[video]   05:00 / 06:02, 104 key frames
+[video]   127 key frames -> out/frames/db6408087253/
+[video]   transcribing 06:02 of audio (this is the slow part)
+[video]   language at the start: en (probability 0.99)
+[video]   05:14 / 06:02, 35 segments
+[video]   46 transcript segments
+[video] Tech Concept Hack - Intoduction-20230329_153503-Meeting Recording.mp4
+[video]   2:35:18 at 16.0 fps -> 1 sample per second
+[video]   05:00 / 2:35:18, 3 key frames
+[video]   10:00 / 2:35:18, 36 key frames
+[video]   15:00 / 2:35:18, 118 key frames
+[video]   20:00 / 2:35:18, 133 key frames
+[video]   25:00 / 2:35:18, 136 key frames
+[video]   30:00 / 2:35:18, 140 key frames
+[video]   35:00 / 2:35:18, 224 key frames
+[video]   40:00 / 2:35:18, 354 key frames
+[video]   45:00 / 2:35:18, 438 key frames
+[video]   50:00 / 2:35:18, 580 key frames
+[video]   55:00 / 2:35:18, 582 key frames
+[video]   1:00:00 / 2:35:18, 583 key frames
+[video]   1:05:00 / 2:35:18, 604 key frames
+[video]   1:10:00 / 2:35:18, 613 key frames
+[video]   1:15:00 / 2:35:18, 626 key frames
+[video]   1:20:00 / 2:35:18, 648 key frames
+[video]   1:25:00 / 2:35:18, 664 key frames
+[video]   1:30:00 / 2:35:18, 668 key frames
+[video]   1:35:00 / 2:35:18, 670 key frames
+[video]   1:40:00 / 2:35:18, 751 key frames
+[video]   1:45:00 / 2:35:18, 758 key frames
+[video]   1:50:00 / 2:35:18, 765 key frames
+[video]   1:55:00 / 2:35:18, 774 key frames
+[video]   2:00:00 / 2:35:18, 795 key frames
+[video]   2:05:00 / 2:35:18, 797 key frames
+[video]   2:10:00 / 2:35:18, 820 key frames
+[video]   2:15:00 / 2:35:18, 823 key frames
+[video]   2:20:00 / 2:35:18, 823 key frames
+[video]   2:25:00 / 2:35:18, 827 key frames
+[video]   2:30:00 / 2:35:18, 840 key frames
+[video]   2:35:00 / 2:35:18, 840 key frames
+[video]   840 key frames -> out/frames/e970fee4cdc0/
+[video]   transcribing 2:35:18 of audio (this is the slow part)
+[video]   language at the start: en (probability 0.92)
+[video]   07:05 / 2:35:18, 13 segments
+[video]   10:43 / 2:35:18, 79 segments
+[video]   15:01 / 2:35:18, 202 segments
+[video]   20:00 / 2:35:18, 337 segments
+[video]   25:01 / 2:35:18, 481 segments
+[video]   30:01 / 2:35:18, 620 segments
+[video]   35:01 / 2:35:18, 731 segments
+[video]   40:01 / 2:35:18, 825 segments
+[video]   45:00 / 2:35:18, 941 segments
+[video]   50:20 / 2:35:18, 1051 segments
+[video]   55:40 / 2:35:18, 1143 segments
+[video]   1:00:00 / 2:35:18, 1175 segments
+[video]   1:05:01 / 2:35:18, 1259 segments
+[video]   1:10:00 / 2:35:18, 1395 segments
+[video]   1:15:10 / 2:35:18, 1538 segments
+[video]   1:20:01 / 2:35:18, 1673 segments
+[video]   1:25:10 / 2:35:18, 1811 segments
+[video]   1:30:00 / 2:35:18, 1954 segments
+[video]   1:35:00 / 2:35:18, 2104 segments
+[video]   1:40:01 / 2:35:18, 2229 segments
+[video]   1:45:01 / 2:35:18, 2377 segments
+[video]   1:50:01 / 2:35:18, 2527 segments
+[video]   1:55:01 / 2:35:18, 2676 segments
+[video]   2:00:03 / 2:35:18, 2816 segments
+[video]   2:05:01 / 2:35:18, 2961 segments
+[video]   2:10:01 / 2:35:18, 3108 segments
+[video]   2:15:01 / 2:35:18, 3255 segments
+[video]   2:20:00 / 2:35:18, 3396 segments
+[video]   2:25:01 / 2:35:18, 3543 segments
+[video]   2:30:02 / 2:35:18, 3685 segments
+[video]   2:35:01 / 2:35:18, 3820 segments
+[video]   3825 transcript segments

@@ -1,0 +1,924 @@
+{
+  "schema_version": 1,
+  "source": {
+    "file_name": "Jury and prizes.mp4",
+    "path": "data/Jury and prizes.mp4",
+    "sha256": "db6408087253d62fb454441192425c3bde4a65a58d17dfa0a7394ab38b000e72",
+    "size_bytes": 88654139,
+    "kind": "video",
+    "system": "local",
+    "doc_number": null,
+    "revision": null,
+    "author": null,
+    "date": null
+  },
+  "generated_at": "2026-11-13T14:40:02Z",
+  "duration_sec": 360.0,
+  "frames": [
+    {
+      "id": 1000,
+      "t_sec": 0.0,
+      "image": "frames/db6408087253/f0001.webp",
+      "dhash": "028230c0c090a020",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1001,
+      "t_sec": 6.0,
+      "image": "frames/db6408087253/f0002.webp",
+      "dhash": "ac50d2d854d696e6",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1002,
+      "t_sec": 9.0,
+      "image": "frames/db6408087253/f0003.webp",
+      "dhash": "cc70d2d054d4d6e6",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1003,
+      "t_sec": 24.0,
+      "image": "frames/db6408087253/f0004.webp",
+      "dhash": "ec70d25844d496ee",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1004,
+      "t_sec": 26.0,
+      "image": "frames/db6408087253/f0005.webp",
+      "dhash": "ac785a584cd6d6ee",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1005,
+      "t_sec": 29.0,
+      "image": "frames/db6408087253/f0006.webp",
+      "dhash": "ac385a4844d696a6",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1006,
+      "t_sec": 33.0,
+      "image": "frames/db6408087253/f0007.webp",
+      "dhash": "ac58dad854d696ee",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1007,
+      "t_sec": 35.0,
+      "image": "frames/db6408087253/f0008.webp",
+      "dhash": "ec70d2d844d696e6",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1008,
+      "t_sec": 54.0,
+      "image": "frames/db6408087253/f0009.webp",
+      "dhash": "ac785a5854d6d6a6",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1009,
+      "t_sec": 84.0,
+      "image": "frames/db6408087253/f0010.webp",
+      "dhash": "a43848484c56d6e6",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1010,
+      "t_sec": 88.0,
+      "image": "frames/db6408087253/f0011.webp",
+      "dhash": "ac58da5854d6d6e6",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1011,
+      "t_sec": 96.0,
+      "image": "frames/db6408087253/f0012.webp",
+      "dhash": "2c505a4854d49696",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1012,
+      "t_sec": 98.0,
+      "image": "frames/db6408087253/f0013.webp",
+      "dhash": "ac385a4844d6d6b6",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1013,
+      "t_sec": 103.0,
+      "image": "frames/db6408087253/f0014.webp",
+      "dhash": "6c78da5854d696b6",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1014,
+      "t_sec": 107.0,
+      "image": "frames/db6408087253/f0015.webp",
+      "dhash": "b47849494dcd9289",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1015,
+      "t_sec": 112.0,
+      "image": "frames/db6408087253/f0016.webp",
+      "dhash": "3474d44242da92b0",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1016,
+      "t_sec": 118.0,
+      "image": "frames/db6408087253/f0017.webp",
+      "dhash": "b030514544cdd2f6",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1017,
+      "t_sec": 123.0,
+      "image": "frames/db6408087253/f0018.webp",
+      "dhash": "3050d1d149cb94b6",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1018,
+      "t_sec": 127.0,
+      "image": "frames/db6408087253/f0019.webp",
+      "dhash": "3070d1c141d396b6",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1019,
+      "t_sec": 131.0,
+      "image": "frames/db6408087253/f0020.webp",
+      "dhash": "b03051414b4bc646",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1020,
+      "t_sec": 136.0,
+      "image": "frames/db6408087253/f0021.webp",
+      "dhash": "b0305145654bc6c6",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1021,
+      "t_sec": 138.0,
+      "image": "frames/db6408087253/f0022.webp",
+      "dhash": "b03051c94f4b4666",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1022,
+      "t_sec": 140.0,
+      "image": "frames/db6408087253/f0023.webp",
+      "dhash": "b0305165474b4464",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1023,
+      "t_sec": 149.0,
+      "image": "frames/db6408087253/f0024.webp",
+      "dhash": "b0305141454bc246",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1024,
+      "t_sec": 153.0,
+      "image": "frames/db6408087253/f0025.webp",
+      "dhash": "b030d1d147d396d6",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1025,
+      "t_sec": 161.0,
+      "image": "frames/db6408087253/f0026.webp",
+      "dhash": "7070d1d545d39696",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1026,
+      "t_sec": 163.0,
+      "image": "frames/db6408087253/f0027.webp",
+      "dhash": "7070d1d147cbd6d6",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1027,
+      "t_sec": 171.0,
+      "image": "frames/db6408087253/f0028.webp",
+      "dhash": "f070d1d546d396f6",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1028,
+      "t_sec": 180.0,
+      "image": "frames/db6408087253/f0029.webp",
+      "dhash": "f070d1d1478b96b6",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1029,
+      "t_sec": 187.0,
+      "image": "frames/db6408087253/f0030.webp",
+      "dhash": "b170c4c7c2868ec0",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1030,
+      "t_sec": 193.0,
+      "image": "frames/db6408087253/f0031.webp",
+      "dhash": "b178c8c5c7d494d8",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1031,
+      "t_sec": 200.0,
+      "image": "frames/db6408087253/f0032.webp",
+      "dhash": "3158cccd43d4b4f8",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1032,
+      "t_sec": 202.0,
+      "image": "frames/db6408087253/f0033.webp",
+      "dhash": "b158484d47d4d4d8",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1033,
+      "t_sec": 210.0,
+      "image": "frames/db6408087253/f0034.webp",
+      "dhash": "b030505849c9d6d6",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1034,
+      "t_sec": 215.0,
+      "image": "frames/db6408087253/f0035.webp",
+      "dhash": "b070d8c849c9d2d2",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1035,
+      "t_sec": 224.0,
+      "image": "frames/db6408087253/f0036.webp",
+      "dhash": "f030d0d8c9c9d2c2",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1036,
+      "t_sec": 226.0,
+      "image": "frames/db6408087253/f0037.webp",
+      "dhash": "b030584849c9d2d2",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1037,
+      "t_sec": 236.0,
+      "image": "frames/db6408087253/f0038.webp",
+      "dhash": "7090d0d89189c2c2",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1038,
+      "t_sec": 239.0,
+      "image": "frames/db6408087253/f0039.webp",
+      "dhash": "70b0d8d8c98992d2",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1039,
+      "t_sec": 243.0,
+      "image": "frames/db6408087253/f0040.webp",
+      "dhash": "7090d0d8c9c9c2c2",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1040,
+      "t_sec": 245.0,
+      "image": "frames/db6408087253/f0041.webp",
+      "dhash": "7090d8d8918986c2",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1041,
+      "t_sec": 247.0,
+      "image": "frames/db6408087253/f0042.webp",
+      "dhash": "7090d8d0878b86e2",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1042,
+      "t_sec": 249.0,
+      "image": "frames/db6408087253/f0043.webp",
+      "dhash": "70d0d0d0938d8ce4",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1043,
+      "t_sec": 257.0,
+      "image": "frames/db6408087253/f0044.webp",
+      "dhash": "70b0d8d0918d84c2",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1044,
+      "t_sec": 260.0,
+      "image": "frames/db6408087253/f0045.webp",
+      "dhash": "70d0d8d8998da4e2",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1045,
+      "t_sec": 262.0,
+      "image": "frames/db6408087253/f0046.webp",
+      "dhash": "7090d8d8c18d84c2",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1046,
+      "t_sec": 270.0,
+      "image": "frames/db6408087253/f0047.webp",
+      "dhash": "70b09098998d84e2",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1047,
+      "t_sec": 275.0,
+      "image": "frames/db6408087253/f0048.webp",
+      "dhash": "7070d0d8c98d84c2",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1048,
+      "t_sec": 286.0,
+      "image": "frames/db6408087253/f0049.webp",
+      "dhash": "7070d8d8498d92d2",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1049,
+      "t_sec": 291.0,
+      "image": "frames/db6408087253/f0050.webp",
+      "dhash": "f070d0d8cb8d94d2",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1050,
+      "t_sec": 295.0,
+      "image": "frames/db6408087253/f0051.webp",
+      "dhash": "f0709090e1edcc82",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1051,
+      "t_sec": 299.0,
+      "image": "frames/db6408087253/f0052.webp",
+      "dhash": "7070d0d84d8d9cd2",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1052,
+      "t_sec": 304.0,
+      "image": "frames/db6408087253/f0053.webp",
+      "dhash": "b070d0d8c3cd84c2",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1053,
+      "t_sec": 306.0,
+      "image": "frames/db6408087253/f0054.webp",
+      "dhash": "f030d0d8cbc982c2",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1054,
+      "t_sec": 315.0,
+      "image": "frames/db6408087253/f0055.webp",
+      "dhash": "70d0d0d8c98de2e2",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1055,
+      "t_sec": 323.0,
+      "image": "frames/db6408087253/f0056.webp",
+      "dhash": "3050d058498d92d2",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1056,
+      "t_sec": 329.0,
+      "image": "frames/db6408087253/f0057.webp",
+      "dhash": "70d0d8d849cdd2d2",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1057,
+      "t_sec": 345.0,
+      "image": "frames/db6408087253/f0058.webp",
+      "dhash": "70d0d0d845c9c2f2",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1058,
+      "t_sec": 355.0,
+      "image": "frames/db6408087253/f0059.webp",
+      "dhash": "f2c2f393b3b54c48",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1059,
+      "t_sec": 358.0,
+      "image": "frames/db6408087253/f0060.webp",
+      "dhash": "f2c2d39383a77c48",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 1060,
+      "t_sec": 360.0,
+      "image": "frames/db6408087253/f0061.webp",
+      "dhash": "f2c2d39373257c48",
+      "slide_id": null,
+      "match_dist": null
+    }
+  ],
+  "segments": [
+    {
+      "id": 4342,
+      "start_sec": 1.84,
+      "end_sec": 17.0,
+      "speaker": "Speaker ?",
+      "text": "Okay. Are we ready? Now I hear nothing from your end. Are we ready to go?",
+      "frame_id": 1000,
+      "slide_id": null
+    },
+    {
+      "id": 4343,
+      "start_sec": 17.0,
+      "end_sec": 23.0,
+      "speaker": "Speaker ?",
+      "text": "Shall I proceed with the first winner? Yeah. And getting a thumbs up.",
+      "frame_id": 1002,
+      "slide_id": null
+    },
+    {
+      "id": 4344,
+      "start_sec": 23.0,
+      "end_sec": 29.0,
+      "speaker": "Speaker ?",
+      "text": "Okay. And let's start with the most technical idea then.",
+      "frame_id": 1002,
+      "slide_id": null
+    },
+    {
+      "id": 4345,
+      "start_sec": 29.0,
+      "end_sec": 36.0,
+      "speaker": "Speaker ?",
+      "text": "And before I announce the winner, let me start by saying that it wasn't easy.",
+      "frame_id": 1005,
+      "slide_id": null
+    },
+    {
+      "id": 4346,
+      "start_sec": 36.0,
+      "end_sec": 44.0,
+      "speaker": "Speaker ?",
+      "text": "I wish there were more categories and more prices because all of you guys did a great job.",
+      "frame_id": 1007,
+      "slide_id": null
+    },
+    {
+      "id": 4347,
+      "start_sec": 44.0,
+      "end_sec": 48.0,
+      "speaker": "Speaker ?",
+      "text": "I'm honestly impressed with the overall level.",
+      "frame_id": 1007,
+      "slide_id": null
+    },
+    {
+      "id": 4348,
+      "start_sec": 48.0,
+      "end_sec": 54.0,
+      "speaker": "Speaker ?",
+      "text": "I think the general level was way beyond my expectations.",
+      "frame_id": 1007,
+      "slide_id": null
+    },
+    {
+      "id": 4349,
+      "start_sec": 54.0,
+      "end_sec": 60.0,
+      "speaker": "Speaker ?",
+      "text": "You guys chose very interesting and sensitive topics.",
+      "frame_id": 1008,
+      "slide_id": null
+    },
+    {
+      "id": 4350,
+      "start_sec": 60.0,
+      "end_sec": 67.0,
+      "speaker": "Speaker ?",
+      "text": "I'm impressed with how far you got in many of the ideas despite the very limited time that you had.",
+      "frame_id": 1008,
+      "slide_id": null
+    },
+    {
+      "id": 4351,
+      "start_sec": 67.0,
+      "end_sec": 71.0,
+      "speaker": "Speaker ?",
+      "text": "So let me start by saying that it hasn't been easy to pick a single winner.",
+      "frame_id": 1008,
+      "slide_id": null
+    },
+    {
+      "id": 4352,
+      "start_sec": 71.0,
+      "end_sec": 78.0,
+      "speaker": "Speaker ?",
+      "text": "And a big congratulations to all of you. You all are doing great and have a brilliant future ahead.",
+      "frame_id": 1008,
+      "slide_id": null
+    },
+    {
+      "id": 4353,
+      "start_sec": 78.0,
+      "end_sec": 86.0,
+      "speaker": "Speaker ?",
+      "text": "Nevertheless, let me announce the winner of the technical category, which is...",
+      "frame_id": 1008,
+      "slide_id": null
+    },
+    {
+      "id": 4354,
+      "start_sec": 86.0,
+      "end_sec": 93.0,
+      "speaker": "Speaker ?",
+      "text": "You're ready to hear team number 10, Edubot. Congratulations.",
+      "frame_id": 1009,
+      "slide_id": null
+    },
+    {
+      "id": 4355,
+      "start_sec": 93.0,
+      "end_sec": 101.0,
+      "speaker": "Speaker ?",
+      "text": "And I don't hear any noise or anything from your end, but we thought it was a brilliant, brilliant idea.",
+      "frame_id": 1010,
+      "slide_id": null
+    },
+    {
+      "id": 4356,
+      "start_sec": 101.0,
+      "end_sec": 105.0,
+      "speaker": "Speaker ?",
+      "text": "The efficient use of limited network capacity implemented in AI.",
+      "frame_id": 1012,
+      "slide_id": null
+    },
+    {
+      "id": 4357,
+      "start_sec": 105.0,
+      "end_sec": 107.0,
+      "speaker": "Speaker ?",
+      "text": "The concept of less is more.",
+      "frame_id": 1013,
+      "slide_id": null
+    },
+    {
+      "id": 4358,
+      "start_sec": 107.0,
+      "end_sec": 114.0,
+      "speaker": "Speaker ?",
+      "text": "And many of these benefits that you could also get with the S-Computing right have been dynamic resource allocation",
+      "frame_id": 1014,
+      "slide_id": null
+    },
+    {
+      "id": 4359,
+      "start_sec": 114.0,
+      "end_sec": 122.0,
+      "speaker": "Speaker ?",
+      "text": "and predictive learning and search engine, which is also offering quizzes and all the benefits.",
+      "frame_id": 1015,
+      "slide_id": null
+    },
+    {
+      "id": 4360,
+      "start_sec": 122.0,
+      "end_sec": 127.0,
+      "speaker": "Speaker ?",
+      "text": "So big congratulations. I see some hacks there on the stage and some price.",
+      "frame_id": 1016,
+      "slide_id": null
+    },
+    {
+      "id": 4361,
+      "start_sec": 127.0,
+      "end_sec": 129.0,
+      "speaker": "Speaker ?",
+      "text": "So good job, guys.",
+      "frame_id": 1018,
+      "slide_id": null
+    },
+    {
+      "id": 4362,
+      "start_sec": 129.0,
+      "end_sec": 163.26,
+      "speaker": "Speaker ?",
+      "text": "And I hear nothing from your end. So just give me a thumbs up when you will need to start with the next category.",
+      "frame_id": 1018,
+      "slide_id": null
+    },
+    {
+      "id": 4363,
+      "start_sec": 163.26,
+      "end_sec": 165.26,
+      "speaker": "Speaker ?",
+      "text": "Give the guys a minute there.",
+      "frame_id": 1026,
+      "slide_id": null
+    },
+    {
+      "id": 4364,
+      "start_sec": 165.26,
+      "end_sec": 202.46,
+      "speaker": "Speaker ?",
+      "text": "Hall of Fame. All right. I see a thumbs up there.",
+      "frame_id": 1026,
+      "slide_id": null
+    },
+    {
+      "id": 4365,
+      "start_sec": 202.46,
+      "end_sec": 213.46,
+      "speaker": "Speaker ?",
+      "text": "Then I guess we're ready to introduce the winner for the second category, which is the business category.",
+      "frame_id": 1032,
+      "slide_id": null
+    },
+    {
+      "id": 4366,
+      "start_sec": 214.46,
+      "end_sec": 218.46,
+      "speaker": "Speaker ?",
+      "text": "And you guys ready to hear this?",
+      "frame_id": 1033,
+      "slide_id": null
+    },
+    {
+      "id": 4367,
+      "start_sec": 218.46,
+      "end_sec": 230.42,
+      "speaker": "Speaker ?",
+      "text": "The winner team for the business category is team number eight, Sustained Connectivity. Congratulations.",
+      "frame_id": 1034,
+      "slide_id": null
+    },
+    {
+      "id": 4368,
+      "start_sec": 230.42,
+      "end_sec": 238.8,
+      "speaker": "Speaker ?",
+      "text": "It was an excellent idea as well.",
+      "frame_id": 1036,
+      "slide_id": null
+    },
+    {
+      "id": 4369,
+      "start_sec": 238.8,
+      "end_sec": 244.8,
+      "speaker": "Speaker ?",
+      "text": "As I said before, it's not only close to my heart, but I think the other members of the jury are also appreciated.",
+      "frame_id": 1037,
+      "slide_id": null
+    },
+    {
+      "id": 4370,
+      "start_sec": 245.8,
+      "end_sec": 256.8,
+      "speaker": "Speaker ?",
+      "text": "It is really great technology in many of these relevant areas where access to electricity from the grid may be not insistent or quite limited.",
+      "frame_id": 1040,
+      "slide_id": null
+    },
+    {
+      "id": 4371,
+      "start_sec": 256.8,
+      "end_sec": 264.8,
+      "speaker": "Speaker ?",
+      "text": "So I feel you touch on one of the main pain points, which is the initial investment, but then the little maintenance,",
+      "frame_id": 1042,
+      "slide_id": null
+    },
+    {
+      "id": 4372,
+      "start_sec": 264.8,
+      "end_sec": 270.8,
+      "speaker": "Speaker ?",
+      "text": "the long lifespan, the cost-effective solution in the long run, and not producing greenhouse gas emissions.",
+      "frame_id": 1045,
+      "slide_id": null
+    },
+    {
+      "id": 4373,
+      "start_sec": 270.8,
+      "end_sec": 276.8,
+      "speaker": "Speaker ?",
+      "text": "It's really important for the environment and also for the health of the local community.",
+      "frame_id": 1046,
+      "slide_id": null
+    },
+    {
+      "id": 4374,
+      "start_sec": 276.8,
+      "end_sec": 279.8,
+      "speaker": "Speaker ?",
+      "text": "So congrats to all of you.",
+      "frame_id": 1047,
+      "slide_id": null
+    },
+    {
+      "id": 4375,
+      "start_sec": 279.8,
+      "end_sec": 280.8,
+      "speaker": "Speaker ?",
+      "text": "Nice job.",
+      "frame_id": 1047,
+      "slide_id": null
+    },
+    {
+      "id": 4376,
+      "start_sec": 280.8,
+      "end_sec": 314.78,
+      "speaker": "Speaker ?",
+      "text": "Okay, guys, I hear nothing from your end.",
+      "frame_id": 1047,
+      "slide_id": null
+    },
+    {
+      "id": 4377,
+      "start_sec": 314.78,
+      "end_sec": 317.78,
+      "speaker": "Speaker ?",
+      "text": "So I'm going to say goodbye from Stockholm.",
+      "frame_id": 1053,
+      "slide_id": null
+    },
+    {
+      "id": 4378,
+      "start_sec": 317.78,
+      "end_sec": 320.78,
+      "speaker": "Speaker ?",
+      "text": "And once again, thanks for having us.",
+      "frame_id": 1054,
+      "slide_id": null
+    },
+    {
+      "id": 4379,
+      "start_sec": 320.78,
+      "end_sec": 324.78,
+      "speaker": "Speaker ?",
+      "text": "I hope you found this hackathon interesting.",
+      "frame_id": 1054,
+      "slide_id": null
+    },
+    {
+      "id": 4380,
+      "start_sec": 324.78,
+      "end_sec": 330.78,
+      "speaker": "Speaker ?",
+      "text": "And those who didn't have the chance to win still learned something and got something productive out of it.",
+      "frame_id": 1055,
+      "slide_id": null
+    },
+    {
+      "id": 4381,
+      "start_sec": 330.78,
+      "end_sec": 331.78,
+      "speaker": "Speaker ?",
+      "text": "I did learn a lot myself.",
+      "frame_id": 1056,
+      "slide_id": null
+    },
+    {
+      "id": 4382,
+      "start_sec": 331.78,
+      "end_sec": 334.78,
+      "speaker": "Speaker ?",
+      "text": "I enjoyed a lot the opportunity to be here.",
+      "frame_id": 1056,
+      "slide_id": null
+    },
+    {
+      "id": 4383,
+      "start_sec": 334.78,
+      "end_sec": 339.78,
+      "speaker": "Speaker ?",
+      "text": "So thank you, Jesper, Anders, Stefan, Toby, and everyone else for the organization.",
+      "frame_id": 1056,
+      "slide_id": null
+    },
+    {
+      "id": 4384,
+      "start_sec": 339.78,
+      "end_sec": 341.78,
+      "speaker": "Speaker ?",
+      "text": "It was a real pleasure to be here.",
+      "frame_id": 1056,
+      "slide_id": null
+    },
+    {
+      "id": 4385,
+      "start_sec": 341.78,
+      "end_sec": 344.78,
+      "speaker": "Speaker ?",
+      "text": "And once again, I cannot hear you guys, but have a great evening.",
+      "frame_id": 1056,
+      "slide_id": null
+    },
+    {
+      "id": 4386,
+      "start_sec": 344.78,
+      "end_sec": 346.78,
+      "speaker": "Speaker ?",
+      "text": "Thank you so much.",
+      "frame_id": 1056,
+      "slide_id": null
+    },
+    {
+      "id": 4387,
+      "start_sec": 346.78,
+      "end_sec": 347.78,
+      "speaker": "Speaker ?",
+      "text": "Bye-bye.",
+      "frame_id": 1057,
+      "slide_id": null
+    }
+  ],
+  "slides_referenced": []
+}
