@@ -13,7 +13,7 @@ Do not invent requirements; unclear things are questions for the organizers.
 - Python 3.12, managed with **uv** (`uv sync`, `uv run ...`). Same on Windows, macOS, Linux.
 - faster-whisper (transcripts), opencv-python-headless (video frames), pypdfium2 (PDF pages
   + text), imagehash (dHash), Pillow (WebP), sqlite3 + FTS5 (stdlib), Flask (local UI).
-- No system ffmpeg needed. LibreOffice is optional (only for PPTX → PDF).
+- No system ffmpeg needed. PPTX -> PDF uses LibreOffice or Microsoft PowerPoint, see issue #5.
 - Do not add dependencies without asking the team. Never add anything that sends data
   to an online service (no cloud APIs, no hosted AI, no telemetry).
 - We do NOT train models or write codecs/parsers ourselves.
@@ -43,8 +43,8 @@ If it needs a change elsewhere, it stops and writes that in the PR description.
 
 ## 6. Priorities — finish and integrate MUST before SHOULD/COULD
 - MUST: transcript with timestamps; key frames; frames linked to text; exact + slide-level
-  duplicates; search; savings numbers.
-- SHOULD: frame ↔ PDF slide matching; revisions; offboarding report; web demo view.
+  duplicates; search; savings numbers; revisions.
+- SHOULD: frame ↔ PDF slide matching; offboarding report; web demo view.
 - COULD: speaker identification; slide description prompts; rebuilding video from frames.
 
 ## 7. Code style (the team knows basic Python, PHP, JS)
