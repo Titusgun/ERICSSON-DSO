@@ -64,7 +64,7 @@ The folder is `"$env:OneDriveCommercial\DSO demo"` (work/school account) or
 ```powershell
 rclone config
 ```
-`n` (new remote) → name `onedrive` → storage `onedrive` → Enter for the defaults → log in in
+`n` (new remote) → name `onedrive` → storage **`onedrive` (Microsoft OneDrive)** - careful, **not `opendrive`**, which is the line next to it and a different company (`dso watch` refuses an `opendrive` remote) → Enter for the defaults → log in in
 the browser → choose **OneDrive personal/business** or **SharePoint site** → pick the drive.
 Check: `rclone lsd onedrive:` lists your folders. Create `DSO demo` there (browser or
 `rclone mkdir "onedrive:DSO demo"`).

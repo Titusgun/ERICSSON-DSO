@@ -38,6 +38,15 @@ DISTILLED_FOLDER = "_dso_distilled"
 
 RCLONE_TIMEOUT_SEC = 3600       # a big recording can take a while to download
 
+# After a failed download, wait longer before the next try: 1, 2, 4, 8 ... checks,
+# but at most this long. A wrong login retried every 30 s got the IP address
+# blocked by the cloud service (13 Nov demo test).
+RCLONE_MAX_BACKOFF_SEC = 600
+
+# rclone storage types that mean Microsoft OneDrive / SharePoint. In `rclone
+# config` "onedrive" sits right next to "opendrive" (a different company).
+MICROSOFT_TYPES = ["onedrive"]
+
 
 def snapshot(folder):
     """{relative path: (size, modified time)} for every file under `folder`.
@@ -111,15 +120,57 @@ def run_pipeline(args, steps):
     return True
 
 
-def watch_cycle(args, steps, last):
+def remote_type(remote):
+    """The rclone storage type of "name:path" (e.g. "onedrive"), from
+    `rclone listremotes --long`. None if the remote does not exist."""
+    name = remote.split(":", 1)[0]
+    try:
+        result = subprocess.run(["rclone", "listremotes", "--long"],
+                                capture_output=True, text=True, timeout=30)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    for line in result.stdout.splitlines():
+        parts = line.split()
+        if len(parts) >= 2 and parts[0] == name + ":":
+            return parts[1]
+    return None
+
+
+def download_due(state, now):
+    """True if it is time to try `rclone copy` again (see RCLONE_MAX_BACKOFF_SEC)."""
+    return now >= state["next_try"]
+
+
+def record_download(state, ok, now, interval):
+    """Remembers a download result. After a failure the next try waits
+    interval x 1, 2, 4, 8 ... (max RCLONE_MAX_BACKOFF_SEC); success resets it."""
+    if ok:
+        state["failures"] = 0
+        state["next_try"] = now
+        return
+    state["failures"] += 1
+    wait = min(interval * (2 ** (state["failures"] - 1)), RCLONE_MAX_BACKOFF_SEC)
+    state["next_try"] = now + wait
+    name = state["remote"].split(":", 1)[0]
+    print(f"[watch] download failed {state['failures']}x - next try in {wait:.0f} s. "
+          f"Check the login: rclone lsd {name}:")
+
+
+def watch_cycle(args, steps, last, rclone_state=None):
     """One check: download (if --rclone), compare with the last snapshot, run
     the pipeline if something changed. Returns the snapshot to remember: the
-    new one after a run, the old one if nothing was done (so we try again)."""
+    new one after a run, the old one if nothing was done (so we try again).
+    rclone_state remembers failed downloads between checks (back-off)."""
     folder = Path(args.folder)
     remote = getattr(args, "rclone", None)
     if remote:
-        print(f"[watch] downloading new files from {remote} ...")
-        run_rclone(rclone_download_command(remote, folder))
+        if rclone_state is None:
+            rclone_state = {"failures": 0, "next_try": 0.0, "remote": remote}
+        now = time.time()
+        if download_due(rclone_state, now):
+            print(f"[watch] downloading new files from {remote} ...")
+            ok = run_rclone(rclone_download_command(remote, folder))
+            record_download(rclone_state, ok, now, args.interval)
 
     current = snapshot(folder)
     if current == last:
@@ -159,15 +210,32 @@ def run_watch(args, steps):
     if getattr(args, "upload", False) and not remote:
         print("[watch] --upload only works together with --rclone REMOTE:PATH")
         return 1
+    if remote:
+        kind = remote_type(remote)
+        name = remote.split(":", 1)[0]
+        if kind is None:
+            print(f"[watch] rclone has no remote called '{name}'. Create it with `rclone config` "
+                  "(storage type: onedrive).")
+            return 1
+        if kind not in MICROSOFT_TYPES:
+            print(f"[watch] the rclone remote '{name}' is of type '{kind}', not Microsoft OneDrive / "
+                  "SharePoint ('onedrive').")
+            if kind == "opendrive":
+                print("[watch] 'opendrive' is OpenDrive, a different company - it sits next to "
+                      "'onedrive' in the rclone list.")
+            print(f"[watch] Fix: rclone config delete {name}, then rclone config -> n -> name "
+                  f"{name} -> storage: onedrive.")
+            return 1
     folder.mkdir(parents=True, exist_ok=True)
     print(f"[watch] watching {folder.as_posix()} every {args.interval} s - Ctrl+C to stop")
     if remote:
         print(f"[watch] cloud source: {remote}" + (" (results uploaded back)" if getattr(args, "upload", False) else ""))
 
     last = None
+    rclone_state = {"failures": 0, "next_try": 0.0, "remote": remote or ""}
     try:
         while True:
-            last = watch_cycle(args, steps, last)
+            last = watch_cycle(args, steps, last, rclone_state)
             if getattr(args, "once", False):
                 break
             time.sleep(args.interval)
