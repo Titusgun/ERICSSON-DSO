@@ -213,3 +213,32 @@ def test_never_settling_screen_keeps_one_frame_per_max_gap():
     assert video.MAX_GAP_SEC == 60
     # 61 = first B after 60 s; 121 is B again (no change), so the next one is A at 122.
     assert kept_times(hashes) == [0.0, 61.0, 122.0]
+
+
+# ---------- skip already processed videos (for `dso all` / `dso watch`) ----------
+
+def test_second_run_skips_processed_video(paths, capsys):
+    db_path, out = paths
+    run_video(db_path, out)
+    capsys.readouterr()
+    run_video(db_path, out)
+    assert "already processed - skipped" in capsys.readouterr().out
+    assert len(frame_rows(db_path)) == 3
+
+
+def test_force_redoes_the_video(paths, capsys):
+    db_path, out = paths
+    run_video(db_path, out)
+    capsys.readouterr()
+    args = Namespace(db=str(db_path), out=str(out), model="tiny.en", max_seconds=None, force=True)
+    assert video.run(args) == 0
+    assert "already processed" not in capsys.readouterr().out
+
+
+def test_duration_is_stored(paths):
+    db_path, out = paths
+    run_video(db_path, out, max_seconds=5)       # the whole length, even with --max-seconds
+    conn = connect(db_path)
+    duration = conn.execute("SELECT duration_sec FROM files WHERE kind = 'video'").fetchone()[0]
+    conn.close()
+    assert duration == pytest.approx(24, abs=1)

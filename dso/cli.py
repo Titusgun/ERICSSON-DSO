@@ -6,7 +6,7 @@ already calls `run(args)` in the owner's file.
 import argparse
 import sys
 
-from dso import dedup, docs, export, ingest, link, offboard, savings, search, video
+from dso import dedup, docs, export, ingest, link, offboard, savings, search, video, watch
 
 
 def build_parser():
@@ -25,6 +25,7 @@ def build_parser():
                    help="whisper model (default small, multilingual): tiny, base, small, base.en, ...")
     p.add_argument("--max-seconds", type=float, default=None,
                    help="only process the first N seconds of each video (for fast testing)")
+    p.add_argument("--force", action="store_true", help="redo videos that were already processed")
 
     sub.add_parser("docs", help="PDF -> slides with text hash + dHash")
     sub.add_parser("dedup", help="find exact, slide-level and revision duplicates")
@@ -51,6 +52,22 @@ def build_parser():
     p.add_argument("--model", default="small", help="whisper model (default small, multilingual)")
     p.add_argument("--max-seconds", type=float, default=None,
                    help="only process the first N seconds of each video (for fast testing)")
+    p.add_argument("--force", action="store_true", help="redo videos that were already processed")
+
+    p = sub.add_parser("watch", help="run `all` automatically whenever files in the folder change")
+    p.add_argument("folder", help="folder to watch, e.g. data/inbox or a OneDrive sync folder")
+    p.add_argument("--interval", type=float, default=30, help="seconds between checks (default 30)")
+    p.add_argument("--source", default="local", help="sharepoint | onedrive | play | local | offboarding")
+    p.add_argument("--owner", default=None)
+    p.add_argument("--model", default="small", help="whisper model (default small, multilingual)")
+    p.add_argument("--max-seconds", type=float, default=None,
+                   help="only process the first N seconds of each video (for a fast live demo)")
+    p.add_argument("--force", action="store_true", help="redo videos that were already processed")
+    p.add_argument("--rclone", default=None, metavar="REMOTE:PATH",
+                   help="download new files from OneDrive/SharePoint with rclone before each check")
+    p.add_argument("--upload", action="store_true",
+                   help="with --rclone: copy exports + reports back to REMOTE:PATH/_dso_distilled")
+    p.add_argument("--once", action="store_true", help="check once and stop (for tests)")
 
     p = sub.add_parser("web", help="start the local demo web UI")
     p.add_argument("--port", type=int, default=5000)
@@ -59,6 +76,12 @@ def build_parser():
     p = sub.add_parser("dhash", help="debug: dHash of images and their distance")
     p.add_argument("images", nargs="+")
     return parser
+
+
+def pipeline_steps():
+    """The steps of `dso all` and `dso watch`, in order."""
+    return [ingest.run, video.run, docs.run, dedup.run, link.run,
+            search.run_index, export.run, savings.run]
 
 
 def run_dhash(args):
@@ -102,10 +125,10 @@ def main(argv=None):
     elif command == "web":
         from dso.web.app import run_web
         return run_web(args)
+    elif command == "watch":
+        return watch.run_watch(args, pipeline_steps())
     elif command == "all":
-        steps = [ingest.run, video.run, docs.run, dedup.run, link.run,
-                 search.run_index, export.run, savings.run]
-        for step in steps:
+        for step in pipeline_steps():
             result = step(args)
             if result != 0:
                 print(f"Step {step.__module__} failed with code {result}", file=sys.stderr)

@@ -34,6 +34,11 @@ For every file with kind='video' in the DB:
 --max-seconds N (issue #17): only the first N seconds of each video are processed.
 
 Re-run safe: DELETE FROM frames / segments WHERE file_id = ? before inserting.
+
+Already processed videos are SKIPPED (key frames in the DB and a matching
+transcript cache), so `dso all` / `dso watch` only work on new videos. Use
+--force to redo them, e.g. after changing the key-frame rule.
+Also sets files.duration_sec (DATA_CONTRACT v1.1).
 """
 import json
 from pathlib import Path
@@ -164,6 +169,9 @@ def extract_key_frames(conn, file_row, out_dir, max_seconds):
     step = max(1, round(fps))
     duration = frame_count / fps if frame_count > 0 else 0.0
     print(f"[video]   {format_time(duration)} at {fps:.1f} fps -> 1 sample per second")
+    if duration > 0:
+        # The whole video's length, also with --max-seconds (DATA_CONTRACT v1.1).
+        conn.execute("UPDATE files SET duration_sec = ? WHERE id = ?", (round(duration, 2), file_row["id"]))
 
     clear_old_frames(conn, file_row["id"], frames_dir)
     frames_dir.mkdir(parents=True, exist_ok=True)
@@ -345,11 +353,24 @@ def transcribe(conn, file_row, out_dir, model_name, max_seconds, model_holder):
     return len(data["segments"])
 
 
+def already_processed(conn, file_row, out_dir, model_name, max_seconds):
+    """True if this video already has key frames in the DB and a transcript
+    cache made with the same model and --max-seconds. Then there is nothing new
+    to do: `dso all` and `dso watch` skip it instead of spending minutes on it."""
+    frame_count = conn.execute(
+        "SELECT COUNT(*) FROM frames WHERE file_id = ?", (file_row["id"],)).fetchone()[0]
+    if frame_count == 0:
+        return False
+    json_path = out_dir / "transcripts" / f"{sha12(file_row['sha256'])}.json"
+    return load_cached_transcript(json_path, model_name, max_seconds) is not None
+
+
 def run(args):
     conn = connect(args.db)
     out_dir = Path(args.out)
     # getattr(..., None): works before and after dso/cli.py gets --max-seconds (#17).
     max_seconds = getattr(args, "max_seconds", None)
+    force = getattr(args, "force", False)      # --force: redo already processed videos
 
     videos = conn.execute(
         "SELECT id, path, name, sha256 FROM files WHERE kind = 'video' ORDER BY id").fetchall()
@@ -364,6 +385,10 @@ def run(args):
             print(f"[video] {file_row['name']}: exact duplicate, already processed - skipped")
             continue
         done_hashes.add(file_row["sha256"])
+
+        if not force and already_processed(conn, file_row, out_dir, args.model, max_seconds):
+            print(f"[video] {file_row['name']}: already processed - skipped (--force to redo)")
+            continue
 
         print(f"[video] {file_row['name']}")
         kept = extract_key_frames(conn, file_row, out_dir, max_seconds)
