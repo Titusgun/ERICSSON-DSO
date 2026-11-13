@@ -1,0 +1,15 @@
+# systemd user service: the local web API (http://127.0.0.1:5000) starts at login.
+# Install: see docs/DEMO_LINUX.md, "Run it automatically".
+[Unit]
+Description=dso web - local API for the dso UI
+
+[Service]
+# /usr/bin/uv is replaced by your real `which uv` when installing (docs/DEMO_LINUX.md).
+WorkingDirectory=%h/Projects/dso-py
+ExecStart=/usr/bin/uv run dso web
+Environment=PYTHONUNBUFFERED=1
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=default.target

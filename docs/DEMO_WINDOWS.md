@@ -82,21 +82,25 @@ Open **three** PowerShell windows, all in `C:\dso\dso-py` (the UI one in `C:\dso
 | 2 | `cd C:\dso\dso-ui; npm run dev` | the UI → open **http://localhost:8080** in Edge/Chrome |
 | 3 | see below | `dso watch`: processes new uploads automatically |
 
-Window 3, depending on part 3:
+**Settings once, then no flags:** `Copy-Item dso.example.toml dso.toml`, open it and adapt it (for
+option A set `folder` to your synced folder and remove `rclone`, `upload`, `delete_originals`).
+Then window 3 is just `uv run dso watch`. Typed flags still win.
+
+Window 3 with all flags written out, depending on part 3:
 ```powershell
 # A: OneDrive / SharePoint sync folder
-uv run dso watch "$env:OneDriveCommercial\DSO demo" --source onedrive --interval 10 --max-seconds 120
+uv run dso watch "$env:OneDriveCommercial\DSO demo" --source onedrive --interval 10 --max-seconds 600
 # B: rclone, write the results back to the cloud (_dso_distilled) and move originals whose
 #    content is kept (distilled videos, copies, old revisions) to the OneDrive recycle bin
-uv run dso watch data\cloud --rclone "onedrive:DSO demo" --source onedrive --interval 10 --max-seconds 120 --upload --delete-originals
+uv run dso watch data\cloud --rclone "onedrive:DSO demo" --source onedrive --interval 10 --max-seconds 600 --upload --delete-originals
 # offline fallback
-uv run dso watch data\inbox --interval 10 --max-seconds 120
+uv run dso watch data\inbox --interval 10 --max-seconds 600
 ```
 `--delete-originals` (only with B) frees the space for real: recycle bin, restorable 93 days,
 log in `_dso_distilled/reports/cleanup.md`. A video is only removed if it was transcribed WHOLE,
-so upload demo videos of at most 2 minutes (or raise `--max-seconds`).
-`--interval 10` checks every 10 s; `--max-seconds 120` transcribes only the first 2 minutes of a
-new video, so it finishes on stage. The UI reloads its data every 10 s by itself.
+so demo videos must be shorter than `--max-seconds` (600 = 10 min).
+`--interval 10` checks every 10 s; `--max-seconds 600` caps a new video at 10 minutes, so a long
+upload cannot block the stage (5 minutes of audio take about a minute). The UI reloads its data every 10 s by itself.
 
 ### The script (≈ 5 min)
 1. **Real data first** (already processed): dashboard with the savings %, the 2.5 h Teams
@@ -115,6 +119,22 @@ new video, so it finishes on stage. The UI reloads its data every 10 s by itself
    (recycle bin), `_dso_distilled/reports/cleanup.md` says why and how much was freed; and
    `DSO demo/_dso_distilled/export/*.md` - the
    AI-ready text that would replace the video.
+
+### Run it automatically (no windows to keep open)
+Task Scheduler starts `dso web` and `dso watch` when you log in (each shows its own console
+window with the log). Needs `dso.toml` (see above). Not tested on Windows yet - try it once
+the day before.
+```powershell
+$uv = (Get-Command uv).Source
+foreach ($name in "web", "watch") {
+  $action = New-ScheduledTaskAction -Execute $uv -Argument "run dso $name" -WorkingDirectory "C:\dso\dso-py"
+  $trigger = New-ScheduledTaskTrigger -AtLogOn
+  Register-ScheduledTask -TaskName "dso $name" -Action $action -Trigger $trigger
+}
+Start-ScheduledTask -TaskName "dso web"; Start-ScheduledTask -TaskName "dso watch"
+```
+Stop: `Stop-ScheduledTask -TaskName "dso watch"`; remove: `Unregister-ScheduledTask -TaskName "dso watch" -Confirm:$false`
+(same for `"dso web"`).
 
 ### If something goes wrong
 - **Nothing happens after an upload**: look at window 3. `files are still being copied` = the

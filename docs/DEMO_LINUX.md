@@ -67,22 +67,26 @@ Three terminals:
 | 2 | `cd ~/Projects/dso-ui; npm run dev` | the UI → open **http://localhost:8080** |
 | 3 | see below | `dso watch`: processes new uploads automatically |
 
-Terminal 3 (`systemd-inhibit` keeps the laptop awake while it runs):
+**Settings once, then no flags:** `cp dso.example.toml dso.toml` (it already has the demo
+settings below: data/cloud, onedrive:DSO demo, interval 10, max 600 s, upload, delete originals).
+Then terminal 3 is just `uv run dso watch`. Typed flags still win, e.g. `uv run dso watch --max-seconds 0`.
+
+Terminal 3 with all flags written out (`systemd-inhibit` keeps the laptop awake while it runs):
 ```fish
 cd ~/Projects/dso-py
 # cloud: download new uploads, write the AI-ready results back to DSO demo/_dso_distilled,
 # then move the originals whose content is kept (distilled videos, copies, old revisions)
 # to the OneDrive recycle bin
-systemd-inhibit --what=sleep:idle --why="dso demo" uv run dso watch data/cloud --rclone "onedrive:DSO demo" --source onedrive --interval 10 --max-seconds 120 --upload --delete-originals
+systemd-inhibit --what=sleep:idle --why="dso demo" uv run dso watch data/cloud --rclone "onedrive:DSO demo" --source onedrive --interval 10 --max-seconds 600 --upload --delete-originals
 # offline fallback
-systemd-inhibit --what=sleep:idle --why="dso demo" uv run dso watch data/inbox --interval 10 --max-seconds 120
+systemd-inhibit --what=sleep:idle --why="dso demo" uv run dso watch data/inbox --interval 10 --max-seconds 600
 ```
 `--delete-originals` frees the space for real (recycle bin, restorable 93 days; log in
 `_dso_distilled/reports/cleanup.md`). A video is only removed if it was transcribed WHOLE, so
-upload demo videos of at most 2 minutes (or raise `--max-seconds`). Leave the flag out for a
+demo videos must be shorter than `--max-seconds` (600 = 10 min). Leave the flag out for a
 show-only run; `uv run dso cleanup data/cloud --rclone "onedrive:DSO demo"` shows the plan.
-`--interval 10` checks every 10 s; `--max-seconds 120` transcribes only the first 2 minutes
-of a new video so it finishes on stage. The UI reloads its data every 10 s by itself.
+`--interval 10` checks every 10 s; `--max-seconds 600` caps a new video at 10 minutes, so a long
+upload cannot block the stage (5 minutes of audio take about a minute). The UI reloads its data every 10 s by itself.
 
 ### The script (≈ 5 min)
 1. **Real data** (already processed): savings per scenario (video 98 %, old revisions 40 %,
@@ -101,6 +105,25 @@ of a new video so it finishes on stage. The UI reloads its data every 10 s by it
    `_dso_distilled/reports/cleanup.md` says why and how much space was freed. Open
    `DSO demo/_dso_distilled/export/*.md`: the AI-ready text that replaces
    the video.
+
+### Run it automatically (no terminals)
+`web` and `watch` as user services: they start at login and restart if they stop.
+```fish
+cp dso.example.toml dso.toml                      # once; adapt if needed
+mkdir -p ~/.config/systemd/user
+set uv_path (which uv)                            # systemd does not know your shell's PATH
+for unit in dso-watch dso-web
+    sed "s|/usr/bin/uv|$uv_path|" scripts/systemd/$unit.service > ~/.config/systemd/user/$unit.service
+end
+systemctl --user daemon-reload
+systemctl --user enable --now dso-web dso-watch
+journalctl --user -u dso-watch -f                 # live log (Ctrl+C stops only the log)
+```
+Stop: `systemctl --user stop dso-watch dso-web`; never start again: `systemctl --user disable dso-watch dso-web`.
+The `sed` line puts your real uv path into the units (e.g. Homebrew's
+`/home/linuxbrew/.linuxbrew/bin/uv`). They expect the project in `~/Projects/dso-py`; edit
+`WorkingDirectory` in `~/.config/systemd/user/dso-*.service` if yours is elsewhere. The UI (`npm run dev`)
+still runs in a terminal.
 
 ### If something goes wrong
 - **Nothing happens after an upload**: read terminal 3. `rclone failed` → `rclone lsd onedrive:`
