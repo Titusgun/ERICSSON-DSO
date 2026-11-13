@@ -4,6 +4,9 @@ Scenarios:
   video_distill: sum(video sizes) vs sum(frames + transcript JSON + export files)
   dedup:         sum(all files)   vs sum(one copy per distinct sha256)
   offboarding:   sum(leaver files) vs sum(their unique files)
+  revisions:     older versions that a newer version supersedes (dedup's
+                 `revision` / `file_content`): all versions vs the newest file
+                 + the older versions' slides we keep under out/slides/
 Store rows in `savings`, write out/reports/savings.md with percentages.
 
 Only measures: reads the DB and file sizes under --out, never changes user files.
@@ -91,6 +94,56 @@ def offboarding(conn):
     return before_row[0], after, before_row[1]
 
 
+def revisions(conn, out):
+    """Old document versions vs keeping only the newest one (issue #14).
+
+    `dso dedup` writes a `revision` or `file_content` row for every pair of
+    versions, with a_ref = the older and b_ref = the newer file (DATA_CONTRACT 7).
+    A file that is the older side of any pair is "superseded".
+      before = every version involved, each distinct content (sha256) once
+      after  = the files that are never superseded (the newest versions)
+               + for each superseded version, its slide images and export that
+               we keep under out/ - so its slides that the newer version
+               dropped or changed are not lost, they are distilled
+    Exact copies are not counted here; that is the dedup scenario.
+    Returns (bytes_before, bytes_after, superseded_count).
+    """
+    pairs = conn.execute(
+        "SELECT a_ref, b_ref FROM duplicates WHERE kind IN ('revision', 'file_content')").fetchall()
+    involved = set()
+    superseded = set()
+    for pair in pairs:
+        involved.add(int(pair["a_ref"]))
+        involved.add(int(pair["b_ref"]))
+        superseded.add(int(pair["a_ref"]))
+
+    # One entry per distinct content: {sha256: size}.
+    all_versions = {}
+    old_versions = {}
+    for file_id in involved:
+        row = conn.execute("SELECT sha256, size_bytes FROM files WHERE id = ?", (file_id,)).fetchone()
+        if row is None:
+            continue
+        all_versions[row["sha256"]] = row["size_bytes"]
+        if file_id in superseded:
+            old_versions[row["sha256"]] = row["size_bytes"]
+
+    before = 0
+    for sha in all_versions:
+        before += all_versions[sha]
+    after = 0
+    for sha in all_versions:
+        if sha in old_versions:
+            sha12 = sha[:12]
+            kept = folder_bytes(out / "slides" / sha12)
+            kept += file_bytes(out / "export" / (sha12 + ".json"))
+            kept += file_bytes(out / "export" / (sha12 + ".md"))
+            after += kept
+        else:
+            after += all_versions[sha]
+    return before, after, len(old_versions)
+
+
 def human_size(n):
     """Bytes as a short readable string, e.g. 1.4 GB."""
     for unit in ["B", "KB", "MB", "GB"]:
@@ -152,6 +205,13 @@ def run(args):
         notes.append(f"offboarding: {leaver_files} file(s) with source 'offboarding'.")
     else:
         notes.append("offboarding: no files ingested with --source offboarding.")
+
+    before, after, superseded = revisions(conn, out)
+    if superseded > 0:
+        print("[savings] revisions: older versions superseded by a newer one...")
+        results.append(("revisions", before, after))
+        notes.append(f"revisions: {superseded} older version(s) superseded by a newer one; "
+                     "their slides stay under out/slides/ (pictures + text in the DB and export).")
 
     conn.execute("DELETE FROM savings")
     for scenario, before, after in results:
