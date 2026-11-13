@@ -75,11 +75,14 @@ def segment_result(conn, segment_id, file_row, snippet, marked_text):
     """Builds one DATA_CONTRACT 9 dict for a transcript segment hit.
 
     frame_image / slide_id are those of the frame on screen when the sentence
-    started (set by `dso link`).
+    started (set by `dso link`); slide_image is the picture of that slide (the
+    UI shows it next to the frame), null without a matched slide.
     """
     row = conn.execute(
-        """SELECT segments.start_sec, segments.end_sec, frames.image_path, frames.slide_id
+        """SELECT segments.start_sec, segments.end_sec, frames.image_path, frames.slide_id,
+                  slides.image_path AS slide_image
            FROM segments LEFT JOIN frames ON frames.id = segments.frame_id
+                         LEFT JOIN slides ON slides.slide_id = frames.slide_id
            WHERE segments.id = ?""", (segment_id,)).fetchone()
     if row is None:
         return None     # index is older than the segments table; skip the hit
@@ -90,12 +93,15 @@ def segment_result(conn, segment_id, file_row, snippet, marked_text):
         "t_sec": estimate_word_time(row["start_sec"], row["end_sec"], marked_text),
         "frame_image": row["image_path"],
         "slide_id": row["slide_id"],
+        "slide_image": row["slide_image"],
         "snippet": snippet,
     }
 
 
-def slide_result(slide_id, file_row, snippet):
-    """Builds one DATA_CONTRACT 9 dict for a slide hit (no time, no frame)."""
+def slide_result(conn, slide_id, file_row, snippet):
+    """Builds one DATA_CONTRACT 9 dict for a slide hit (no time, no frame).
+    slide_image = the slide's own picture, so the UI can show and enlarge it."""
+    row = conn.execute("SELECT image_path FROM slides WHERE slide_id = ?", (slide_id,)).fetchone()
     return {
         "kind": "slide",
         "file": file_row["name"],
@@ -103,6 +109,7 @@ def slide_result(slide_id, file_row, snippet):
         "t_sec": None,
         "frame_image": None,
         "slide_id": slide_id,
+        "slide_image": row["image_path"] if row is not None else None,
         "snippet": snippet,
     }
 
@@ -137,7 +144,7 @@ def search(conn, query):
         if hit["kind"] == "segment":
             result = segment_result(conn, hit["ref_id"], file_row, hit["snip"], hit["marked"])
         else:
-            result = slide_result(hit["ref_id"], file_row, hit["snip"])
+            result = slide_result(conn, hit["ref_id"], file_row, hit["snip"])
         if result is not None:
             results.append(result)
     return results

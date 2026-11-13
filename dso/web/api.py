@@ -183,8 +183,10 @@ def recording(sha12):
         abort(404)
 
     frames = rows_to_dicts(conn.execute(
-        """SELECT id, t_sec, image_path AS image, dhash, slide_id, match_dist
-           FROM frames WHERE file_id = ? ORDER BY t_sec""", (file_row["id"],)).fetchall())
+        """SELECT frames.id, frames.t_sec, frames.image_path AS image, frames.dhash,
+                  frames.slide_id, frames.match_dist, slides.image_path AS slide_image
+           FROM frames LEFT JOIN slides ON slides.slide_id = frames.slide_id
+           WHERE frames.file_id = ? ORDER BY frames.t_sec""", (file_row["id"],)).fetchall())
     segments = rows_to_dicts(conn.execute(
         """SELECT segments.id, start_sec, end_sec, speaker, text, frame_id,
                   frames.slide_id AS slide_id
