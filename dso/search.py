@@ -10,12 +10,22 @@ search:
     then joins segments/frames/slides/files to get file name, t_sec, frame image
     and slide_id. search() returns a list of dicts in the format of DATA_CONTRACT 9.
     The web UI calls the same function, so CLI and web always show the same results.
+
+    t_sec of a segment hit is the ESTIMATED time of the matched word, not the
+    start of the segment: a Whisper segment is a whole sentence (often 5-10 s),
+    and jumping to its start made the word come ~3 s later on real data.
+    See estimate_word_time().
 """
 import json
 
 from dso.common.db import connect
 
 MAX_RESULTS = 20
+
+# Invisible characters used to mark the matched word in highlight() output.
+# They never appear in normal transcript text.
+MARK_START = "\x02"
+MARK_END = "\x03"
 
 
 def build_match_query(query):
@@ -35,10 +45,40 @@ def build_match_query(query):
     return " ".join(quoted)
 
 
-def segment_result(conn, segment_id, file_row, snippet):
-    """Builds one DATA_CONTRACT 9 dict for a transcript segment hit."""
+def estimate_word_time(start_sec, end_sec, marked_text):
+    """Estimates when the first matched word is spoken inside a segment.
+
+    Whisper only gives a start and end time per segment (sentence), not per
+    word. Inside one sentence people speak at a fairly steady pace, so if the
+    word starts at 40% of the text, it is spoken at about 40% of the time:
+
+        segment 96.0 - 104.0 s, word at 40% of the text -> 96 + 0.4 * 8 = 99.2 s
+
+    marked_text is the segment text from FTS5 highlight(), with MARK_START in
+    front of every matched word. Typically within ~1 s of the real time.
+    Returns start_sec if no marker is found or the segment has no length.
+    """
+    position = marked_text.find(MARK_START)
+    if position < 0:
+        return start_sec
+    # Length of the text without the markers = the original segment text.
+    plain_length = len(marked_text.replace(MARK_START, "").replace(MARK_END, ""))
+    if plain_length == 0 or end_sec <= start_sec:
+        return start_sec
+    # Nothing before the first MARK_START is a marker, so `position` is also
+    # the character position in the original text.
+    fraction = position / plain_length
+    return round(start_sec + fraction * (end_sec - start_sec), 1)
+
+
+def segment_result(conn, segment_id, file_row, snippet, marked_text):
+    """Builds one DATA_CONTRACT 9 dict for a transcript segment hit.
+
+    frame_image / slide_id are those of the frame on screen when the sentence
+    started (set by `dso link`).
+    """
     row = conn.execute(
-        """SELECT segments.start_sec, frames.image_path, frames.slide_id
+        """SELECT segments.start_sec, segments.end_sec, frames.image_path, frames.slide_id
            FROM segments LEFT JOIN frames ON frames.id = segments.frame_id
            WHERE segments.id = ?""", (segment_id,)).fetchone()
     if row is None:
@@ -47,7 +87,7 @@ def segment_result(conn, segment_id, file_row, snippet):
         "kind": "segment",
         "file": file_row["name"],
         "sha12": file_row["sha256"][:12],
-        "t_sec": row["start_sec"],
+        "t_sec": estimate_word_time(row["start_sec"], row["end_sec"], marked_text),
         "frame_image": row["image_path"],
         "slide_id": row["slide_id"],
         "snippet": snippet,
@@ -76,11 +116,17 @@ def search(conn, query):
     match = build_match_query(query)
     if match == "":
         return []
+    # snippet()   = a short piece around the match, for showing: "...the [latency] drops"
+    # highlight() = the FULL text with our invisible markers around every match,
+    #               used to find WHERE in the sentence the word is.
+    # Both use FTS5's own word matching (case, å/ä/ö, whole words), so the
+    # marker is exactly on the word that matched.
     hits = conn.execute(
         """SELECT kind, ref_id, file_id,
-                  snippet(search_fts, 0, '[', ']', '...', 12) AS snip
+                  snippet(search_fts, 0, '[', ']', '...', 12) AS snip,
+                  highlight(search_fts, 0, ?, ?) AS marked
            FROM search_fts WHERE search_fts MATCH ?
-           ORDER BY rank LIMIT ?""", (match, MAX_RESULTS)).fetchall()
+           ORDER BY rank LIMIT ?""", (MARK_START, MARK_END, match, MAX_RESULTS)).fetchall()
 
     results = []
     for hit in hits:
@@ -89,7 +135,7 @@ def search(conn, query):
         if file_row is None:
             continue
         if hit["kind"] == "segment":
-            result = segment_result(conn, hit["ref_id"], file_row, hit["snip"])
+            result = segment_result(conn, hit["ref_id"], file_row, hit["snip"], hit["marked"])
         else:
             result = slide_result(hit["ref_id"], file_row, hit["snip"])
         if result is not None:

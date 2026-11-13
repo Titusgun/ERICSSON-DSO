@@ -4,7 +4,7 @@ import pytest
 
 from dso.cli import main
 from dso.common.db import connect
-from dso.search import build_match_query, format_time, search
+from dso.search import MARK_END, MARK_START, build_match_query, estimate_word_time, format_time, search
 
 SHA_VIDEO = "3fa9c0d1e2b4" + "0" * 52
 SHA_DECK = "9b1c22aa01ff" + "0" * 52
@@ -64,7 +64,7 @@ def test_search_finds_segment_and_slide(db_path):
         by_kind[r["kind"]] = r
     segment = by_kind["segment"]
     assert segment == {
-        "kind": "segment", "file": "talk.mp4", "sha12": "3fa9c0d1e2b4", "t_sec": 96.0,
+        "kind": "segment", "file": "talk.mp4", "sha12": "3fa9c0d1e2b4", "t_sec": 99.4,   # word at 62% of 96.0-101.5
         "frame_image": "frames/3fa9c0d1e2b4/f0012.webp", "slide_id": SLIDE,
         "snippet": "As you see here, the [latency] drops",
     }
@@ -97,5 +97,39 @@ def test_search_needs_all_words_and_survives_odd_input(db_path):
 def test_search_cli_prints_results(db_path, capsys):
     assert main(["--db", str(db_path), "search", "latency"]) == 0
     out = capsys.readouterr().out
-    assert "talk.mp4 @ 01:36" in out
+    assert "talk.mp4 @ 01:39" in out
     assert "deck_a.pdf slide" in out
+
+
+# ---------- estimated word time inside a segment ----------
+
+def mark(text, word):
+    """Puts the highlight() markers around the first `word` in `text`."""
+    return text.replace(word, MARK_START + word + MARK_END, 1)
+
+
+def test_estimate_word_time():
+    text = "0123456789"                                           # 10 characters
+    assert estimate_word_time(100.0, 110.0, mark(text, "0")) == 100.0    # first word -> start
+    assert estimate_word_time(100.0, 110.0, mark(text, "5")) == 105.0    # half way
+    assert estimate_word_time(100.0, 110.0, mark(text, "9")) == 109.0    # last word, still < end
+    assert estimate_word_time(100.0, 110.0, text) == 100.0               # no marker -> start
+    assert estimate_word_time(100.0, 100.0, mark(text, "5")) == 100.0    # zero-length segment
+    assert estimate_word_time(100.0, 110.0, "") == 100.0
+
+
+def test_word_time_uses_first_match_and_swedish_letters(db_path):
+    conn = connect(db_path)
+    # 20 characters, 20 seconds: the character position = seconds after start.
+    conn.execute("INSERT INTO segments (id, file_id, start_sec, end_sec, text) "
+                 "VALUES (50, 1, 200.0, 220.0, 'vi pratar över kaffe')")
+    conn.commit()
+    conn.close()
+    assert main(["--db", str(db_path), "index"]) == 0
+    conn = connect(db_path)
+    # FTS5 matches "over" to "över" (diacritics are ignored); "över" starts at char 10.
+    assert search(conn, "over")[0]["t_sec"] == 210.0
+    assert search(conn, "över")[0]["t_sec"] == 210.0
+    # Two words: the time of the FIRST matched word in the sentence ("pratar", char 3).
+    assert search(conn, "kaffe pratar")[0]["t_sec"] == 203.0
+    conn.close()
