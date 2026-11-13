@@ -134,7 +134,7 @@ def test_wrong_remote_type_stops_watch(tmp_path, monkeypatch, capsys):
 def test_failed_downloads_back_off(tmp_path, monkeypatch):
     """After failures the next download waits 1x, 2x, 4x ... the interval (max 10 min)."""
     tries = []
-    monkeypatch.setattr(watch, "run_rclone", lambda command: tries.append(1) or False)
+    monkeypatch.setattr(watch, "download_new_files", lambda remote, folder: tries.append(1) or False)
     clock = [1000.0]
     monkeypatch.setattr(watch.time, "time", lambda: clock[0])
     args = Namespace(folder=str(tmp_path), out=str(tmp_path / "out"), rclone="onedrive:Demo", interval=30)
@@ -150,3 +150,44 @@ def test_failed_downloads_back_off(tmp_path, monkeypatch):
     for k in range(20):
         watch.record_download(state, False, 0.0, 30)
     assert state["next_try"] == watch.RCLONE_MAX_BACKOFF_SEC      # capped at 10 min
+
+
+
+# ---------- what the next download brings ----------
+
+DRY_RUN = """2026/11/13 22:40:35 NOTICE: Brief.png: Skipped copy as --dry-run is set (size 224.061Ki)
+2026/11/13 22:40:35 NOTICE: talk.mp4: Skipped copy as --dry-run is set (size 1.5Gi)
+2026/11/13 22:40:35 NOTICE:
+Transferred:   	          0 B / 0 B, -, 0 B/s, ETA -
+"""
+
+
+def test_parse_dry_run():
+    count, total = watch.parse_dry_run(DRY_RUN)
+    assert count == 2
+    assert total == round(224.061 * 1024) + round(1.5 * 1024 ** 3)
+    assert watch.parse_dry_run("") == (0, 0)
+    assert watch.parse_rclone_size("512") == 512 and watch.parse_rclone_size("2Mi") == 2 * 1024 ** 2
+
+
+class Ran:
+    def __init__(self, stderr=""):
+        self.returncode = 0
+        self.stderr = stderr
+        self.stdout = ""
+
+
+def test_nothing_new_means_no_download(monkeypatch, tmp_path, capsys):
+    commands = []
+    monkeypatch.setattr(watch.subprocess, "run", lambda command, **kw: commands.append(command) or Ran(""))
+    assert watch.download_new_files("onedrive:Demo", tmp_path) is True
+    assert len(commands) == 1 and "--dry-run" in commands[0]          # only the quick look
+    assert capsys.readouterr().out == ""                              # and quiet
+
+
+def test_new_files_are_announced_and_downloaded(monkeypatch, tmp_path, capsys):
+    commands = []
+    monkeypatch.setattr(watch.subprocess, "run", lambda command, **kw: commands.append(command) or Ran(DRY_RUN))
+    assert watch.download_new_files("onedrive:Demo", tmp_path) is True
+    assert len(commands) == 2 and "--stats-one-line" in commands[1]    # real download with progress
+    assert "downloading 2 new/changed file(s), 1.5 GB" in capsys.readouterr().out
