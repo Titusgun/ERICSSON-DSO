@@ -43,7 +43,7 @@ SharePoint directly):
 ```fish
 rclone config
 ```
-`n` (new remote) → name `onedrive` → storage `onedrive` → Enter for the defaults → log in in
+`n` (new remote) → name `onedrive` → storage **`onedrive` (Microsoft OneDrive)** - careful, **not `opendrive`**, which is the line next to it and a different company (`dso watch` refuses an `opendrive` remote) → Enter for the defaults → log in in
 the browser → **OneDrive personal/business** or **SharePoint site** → pick the drive. Then:
 ```fish
 rclone lsd onedrive:                    # lists your folders = login works

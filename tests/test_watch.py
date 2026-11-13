@@ -103,3 +103,50 @@ def test_watch_end_to_end_on_fixture_documents(tmp_path):
     conn = connect(tmp_path / "dso.db")
     assert conn.execute("SELECT COUNT(*) FROM duplicates WHERE kind = 'file_exact'").fetchone()[0] == 1
     conn.close()
+
+
+# ---------- rclone safety: remote type check + back-off after failures ----------
+
+class FakeResult:
+    def __init__(self, stdout):
+        self.stdout = stdout
+        self.returncode = 0
+
+
+def test_remote_type(monkeypatch):
+    listing = "onedrive:     opendrive\nwork:         onedrive\n"
+    monkeypatch.setattr(watch.subprocess, "run", lambda *a, **k: FakeResult(listing))
+    assert watch.remote_type("onedrive:DSO demo") == "opendrive"
+    assert watch.remote_type("work:Shared/DSO") == "onedrive"
+    assert watch.remote_type("missing:x") is None
+
+
+def test_wrong_remote_type_stops_watch(tmp_path, monkeypatch, capsys):
+    """The 13 Nov mistake: a remote called "onedrive" that is really OpenDrive."""
+    monkeypatch.setattr(watch.shutil, "which", lambda name: "/usr/bin/rclone")
+    monkeypatch.setattr(watch, "remote_type", lambda remote: "opendrive")
+    assert main(["--db", str(tmp_path / "d.db"), "--out", str(tmp_path / "out"),
+                 "watch", str(tmp_path / "in"), "--rclone", "onedrive:DSO demo", "--once"]) == 1
+    printed = capsys.readouterr().out
+    assert "type 'opendrive'" in printed and "storage: onedrive" in printed
+
+
+def test_failed_downloads_back_off(tmp_path, monkeypatch):
+    """After failures the next download waits 1x, 2x, 4x ... the interval (max 10 min)."""
+    tries = []
+    monkeypatch.setattr(watch, "run_rclone", lambda command: tries.append(1) or False)
+    clock = [1000.0]
+    monkeypatch.setattr(watch.time, "time", lambda: clock[0])
+    args = Namespace(folder=str(tmp_path), out=str(tmp_path / "out"), rclone="onedrive:Demo", interval=30)
+    state = {"failures": 0, "next_try": 0.0, "remote": "onedrive:Demo"}
+    step, calls = recorder()
+    for second in range(0, 300, 30):             # 10 checks, every 30 s
+        clock[0] = 1000.0 + second
+        watch.watch_cycle(args, [step], None, state)
+    # tries at 0 s, 30 s (wait 30), 90 s (wait 60), 210 s (wait 120) -> 4, not 10
+    assert len(tries) == 4
+    watch.record_download(state, True, clock[0], 30)
+    assert state["failures"] == 0
+    for k in range(20):
+        watch.record_download(state, False, 0.0, 30)
+    assert state["next_try"] == watch.RCLONE_MAX_BACKOFF_SEC      # capped at 10 min
