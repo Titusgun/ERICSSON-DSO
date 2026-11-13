@@ -5,12 +5,14 @@ offboarding --owner <name>`). For each file inside that folder:
   - same sha256 exists outside the folder -> "safe to delete" (copy kept at <path>)
   - same sha256 earlier in the same folder -> "safe to delete" (copy inside folder)
   - otherwise                               -> "keep" (unique, keep / distill)
-Writes out/reports/offboarding.md with a table and the bytes that could be freed.
+Writes out/reports/offboarding.md with a table and the bytes that could be freed,
+and the same data as out/reports/offboarding.json for the web UI (GET /api/offboarding).
 
 Compares sha256 in the `files` table directly, so it does not depend on `dso dedup`.
 This code never deletes, moves or modifies user files. It only reads the DB and
 writes the report.
 """
+import json
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -30,11 +32,12 @@ def plan(conn, folder):
     """Decide keep / safe to delete for every ingested file inside `folder`.
 
     Returns a list of dicts sorted by path:
-      {"path", "name", "size_bytes", "verdict", "copy_at"}
+      {"path", "name", "owner", "size_bytes", "sha256", "verdict", "copy_at"}
     copy_at is the path of the copy that stays (None for "keep").
     """
     folder = Path(folder).resolve()
-    rows = conn.execute("SELECT id, path, name, size_bytes, sha256 FROM files ORDER BY path, id").fetchall()
+    rows = conn.execute(
+        "SELECT id, path, name, owner, size_bytes, sha256 FROM files ORDER BY path, id").fetchall()
 
     inside = []
     outside_by_sha = {}   # sha256 -> path of the first file with that content outside the folder
@@ -61,11 +64,58 @@ def plan(conn, folder):
         result.append({
             "path": row["path"],
             "name": row["name"],
+            "owner": row["owner"] or "",      # "" if ingested without --owner
             "size_bytes": row["size_bytes"],
+            "sha256": sha,
             "verdict": verdict,
             "copy_at": copy_at,
         })
     return result
+
+
+def build_summary(items, simulated):
+    """The JSON for the web UI (GET /api/offboarding): totals + one entry per file.
+
+    Shape (agreed with the dso-ui Offboarding tab):
+      {dry_run, simulated, owners, total_files, total_bytes, safe_files, keep_files,
+       freeable_bytes, percent_freed, files: [{name, path, owner, size_bytes,
+       sha256, verdict, copy_at}]}
+    percent_freed is a percentage (74.3 means 74.3 %), rounded to 1 decimal.
+    """
+    total_bytes = 0
+    freeable_bytes = 0
+    safe_files = 0
+    owners = []
+    for item in items:
+        total_bytes += item["size_bytes"]
+        if item["verdict"] == SAFE:
+            freeable_bytes += item["size_bytes"]
+            safe_files += 1
+        if item["owner"] != "" and item["owner"] not in owners:
+            owners.append(item["owner"])
+    percent = 0.0
+    if total_bytes > 0:
+        percent = round(100.0 * freeable_bytes / total_bytes, 1)
+    return {
+        "dry_run": True,                  # always: this code never deletes anything
+        "simulated": simulated,
+        "owners": owners,
+        "total_files": len(items),
+        "total_bytes": total_bytes,
+        "safe_files": safe_files,
+        "keep_files": len(items) - safe_files,
+        "freeable_bytes": freeable_bytes,
+        "percent_freed": percent,
+        "files": items,
+    }
+
+
+def write_json(path, summary):
+    """Write the summary for the web UI to out/reports/offboarding.json."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        # ensure_ascii=False keeps names like "Māris Līveris" readable in the file.
+        json.dump(summary, f, indent=2, ensure_ascii=False)
 
 
 def human_size(n):
@@ -143,6 +193,8 @@ def run(args):
     report = Path(args.out) / "reports" / "offboarding.md"
     simulated = getattr(args, "simulated", False)
     total, freeable = write_report(report, folder, items, simulated)
+    json_path = Path(args.out) / "reports" / "offboarding.json"
+    write_json(json_path, build_summary(items, simulated))
     print(f"[offboard] {human_size(freeable)} of {human_size(total)} could be freed")
-    print(f"[offboard] report: {report.as_posix()}")
+    print(f"[offboard] report: {report.as_posix()} (web UI data: {json_path.as_posix()})")
     return 0

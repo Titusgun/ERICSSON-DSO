@@ -20,6 +20,7 @@ def create_app(db_path, out_dir, ui_dir=None):
     app = Flask(__name__)
     app.config["DSO_DB"] = str(db_path)
     out_dir = Path(out_dir).resolve()
+    app.config["DSO_OUT"] = str(out_dir)       # api.py reads reports from here
     if ui_dir is not None:
         ui_dir = Path(ui_dir).resolve()
 
