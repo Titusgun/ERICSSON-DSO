@@ -99,6 +99,13 @@ def test_search(db):
     assert len(results) >= 1
 
 
-@pytest.mark.skip(reason="TODO owner D: savings")
 def test_savings(db):
     assert count(db, "SELECT COUNT(*) FROM savings") >= 2
+    rows = {}
+    for row in db.execute("SELECT scenario, bytes_before, bytes_after FROM savings"):
+        rows[row[0]] = (row[1], row[2])
+    # Fixtures: deck_a and deck_b each have one exact copy.
+    assert rows["dedup"][1] < rows["dedup"][0]
+    # jane: "deck_b - Copy.pdf" exists elsewhere, my_notes.pdf is unique -> keep only my_notes.
+    my_notes = (FIXTURES / "offboarding" / "jane" / "my_notes.pdf").stat().st_size
+    assert rows["offboarding"][1] == my_notes
