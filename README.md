@@ -60,7 +60,7 @@ so a new PDF takes seconds. The web UI reloads its data every 10 s, so new resul
 live. Stop with Ctrl+C. Nothing is ever deleted.
 ```bash
 uv run dso watch data/inbox                     # a local "drop" folder
-uv run dso watch data/inbox --max-seconds 120   # live demo: only the first 2 min of new videos
+uv run dso watch data/inbox --max-seconds 120   # only if needed: just the first 2 min of new videos
 ```
 Tired of typing the flags? `cp dso.example.toml dso.toml`, adapt it, then just `uv run dso watch`
 (typed flags still win). To start it with the computer, see "Run it automatically" in the demo guides.
