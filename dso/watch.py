@@ -168,7 +168,9 @@ def watch_cycle(args, steps, last, rclone_state=None):
             rclone_state = {"failures": 0, "next_try": 0.0, "remote": remote}
         now = time.time()
         if download_due(rclone_state, now):
-            print(f"[watch] downloading new files from {remote} ...")
+            # Silent when it works: a line every 10 s pushed the useful output
+            # (the pipeline) off the screen. "change detected" below shows
+            # when new files arrived; failures print their own line.
             ok = run_rclone(rclone_download_command(remote, folder))
             record_download(rclone_state, ok, now, args.interval)
 
@@ -229,7 +231,9 @@ def run_watch(args, steps):
     folder.mkdir(parents=True, exist_ok=True)
     print(f"[watch] watching {folder.as_posix()} every {args.interval} s - Ctrl+C to stop")
     if remote:
-        print(f"[watch] cloud source: {remote}" + (" (results uploaded back)" if getattr(args, "upload", False) else ""))
+        print(f"[watch] cloud source: {remote}, checked every {args.interval} s"
+              + (" (results uploaded back)" if getattr(args, "upload", False) else "")
+              + " - quiet until new files arrive")
 
     last = None
     rclone_state = {"failures": 0, "next_try": 0.0, "remote": remote or ""}
