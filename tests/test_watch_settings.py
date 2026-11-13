@@ -26,7 +26,7 @@ def test_example_file_is_used_without_flags(tmp_path, monkeypatch):
     result, args = captured_args(monkeypatch, ["watch", "--config", str(config)])
     assert result == 0
     assert args.folder == "data/cloud" and args.rclone == "onedrive:DSO demo"
-    assert args.interval == 10 and args.max_seconds == 120 and args.source == "onedrive"
+    assert args.interval == 10 and args.max_seconds == 600 and args.source == "onedrive"
     assert args.upload is True and args.delete_originals is True
     assert args.model == "small" and args.force is False          # not in the file -> built-in
 

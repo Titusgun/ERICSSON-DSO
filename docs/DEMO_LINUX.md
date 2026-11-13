@@ -68,7 +68,7 @@ Three terminals:
 | 3 | see below | `dso watch`: processes new uploads automatically |
 
 **Settings once, then no flags:** `cp dso.example.toml dso.toml` (it already has the demo
-settings below: data/cloud, onedrive:DSO demo, interval 10, max 120 s, upload, delete originals).
+settings below: data/cloud, onedrive:DSO demo, interval 10, max 600 s, upload, delete originals).
 Then terminal 3 is just `uv run dso watch`. Typed flags still win, e.g. `uv run dso watch --max-seconds 0`.
 
 Terminal 3 with all flags written out (`systemd-inhibit` keeps the laptop awake while it runs):
@@ -77,16 +77,16 @@ cd ~/Projects/dso-py
 # cloud: download new uploads, write the AI-ready results back to DSO demo/_dso_distilled,
 # then move the originals whose content is kept (distilled videos, copies, old revisions)
 # to the OneDrive recycle bin
-systemd-inhibit --what=sleep:idle --why="dso demo" uv run dso watch data/cloud --rclone "onedrive:DSO demo" --source onedrive --interval 10 --max-seconds 120 --upload --delete-originals
+systemd-inhibit --what=sleep:idle --why="dso demo" uv run dso watch data/cloud --rclone "onedrive:DSO demo" --source onedrive --interval 10 --max-seconds 600 --upload --delete-originals
 # offline fallback
-systemd-inhibit --what=sleep:idle --why="dso demo" uv run dso watch data/inbox --interval 10 --max-seconds 120
+systemd-inhibit --what=sleep:idle --why="dso demo" uv run dso watch data/inbox --interval 10 --max-seconds 600
 ```
 `--delete-originals` frees the space for real (recycle bin, restorable 93 days; log in
 `_dso_distilled/reports/cleanup.md`). A video is only removed if it was transcribed WHOLE, so
-upload demo videos of at most 2 minutes (or raise `--max-seconds`). Leave the flag out for a
+demo videos must be shorter than `--max-seconds` (600 = 10 min). Leave the flag out for a
 show-only run; `uv run dso cleanup data/cloud --rclone "onedrive:DSO demo"` shows the plan.
-`--interval 10` checks every 10 s; `--max-seconds 120` transcribes only the first 2 minutes
-of a new video so it finishes on stage. The UI reloads its data every 10 s by itself.
+`--interval 10` checks every 10 s; `--max-seconds 600` caps a new video at 10 minutes, so a long
+upload cannot block the stage (5 minutes of audio take about a minute). The UI reloads its data every 10 s by itself.
 
 ### The script (≈ 5 min)
 1. **Real data** (already processed): savings per scenario (video 98 %, old revisions 40 %,
