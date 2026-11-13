@@ -9,3 +9,4 @@ Append one line per decision, newest at the bottom: `YYYY-MM-DD HH:MM | who | de
 2026-11-11 23:00 | Reinis | Key frames by 1 fps sampling + dHash, not ffmpeg scene detection | slide changes score only 0.19–0.25; sampling also needs no ffmpeg install
 2026-11-11 23:00 | Reinis | Thresholds: frame keep >=6, slide match <=6, visual dup <=3, revisions by text | measured on fixtures, DATA_CONTRACT 6
 2026-11-11 23:00 | Reinis | Ericsson sample data never committed or uploaded | confidentiality
+2026-11-13 13:00 | Kristofers | Transcribe with the multilingual Whisper model `small` (multilingual=True), not base.en | recordings are English but people speak Swedish during breaks; base.en turns Swedish into English nonsense (#2, #4)
