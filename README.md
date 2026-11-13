@@ -51,6 +51,39 @@ uv run dso web                             # http://127.0.0.1:5000
 uv run pytest && git push -u origin HEAD && gh pr create --fill
 ```
 
+## Automatic mode: `dso watch`
+Instead of running `dso all` after every new upload, let `dso watch` do it. It checks a
+folder every 30 s; when something was added or changed (and has finished copying), it runs
+the whole pipeline. Videos that were already processed are skipped (`--force` redoes them),
+so a new PDF takes seconds. The web UI reloads its data every 10 s, so new results appear
+live. Stop with Ctrl+C. Nothing is ever deleted.
+```bash
+uv run dso watch data/inbox                     # a local "drop" folder
+uv run dso watch data/inbox --max-seconds 120   # live demo: only the first 2 min of new videos
+```
+
+## Live demo with OneDrive / SharePoint
+**Step by step for the Windows demo laptop: [docs/DEMO_WINDOWS.md](docs/DEMO_WINDOWS.md).**
+
+**A. With the OneDrive sync client** (Windows/macOS, built in): sync a OneDrive folder or a
+SharePoint library ("Sync" button in SharePoint) and watch the synced folder:
+```bash
+uv run dso watch "C:/Users/<you>/OneDrive - <org>/DSO demo" --source onedrive
+```
+**B. Straight from the cloud with rclone** (any OS, no sync client). Install rclone
+(`sudo pacman -S rclone`, `brew install rclone`, `winget install Rclone.Rclone`), then log in
+once: `rclone config` → `n` (new remote) → name `onedrive` → storage `onedrive` → accept
+the defaults → log in in the browser → pick "OneDrive personal/business" or "SharePoint site".
+```bash
+uv run dso watch data/cloud --rclone "onedrive:DSO demo" --source onedrive
+uv run dso watch data/cloud --rclone "onedrive:DSO demo" --upload   # also write results back
+```
+`--rclone` downloads new/changed files from that cloud folder before every check.
+`--upload` copies the AI-ready exports and reports back to `DSO demo/_dso_distilled/` in the
+cloud (off unless you ask for it). Demo: upload a short video and a `deck (1).pdf` to the
+cloud folder in the browser; about a minute later the transcript, the duplicate and the new
+savings % show up in the web UI (and in `_dso_distilled/` with `--upload`).
+
 ## Team
 Read **AGENTS.md** (rules for humans and AI agents) and **docs/DATA_CONTRACT.md**.
 
