@@ -36,6 +36,8 @@ def build_parser():
 
     p = sub.add_parser("offboard", help="DRY-RUN report for a departing employee's folder")
     p.add_argument("folder")
+    p.add_argument("--simulated", action="store_true",
+                   help="mark the report as a simulated scenario (not a real leaver)")
 
     sub.add_parser("savings", help="storage before/after report")
 
