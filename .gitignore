@@ -1,5 +1,5 @@
 # Generated data - NEVER commit (may contain Ericsson material)
-out/
+#out/
 data/
 *.db
 
