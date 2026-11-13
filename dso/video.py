@@ -303,6 +303,13 @@ def whisper_options(model_name):
     return options
 
 
+def transcript_progress_step(audio_sec):
+    """Seconds of audio between progress lines: every 10 % of the audio, but at
+    least every 30 s and at most every 5 minutes. A 2-minute demo video shows
+    progress live; a 3-hour recording does not flood the terminal."""
+    return max(30.0, min(float(PROGRESS_EVERY_SEC), audio_sec / 10))
+
+
 def run_whisper(model, model_name, video_path, max_seconds):
     """Transcribes one video. Returns the transcript dict that is cached as JSON.
 
@@ -325,16 +332,18 @@ def run_whisper(model, model_name, video_path, max_seconds):
         print(f"[video]   note: {model_name} is English-only; other languages become nonsense")
 
     result_segments = []
-    next_progress = PROGRESS_EVERY_SEC
+    step = transcript_progress_step(audio_sec)
+    next_progress = step
     # `segments` is a generator: the actual transcription happens while we loop.
     for s in segments:
         text = s.text.strip()
         if text != "":
             result_segments.append({"start": round(s.start, 2), "end": round(s.end, 2), "text": text})
         if s.end >= next_progress:
-            print(f"[video]   {format_time(s.end)} / {format_time(audio_sec)}, "
+            done = min(100, round(100 * s.end / audio_sec)) if audio_sec > 0 else 100
+            print(f"[video]   transcribed {format_time(s.end)} / {format_time(audio_sec)} ({done} %), "
                   f"{len(result_segments)} segments")
-            next_progress = next_progress + PROGRESS_EVERY_SEC
+            next_progress = next_progress + step
     return {
         "model": None,                    # filled in by the caller
         "max_seconds": max_seconds,

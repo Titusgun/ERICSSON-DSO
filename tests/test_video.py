@@ -289,3 +289,9 @@ def test_stopped_run_keeps_old_frames_and_rows(paths, monkeypatch):
     assert [r["image_path"] for r in after] == [r["image_path"] for r in before]
     for row in after:
         assert (out / row["image_path"]).is_file()        # every row still has its picture
+
+
+def test_transcript_progress_step():
+    assert video.transcript_progress_step(120) == 30          # demo video: a line every 30 s
+    assert video.transcript_progress_step(1200) == 120        # 20 min: every 10 %
+    assert video.transcript_progress_step(9300) == 300        # 2.5 h: every 5 min
