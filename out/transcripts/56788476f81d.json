@@ -1,0 +1,1184 @@
+{
+  "model": "small",
+  "max_seconds": null,
+  "language": "en",
+  "language_probability": 0.585,
+  "audio_sec": 960.31,
+  "segments": [
+    {
+      "start": 0.0,
+      "end": 1.0,
+      "text": "Thank you."
+    },
+    {
+      "start": 1.0,
+      "end": 5.5,
+      "text": "Hello and welcome to our thesis presentation."
+    },
+    {
+      "start": 5.5,
+      "end": 11.0,
+      "text": "We're going to talk about grow VMs ahead of time, compilation, benefits and challenges"
+    },
+    {
+      "start": 11.0,
+      "end": 12.0,
+      "text": "in production."
+    },
+    {
+      "start": 12.0,
+      "end": 19.57,
+      "text": "It will be presented by me, Mohamed Ezan Baratakhani and me, Tommy Watson."
+    },
+    {
+      "start": 19.57,
+      "end": 27.21,
+      "text": "Here is the table of content that we're going to talk about."
+    },
+    {
+      "start": 28.21,
+      "end": 35.21,
+      "text": "As you know, Java-based application faced challenges in a contentized environment."
+    },
+    {
+      "start": 35.21,
+      "end": 41.21,
+      "text": "And these challenges include the inefficient resource usage and slow startup time,"
+    },
+    {
+      "start": 41.21,
+      "end": 47.21,
+      "text": "which affects operational sustainability and efficiency,"
+    },
+    {
+      "start": 47.21,
+      "end": 52.21,
+      "text": "and the grow VM address Java JVMs limitation"
+    },
+    {
+      "start": 52.21,
+      "end": 57.21,
+      "text": "and offering low resource consumption and faster startup time."
+    },
+    {
+      "start": 57.21,
+      "end": 64.21,
+      "text": "And it's good in cloud computing and microservices environment"
+    },
+    {
+      "start": 64.21,
+      "end": 70.21,
+      "text": "where rapid scaling and cost-effective resource consumption are critical."
+    },
+    {
+      "start": 70.21,
+      "end": 81.21,
+      "text": "And the primary objective of this thesis is to critically examine the capabilities of grow VMs."
+    },
+    {
+      "start": 81.21,
+      "end": 87.21,
+      "text": "Mainly focusing on its ahead-of-time, completion and native image support."
+    },
+    {
+      "start": 87.21,
+      "end": 93.16,
+      "text": "Here are some key terms that we need to explain."
+    },
+    {
+      "start": 93.16,
+      "end": 102.16,
+      "text": "So grow VM is a project by Oracle, which is basically a copy of the hotspot JVM."
+    },
+    {
+      "start": 102.16,
+      "end": 106.16,
+      "text": "But it's also included features like just-in-time compilation,"
+    },
+    {
+      "start": 106.16,
+      "end": 110.16,
+      "text": "or a more optimized just-in-time compilation,"
+    },
+    {
+      "start": 110.16,
+      "end": 114.16,
+      "text": "and the ability to ahead-of-time compile,"
+    },
+    {
+      "start": 114.16,
+      "end": 118.16,
+      "text": "and also running multiple languages on the same app."
+    },
+    {
+      "start": 118.16,
+      "end": 124.16,
+      "text": "So ahead-of-time compilation is compiling code into a native executable"
+    },
+    {
+      "start": 124.16,
+      "end": 130.16,
+      "text": "that can run only on the target platform."
+    },
+    {
+      "start": 130.16,
+      "end": 135.16,
+      "text": "And the grow VMs tool for this is native image."
+    },
+    {
+      "start": 135.16,
+      "end": 139.16,
+      "text": "And just-in-time compilation is compiling code at runtime,"
+    },
+    {
+      "start": 139.16,
+      "end": 143.16,
+      "text": "which is what the standard JVM uses."
+    },
+    {
+      "start": 143.16,
+      "end": 147.16,
+      "text": "And then PGO, or profile-guided optimization,"
+    },
+    {
+      "start": 147.16,
+      "end": 151.16,
+      "text": "is a technique used in ahead-of-time compilation"
+    },
+    {
+      "start": 151.16,
+      "end": 158.16,
+      "text": "because to optimize in a good way, you need more information."
+    },
+    {
+      "start": 158.16,
+      "end": 162.16,
+      "text": "So PGO is a way to create profiles of the application"
+    },
+    {
+      "start": 162.16,
+      "end": 165.16,
+      "text": "and optimize from those profiles."
+    },
+    {
+      "start": 165.16,
+      "end": 171.05,
+      "text": "Yes, and here is our resource question where the first one,"
+    },
+    {
+      "start": 171.05,
+      "end": 174.05,
+      "text": "how does the performance of a grow VMs native image"
+    },
+    {
+      "start": 174.05,
+      "end": 179.05,
+      "text": "compare to the standard JVM regarding execution speed?"
+    },
+    {
+      "start": 179.05,
+      "end": 184.05,
+      "text": "And this is compared just-in-time and ahead-of-time compilation."
+    },
+    {
+      "start": 184.05,
+      "end": 188.05,
+      "text": "And the second one, how does native image impact resource usage"
+    },
+    {
+      "start": 188.05,
+      "end": 191.05,
+      "text": "compared to the standard JVM?"
+    },
+    {
+      "start": 191.05,
+      "end": 195.05,
+      "text": "And the last one, how do developers and the system administrator"
+    },
+    {
+      "start": 195.05,
+      "end": 198.05,
+      "text": "receive the integration of the grow VM"
+    },
+    {
+      "start": 198.05,
+      "end": 202.05,
+      "text": "ahead-of-time compilation into existing workflow"
+    },
+    {
+      "start": 202.05,
+      "end": 206.05,
+      "text": "and its impact on operational efficiency?"
+    },
+    {
+      "start": 206.05,
+      "end": 210.05,
+      "text": "And our research questions are based on the article"
+    },
+    {
+      "start": 210.05,
+      "end": 215.05,
+      "text": "that claims many things about grow VM ahead-of-time,"
+    },
+    {
+      "start": 215.05,
+      "end": 219.05,
+      "text": "improved performance and improved resource usage,"
+    },
+    {
+      "start": 219.05,
+      "end": 224.13,
+      "text": "and it's production ready."
+    },
+    {
+      "start": 224.13,
+      "end": 226.13,
+      "text": "And for the broader interest,"
+    },
+    {
+      "start": 226.13,
+      "end": 230.13,
+      "text": "so grow VMs helps in reducing the environmental impact"
+    },
+    {
+      "start": 230.13,
+      "end": 234.13,
+      "text": "by making application run more efficiently"
+    },
+    {
+      "start": 234.13,
+      "end": 237.13,
+      "text": "and with efficiently mean that it uses just"
+    },
+    {
+      "start": 237.13,
+      "end": 242.13,
+      "text": "the necessary resources and services like classes and methods."
+    },
+    {
+      "start": 242.13,
+      "end": 247.13,
+      "text": "And it will be consuming less energy"
+    },
+    {
+      "start": 247.13,
+      "end": 251.13,
+      "text": "and optimized resource utilization"
+    },
+    {
+      "start": 251.13,
+      "end": 255.13,
+      "text": "lead to lower operational cost and saving money"
+    },
+    {
+      "start": 255.13,
+      "end": 258.13,
+      "text": "on infrastructure and energy pills."
+    },
+    {
+      "start": 258.13,
+      "end": 261.13,
+      "text": "And the grow VM is practically"
+    },
+    {
+      "start": 261.13,
+      "end": 266.13,
+      "text": "particularly beneficial for microservices architecture"
+    },
+    {
+      "start": 266.13,
+      "end": 271.13,
+      "text": "and improved startup times and resource efficiency,"
+    },
+    {
+      "start": 271.13,
+      "end": 276.13,
+      "text": "which are critical, crucial for scalable"
+    },
+    {
+      "start": 276.13,
+      "end": 281.94,
+      "text": "and responsive applications."
+    },
+    {
+      "start": 281.94,
+      "end": 285.94,
+      "text": "And our resource methodology is the first one,"
+    },
+    {
+      "start": 285.94,
+      "end": 290.94,
+      "text": "quantitative data collection and qualitative data collection."
+    },
+    {
+      "start": 290.94,
+      "end": 293.94,
+      "text": "So we use the performance benchmarks"
+    },
+    {
+      "start": 293.94,
+      "end": 296.94,
+      "text": "and the resource users' metrics"
+    },
+    {
+      "start": 296.94,
+      "end": 299.94,
+      "text": "to provide the price and the objective data"
+    },
+    {
+      "start": 299.94,
+      "end": 304.94,
+      "text": "on how different JVM configuration versus standard"
+    },
+    {
+      "start": 304.94,
+      "end": 306.94,
+      "text": "versus grow VMs prefer."
+    },
+    {
+      "start": 306.94,
+      "end": 312.94,
+      "text": "And it will highlight the performance improvement"
+    },
+    {
+      "start": 312.94,
+      "end": 315.94,
+      "text": "or regulations."
+    },
+    {
+      "start": 315.94,
+      "end": 318.94,
+      "text": "And for the qualitative data collection"
+    },
+    {
+      "start": 318.94,
+      "end": 321.94,
+      "text": "we use the semi-structured interviews"
+    },
+    {
+      "start": 321.94,
+      "end": 326.94,
+      "text": "where it's an offer in depth on understanding"
+    },
+    {
+      "start": 326.94,
+      "end": 329.94,
+      "text": "the practical challenges and benefits"
+    },
+    {
+      "start": 329.94,
+      "end": 334.94,
+      "text": "of integration grow VM into existing workflow"
+    },
+    {
+      "start": 334.94,
+      "end": 337.94,
+      "text": "and this type of open-ended questions"
+    },
+    {
+      "start": 337.94,
+      "end": 341.94,
+      "text": "will allow informants to the flexibility"
+    },
+    {
+      "start": 341.94,
+      "end": 344.94,
+      "text": "to share their views in their own words."
+    },
+    {
+      "start": 344.94,
+      "end": 350.54,
+      "text": "So the benchmark suite we decided on"
+    },
+    {
+      "start": 350.54,
+      "end": 355.54,
+      "text": "was to use two use cases to test an application."
+    },
+    {
+      "start": 355.54,
+      "end": 358.54,
+      "text": "The first use case we used was zero prefix hashing,"
+    },
+    {
+      "start": 358.54,
+      "end": 362.54,
+      "text": "which is a very CPU heavy use case."
+    },
+    {
+      "start": 362.54,
+      "end": 368.54,
+      "text": "And then the second use case was text prediction algorithm"
+    },
+    {
+      "start": 368.54,
+      "end": 372.54,
+      "text": "which uses a large dataset to predict text,"
+    },
+    {
+      "start": 372.54,
+      "end": 376.54,
+      "text": "which is both CPU and memory intensive."
+    },
+    {
+      "start": 376.54,
+      "end": 379.54,
+      "text": "Each test was run 100 times"
+    },
+    {
+      "start": 379.54,
+      "end": 384.54,
+      "text": "to get an accurate picture of both the stability"
+    },
+    {
+      "start": 384.54,
+      "end": 389.54,
+      "text": "of the performance and to be able to see"
+    },
+    {
+      "start": 389.54,
+      "end": 394.54,
+      "text": "the startup and warm-up times for the JVMs."
+    },
+    {
+      "start": 394.54,
+      "end": 397.54,
+      "text": "Performance was monitored internally,"
+    },
+    {
+      "start": 397.54,
+      "end": 402.54,
+      "text": "but we tested them through API endpoints"
+    },
+    {
+      "start": 402.54,
+      "end": 406.54,
+      "text": "to make it easier to test."
+    },
+    {
+      "start": 406.54,
+      "end": 408.54,
+      "text": "And then we also measured memory usage,"
+    },
+    {
+      "start": 408.54,
+      "end": 411.54,
+      "text": "both average and peak."
+    },
+    {
+      "start": 411.54,
+      "end": 415.54,
+      "text": "And we also recorded compilation and build time"
+    },
+    {
+      "start": 415.54,
+      "end": 418.54,
+      "text": "or compilation time and build size."
+    },
+    {
+      "start": 418.54,
+      "end": 423.54,
+      "text": "So the builds we compared were the normal hotspots"
+    },
+    {
+      "start": 423.54,
+      "end": 427.54,
+      "text": "just in time, the Gravium optimized just in time,"
+    },
+    {
+      "start": 427.54,
+      "end": 430.54,
+      "text": "and then for native images,"
+    },
+    {
+      "start": 430.54,
+      "end": 434.54,
+      "text": "one that had no profiled optimization,"
+    },
+    {
+      "start": 434.54,
+      "end": 437.54,
+      "text": "one that had on use case one,"
+    },
+    {
+      "start": 437.54,
+      "end": 439.54,
+      "text": "one that had PGO on use case two,"
+    },
+    {
+      "start": 439.54,
+      "end": 444.33,
+      "text": "and one that had full PGO."
+    },
+    {
+      "start": 444.33,
+      "end": 448.33,
+      "text": "So here we can see from the graphs"
+    },
+    {
+      "start": 448.33,
+      "end": 453.33,
+      "text": "that we can see on the yellow and red lines"
+    },
+    {
+      "start": 453.33,
+      "end": 457.33,
+      "text": "that those are just in times,"
+    },
+    {
+      "start": 457.33,
+      "end": 462.33,
+      "text": "and they start up very high, very slow,"
+    },
+    {
+      "start": 462.33,
+      "end": 464.33,
+      "text": "and then once they warm up,"
+    },
+    {
+      "start": 464.33,
+      "end": 468.33,
+      "text": "they settle into a very good performance position."
+    },
+    {
+      "start": 468.33,
+      "end": 473.33,
+      "text": "And we can see on the left that the Gravium just in time"
+    },
+    {
+      "start": 473.33,
+      "end": 476.33,
+      "text": "outperformed the full PGO,"
+    },
+    {
+      "start": 476.33,
+      "end": 480.33,
+      "text": "which is the fastest of the native images"
+    },
+    {
+      "start": 480.33,
+      "end": 482.33,
+      "text": "by about 16%."
+    },
+    {
+      "start": 482.33,
+      "end": 486.33,
+      "text": "And we can see on the right that the native image"
+    },
+    {
+      "start": 486.33,
+      "end": 489.33,
+      "text": "actually outperformed the Gravium just in time,"
+    },
+    {
+      "start": 489.33,
+      "end": 493.33,
+      "text": "which was the fastest of the just in times."
+    },
+    {
+      "start": 493.33,
+      "end": 497.33,
+      "text": "So we can see here that it really depends on the use case"
+    },
+    {
+      "start": 497.33,
+      "end": 500.33,
+      "text": "if native image can improve performance or not,"
+    },
+    {
+      "start": 500.33,
+      "end": 505.33,
+      "text": "but when it comes to the first few executions,"
+    },
+    {
+      "start": 505.33,
+      "end": 508.33,
+      "text": "it can be a lot faster."
+    },
+    {
+      "start": 508.33,
+      "end": 513.33,
+      "text": "We can also see that PGO increases the performance by a lot"
+    },
+    {
+      "start": 513.33,
+      "end": 516.33,
+      "text": "in both use cases."
+    },
+    {
+      "start": 516.33,
+      "end": 518.33,
+      "text": "When not using PGO,"
+    },
+    {
+      "start": 518.33,
+      "end": 526.78,
+      "text": "execution took about 1.8 to 2 times slower."
+    },
+    {
+      "start": 526.78,
+      "end": 528.78,
+      "text": "And then we can see here,"
+    },
+    {
+      "start": 528.78,
+      "end": 530.78,
+      "text": "we can start with memory usage."
+    },
+    {
+      "start": 530.78,
+      "end": 534.78,
+      "text": "The just in times were used a lot of memory."
+    },
+    {
+      "start": 534.78,
+      "end": 538.78,
+      "text": "We can also see that Grav just in time used more memory,"
+    },
+    {
+      "start": 538.78,
+      "end": 541.78,
+      "text": "which is probably because of its more aggressive optimization"
+    },
+    {
+      "start": 541.78,
+      "end": 545.78,
+      "text": "and sacrificing memory to get better performance."
+    },
+    {
+      "start": 545.78,
+      "end": 549.78,
+      "text": "And we can also see that the native images"
+    },
+    {
+      "start": 549.78,
+      "end": 552.78,
+      "text": "are pretty good in memory usage,"
+    },
+    {
+      "start": 552.78,
+      "end": 555.78,
+      "text": "but we can see that the more PGO you use,"
+    },
+    {
+      "start": 555.78,
+      "end": 557.78,
+      "text": "the more memory it uses."
+    },
+    {
+      "start": 557.78,
+      "end": 560.78,
+      "text": "And we can see that the Grav just in time"
+    },
+    {
+      "start": 560.78,
+      "end": 562.78,
+      "text": "has a lot of peak memory usage,"
+    },
+    {
+      "start": 562.78,
+      "end": 564.78,
+      "text": "which was during the warm up,"
+    },
+    {
+      "start": 564.78,
+      "end": 570.78,
+      "text": "but then it settled in and stuck around the 100 mark"
+    },
+    {
+      "start": 570.78,
+      "end": 572.78,
+      "text": "during execution."
+    },
+    {
+      "start": 572.78,
+      "end": 574.78,
+      "text": "And we can also see in the build size"
+    },
+    {
+      "start": 574.78,
+      "end": 578.78,
+      "text": "that just in times are much better on build size."
+    },
+    {
+      "start": 578.78,
+      "end": 581.78,
+      "text": "It's much smaller than the native images,"
+    },
+    {
+      "start": 581.78,
+      "end": 583.78,
+      "text": "which were a lot bigger"
+    },
+    {
+      "start": 583.78,
+      "end": 585.78,
+      "text": "because they contain a lot more information"
+    },
+    {
+      "start": 585.78,
+      "end": 591.78,
+      "text": "and they contain the native code to execute."
+    },
+    {
+      "start": 591.78,
+      "end": 593.78,
+      "text": "And we can see in compilation time"
+    },
+    {
+      "start": 593.78,
+      "end": 597.78,
+      "text": "that the native images are a lot slower to compile,"
+    },
+    {
+      "start": 597.78,
+      "end": 601.78,
+      "text": "even though this is a very small image."
+    },
+    {
+      "start": 601.78,
+      "end": 606.78,
+      "text": "And the native images will never be faster"
+    },
+    {
+      "start": 606.78,
+      "end": 609.78,
+      "text": "because you first have to compile to a jar"
+    },
+    {
+      "start": 609.78,
+      "end": 612.78,
+      "text": "and then do the native image step."
+    },
+    {
+      "start": 612.78,
+      "end": 616.78,
+      "text": "So it would always be slower than just compiling for adjusting time."
+    },
+    {
+      "start": 619.34,
+      "end": 622.34,
+      "text": "Yes, analysis of findings."
+    },
+    {
+      "start": 622.34,
+      "end": 624.34,
+      "text": "So for the performance native image"
+    },
+    {
+      "start": 624.34,
+      "end": 627.34,
+      "text": "can out from just in time in specific cases"
+    },
+    {
+      "start": 627.34,
+      "end": 672.79,
+      "text": "with PGO and online developer display spectrum"
+    },
+    {
+      "start": 672.79,
+      "end": 675.79,
+      "text": "of family tree with the Graal VM"
+    },
+    {
+      "start": 675.79,
+      "end": 679.79,
+      "text": "from basic to advanced and perceived benefits."
+    },
+    {
+      "start": 679.79,
+      "end": 681.79,
+      "text": "So faster startup time."
+    },
+    {
+      "start": 681.79,
+      "end": 683.79,
+      "text": "This is especially for application"
+    },
+    {
+      "start": 683.79,
+      "end": 688.79,
+      "text": "that need quick responsive like serverless functions"
+    },
+    {
+      "start": 688.79,
+      "end": 691.79,
+      "text": "and reduced memory usage"
+    },
+    {
+      "start": 691.79,
+      "end": 694.79,
+      "text": "where it's important for microservices"
+    },
+    {
+      "start": 694.79,
+      "end": 698.79,
+      "text": "that run in resource constrained environment"
+    },
+    {
+      "start": 698.79,
+      "end": 702.79,
+      "text": "and for the challenges they thought."
+    },
+    {
+      "start": 702.79,
+      "end": 705.79,
+      "text": "So complex configuration."
+    },
+    {
+      "start": 705.79,
+      "end": 707.79,
+      "text": "It requires significant efforts"
+    },
+    {
+      "start": 707.79,
+      "end": 711.79,
+      "text": "to configure for dynamic future like reflections"
+    },
+    {
+      "start": 711.79,
+      "end": 713.79,
+      "text": "and for the learning curve."
+    },
+    {
+      "start": 713.79,
+      "end": 716.79,
+      "text": "So developers need to train"
+    },
+    {
+      "start": 716.79,
+      "end": 724.58,
+      "text": "to effectively use ahead of time compilation and PGO."
+    },
+    {
+      "start": 724.58,
+      "end": 726.58,
+      "text": "So the value of our work"
+    },
+    {
+      "start": 726.58,
+      "end": 729.58,
+      "text": "is that Graal VMs ahead of time"
+    },
+    {
+      "start": 729.58,
+      "end": 732.58,
+      "text": "enhances JVM based applications"
+    },
+    {
+      "start": 732.58,
+      "end": 735.58,
+      "text": "especially by reducing memory usage"
+    },
+    {
+      "start": 735.58,
+      "end": 738.58,
+      "text": "which is important in microservices."
+    },
+    {
+      "start": 738.58,
+      "end": 743.58,
+      "text": "PGO also ensures that performance isn't"
+    },
+    {
+      "start": 743.58,
+      "end": 746.58,
+      "text": "much worse in key use cases"
+    },
+    {
+      "start": 746.58,
+      "end": 748.58,
+      "text": "and sometimes better"
+    },
+    {
+      "start": 748.58,
+      "end": 751.58,
+      "text": "but it has drawbacks such as increasing memory"
+    },
+    {
+      "start": 751.58,
+      "end": 753.58,
+      "text": "increasing compilation time"
+    },
+    {
+      "start": 753.58,
+      "end": 756.58,
+      "text": "and increasing image size."
+    },
+    {
+      "start": 756.58,
+      "end": 758.58,
+      "text": "And developers are concerned"
+    },
+    {
+      "start": 758.58,
+      "end": 762.58,
+      "text": "about the added configuration complexity."
+    },
+    {
+      "start": 762.58,
+      "end": 765.58,
+      "text": "We can also note that performance is instant"
+    },
+    {
+      "start": 765.58,
+      "end": 767.58,
+      "text": "there is no warm up needed"
+    },
+    {
+      "start": 767.58,
+      "end": 772.58,
+      "text": "so they can be good for serverless functions"
+    },
+    {
+      "start": 773.58,
+      "end": 776.58,
+      "text": "and there is also a significant potential"
+    },
+    {
+      "start": 776.58,
+      "end": 780.58,
+      "text": "for cost and resource efficiency improvements"
+    },
+    {
+      "start": 780.58,
+      "end": 782.58,
+      "text": "in production environments."
+    },
+    {
+      "start": 782.58,
+      "end": 789.3,
+      "text": "Yes, for the validity threats and future work"
+    },
+    {
+      "start": 789.3,
+      "end": 793.3,
+      "text": "so validity threats we thought"
+    },
+    {
+      "start": 793.3,
+      "end": 797.3,
+      "text": "that Graal VMs was released in 2019"
+    },
+    {
+      "start": 797.3,
+      "end": 802.3,
+      "text": "making it's a little bit new in the industry"
+    },
+    {
+      "start": 802.3,
+      "end": 805.3,
+      "text": "because it's a new technologies"
+    },
+    {
+      "start": 805.3,
+      "end": 808.3,
+      "text": "not many companies and developers"
+    },
+    {
+      "start": 808.3,
+      "end": 811.3,
+      "text": "have used it extensively"
+    },
+    {
+      "start": 811.3,
+      "end": 815.3,
+      "text": "so due to its limited adoption"
+    },
+    {
+      "start": 815.3,
+      "end": 818.3,
+      "text": "we had a small sample size of developers"
+    },
+    {
+      "start": 818.3,
+      "end": 822.3,
+      "text": "with hands-on experience using Graal VM"
+    },
+    {
+      "start": 822.3,
+      "end": 826.3,
+      "text": "and these results are specific"
+    },
+    {
+      "start": 826.3,
+      "end": 830.3,
+      "text": "to our software configuration used in our study"
+    },
+    {
+      "start": 830.3,
+      "end": 834.3,
+      "text": "so browser testing is needed"
+    },
+    {
+      "start": 834.3,
+      "end": 838.3,
+      "text": "to validate findings in varied environments."
+    },
+    {
+      "start": 838.3,
+      "end": 841.3,
+      "text": "And then for future work"
+    },
+    {
+      "start": 841.3,
+      "end": 845.3,
+      "text": "we think that a good next step"
+    },
+    {
+      "start": 845.3,
+      "end": 847.3,
+      "text": "would be case studies"
+    },
+    {
+      "start": 847.3,
+      "end": 849.3,
+      "text": "on real-world applications"
+    },
+    {
+      "start": 849.3,
+      "end": 851.3,
+      "text": "to see how the performance"
+    },
+    {
+      "start": 851.3,
+      "end": 855.3,
+      "text": "and resource usage can be"
+    },
+    {
+      "start": 855.3,
+      "end": 858.3,
+      "text": "is affected by using ahead of time"
+    },
+    {
+      "start": 858.3,
+      "end": 862.3,
+      "text": "completion and also explore more use cases"
+    },
+    {
+      "start": 862.3,
+      "end": 864.3,
+      "text": "for ahead-of-time completion."
+    },
+    {
+      "start": 864.3,
+      "end": 869.27,
+      "text": "Yes, thank you for listening"
+    },
+    {
+      "start": 869.27,
+      "end": 874.27,
+      "text": "and a special thanks for Lakmal and Park."
+    },
+    {
+      "start": 874.27,
+      "end": 877.27,
+      "text": "Nice, thank you"
+    },
+    {
+      "start": 877.27,
+      "end": 880.27,
+      "text": "and a big applause for that."
+    },
+    {
+      "start": 880.27,
+      "end": 885.64,
+      "text": "And do we have any questions"
+    },
+    {
+      "start": 885.64,
+      "end": 888.64,
+      "text": "in the audience or online, Lakmal?"
+    },
+    {
+      "start": 888.64,
+      "end": 901.91,
+      "text": "I think you started off with one of the"
+    },
+    {
+      "start": 901.91,
+      "end": 904.91,
+      "text": "Aida services, I wonder what happened to that track"
+    },
+    {
+      "start": 904.91,
+      "end": 907.91,
+      "text": "and what problems you encountered there?"
+    },
+    {
+      "start": 907.91,
+      "end": 912.91,
+      "text": "Yes, so during that track"
+    },
+    {
+      "start": 912.91,
+      "end": 915.91,
+      "text": "we got a build"
+    },
+    {
+      "start": 915.91,
+      "end": 918.91,
+      "text": "we compiled to a build"
+    },
+    {
+      "start": 918.91,
+      "end": 920.91,
+      "text": "and we set up a test environment"
+    },
+    {
+      "start": 920.91,
+      "end": 923.91,
+      "text": "but we have not gotten any tests"
+    },
+    {
+      "start": 923.91,
+      "end": 925.91,
+      "text": "to actually work"
+    },
+    {
+      "start": 925.91,
+      "end": 928.91,
+      "text": "it seems like the image is not really working"
+    },
+    {
+      "start": 928.91,
+      "end": 933.91,
+      "text": "so we have spent a lot of time trying to debug that"
+    },
+    {
+      "start": 933.91,
+      "end": 939.91,
+      "text": "but none of the things we have tried is working"
+    },
+    {
+      "start": 939.91,
+      "end": 944.91,
+      "text": "so we don't really know what to do"
+    },
+    {
+      "start": 944.91,
+      "end": 947.91,
+      "text": "so it was very hard to incorporate"
+    },
+    {
+      "start": 947.91,
+      "end": 949.91,
+      "text": "in production environments"
+    },
+    {
+      "start": 949.91,
+      "end": 955.24,
+      "text": "we thought."
+    },
+    {
+      "start": 955.24,
+      "end": 956.24,
+      "text": "Any questions?"
+    },
+    {
+      "start": 956.24,
+      "end": 960.13,
+      "text": "Thanks again."
+    }
+  ]
+}

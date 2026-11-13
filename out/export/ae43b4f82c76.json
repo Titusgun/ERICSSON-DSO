@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "source": {
+    "file_name": "Challenge_Ericsson.docx",
+    "path": "data/Challenge_Ericsson.docx",
+    "sha256": "ae43b4f82c76b55ec9511ac92d0d32b3b1585c23a8b51a3f3910d253245981df",
+    "size_bytes": 285883,
+    "kind": "document",
+    "system": "local",
+    "doc_number": null,
+    "revision": null,
+    "author": null,
+    "date": null
+  },
+  "generated_at": "2026-11-13T14:40:02Z",
+  "duration_sec": null,
+  "frames": [],
+  "segments": [],
+  "slides_referenced": []
+}

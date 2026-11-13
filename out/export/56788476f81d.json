@@ -1,0 +1,2265 @@
+{
+  "schema_version": 1,
+  "source": {
+    "file_name": "GraalVMs_Ahead-of-Time_Compilation_(Source).mp4",
+    "path": "data/GraalVMs_Ahead-of-Time_Compilation_(Source).mp4",
+    "sha256": "56788476f81d23dab45cde7bbf89a6f537ca1d31951567e512845690d3dd46c8",
+    "size_bytes": 220480662,
+    "kind": "video",
+    "system": "local",
+    "doc_number": null,
+    "revision": null,
+    "author": null,
+    "date": null
+  },
+  "generated_at": "2026-11-13T14:40:02Z",
+  "duration_sec": 960.13,
+  "frames": [
+    {
+      "id": 984,
+      "t_sec": 0.0,
+      "image": "frames/56788476f81d/f0001.webp",
+      "dhash": "4654343c08c44024",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 985,
+      "t_sec": 19.0,
+      "image": "frames/56788476f81d/f0002.webp",
+      "dhash": "6040644464744064",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 986,
+      "t_sec": 26.0,
+      "image": "frames/56788476f81d/f0003.webp",
+      "dhash": "6440342404040064",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 987,
+      "t_sec": 90.0,
+      "image": "frames/56788476f81d/f0004.webp",
+      "dhash": "34602ce8a84c0074",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 988,
+      "t_sec": 167.0,
+      "image": "frames/56788476f81d/f0005.webp",
+      "dhash": "6460541c1c540064",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 989,
+      "t_sec": 223.0,
+      "image": "frames/56788476f81d/f0006.webp",
+      "dhash": "6440585858400060",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 990,
+      "t_sec": 280.0,
+      "image": "frames/56788476f81d/f0007.webp",
+      "dhash": "6440246c24240468",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 991,
+      "t_sec": 348.0,
+      "image": "frames/56788476f81d/f0008.webp",
+      "dhash": "64405c7c6c6c646c",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 992,
+      "t_sec": 444.0,
+      "image": "frames/56788476f81d/f0009.webp",
+      "dhash": "74602464e4640064",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 993,
+      "t_sec": 525.0,
+      "image": "frames/56788476f81d/f0010.webp",
+      "dhash": "6460d45458580070",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 994,
+      "t_sec": 526.0,
+      "image": "frames/56788476f81d/f0011.webp",
+      "dhash": "342088c84c2c0874",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 995,
+      "t_sec": 619.0,
+      "image": "frames/56788476f81d/f0012.webp",
+      "dhash": "6460d45458580070",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 996,
+      "t_sec": 660.0,
+      "image": "frames/56788476f81d/f0013.webp",
+      "dhash": "1c70545854540064",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 997,
+      "t_sec": 724.0,
+      "image": "frames/56788476f81d/f0014.webp",
+      "dhash": "6440c43474f40074",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 998,
+      "t_sec": 786.0,
+      "image": "frames/56788476f81d/f0015.webp",
+      "dhash": "5c50545474744024",
+      "slide_id": null,
+      "match_dist": null
+    },
+    {
+      "id": 999,
+      "t_sec": 868.0,
+      "image": "frames/56788476f81d/f0016.webp",
+      "dhash": "04000c5c5c1c0004",
+      "slide_id": null,
+      "match_dist": null
+    }
+  ],
+  "segments": [
+    {
+      "id": 4107,
+      "start_sec": 0.0,
+      "end_sec": 1.0,
+      "speaker": "Speaker ?",
+      "text": "Thank you.",
+      "frame_id": 984,
+      "slide_id": null
+    },
+    {
+      "id": 4108,
+      "start_sec": 1.0,
+      "end_sec": 5.5,
+      "speaker": "Speaker ?",
+      "text": "Hello and welcome to our thesis presentation.",
+      "frame_id": 984,
+      "slide_id": null
+    },
+    {
+      "id": 4109,
+      "start_sec": 5.5,
+      "end_sec": 11.0,
+      "speaker": "Speaker ?",
+      "text": "We're going to talk about grow VMs ahead of time, compilation, benefits and challenges",
+      "frame_id": 984,
+      "slide_id": null
+    },
+    {
+      "id": 4110,
+      "start_sec": 11.0,
+      "end_sec": 12.0,
+      "speaker": "Speaker ?",
+      "text": "in production.",
+      "frame_id": 984,
+      "slide_id": null
+    },
+    {
+      "id": 4111,
+      "start_sec": 12.0,
+      "end_sec": 19.57,
+      "speaker": "Speaker ?",
+      "text": "It will be presented by me, Mohamed Ezan Baratakhani and me, Tommy Watson.",
+      "frame_id": 984,
+      "slide_id": null
+    },
+    {
+      "id": 4112,
+      "start_sec": 19.57,
+      "end_sec": 27.21,
+      "speaker": "Speaker ?",
+      "text": "Here is the table of content that we're going to talk about.",
+      "frame_id": 985,
+      "slide_id": null
+    },
+    {
+      "id": 4113,
+      "start_sec": 28.21,
+      "end_sec": 35.21,
+      "speaker": "Speaker ?",
+      "text": "As you know, Java-based application faced challenges in a contentized environment.",
+      "frame_id": 986,
+      "slide_id": null
+    },
+    {
+      "id": 4114,
+      "start_sec": 35.21,
+      "end_sec": 41.21,
+      "speaker": "Speaker ?",
+      "text": "And these challenges include the inefficient resource usage and slow startup time,",
+      "frame_id": 986,
+      "slide_id": null
+    },
+    {
+      "id": 4115,
+      "start_sec": 41.21,
+      "end_sec": 47.21,
+      "speaker": "Speaker ?",
+      "text": "which affects operational sustainability and efficiency,",
+      "frame_id": 986,
+      "slide_id": null
+    },
+    {
+      "id": 4116,
+      "start_sec": 47.21,
+      "end_sec": 52.21,
+      "speaker": "Speaker ?",
+      "text": "and the grow VM address Java JVMs limitation",
+      "frame_id": 986,
+      "slide_id": null
+    },
+    {
+      "id": 4117,
+      "start_sec": 52.21,
+      "end_sec": 57.21,
+      "speaker": "Speaker ?",
+      "text": "and offering low resource consumption and faster startup time.",
+      "frame_id": 986,
+      "slide_id": null
+    },
+    {
+      "id": 4118,
+      "start_sec": 57.21,
+      "end_sec": 64.21,
+      "speaker": "Speaker ?",
+      "text": "And it's good in cloud computing and microservices environment",
+      "frame_id": 986,
+      "slide_id": null
+    },
+    {
+      "id": 4119,
+      "start_sec": 64.21,
+      "end_sec": 70.21,
+      "speaker": "Speaker ?",
+      "text": "where rapid scaling and cost-effective resource consumption are critical.",
+      "frame_id": 986,
+      "slide_id": null
+    },
+    {
+      "id": 4120,
+      "start_sec": 70.21,
+      "end_sec": 81.21,
+      "speaker": "Speaker ?",
+      "text": "And the primary objective of this thesis is to critically examine the capabilities of grow VMs.",
+      "frame_id": 986,
+      "slide_id": null
+    },
+    {
+      "id": 4121,
+      "start_sec": 81.21,
+      "end_sec": 87.21,
+      "speaker": "Speaker ?",
+      "text": "Mainly focusing on its ahead-of-time, completion and native image support.",
+      "frame_id": 986,
+      "slide_id": null
+    },
+    {
+      "id": 4122,
+      "start_sec": 87.21,
+      "end_sec": 93.16,
+      "speaker": "Speaker ?",
+      "text": "Here are some key terms that we need to explain.",
+      "frame_id": 986,
+      "slide_id": null
+    },
+    {
+      "id": 4123,
+      "start_sec": 93.16,
+      "end_sec": 102.16,
+      "speaker": "Speaker ?",
+      "text": "So grow VM is a project by Oracle, which is basically a copy of the hotspot JVM.",
+      "frame_id": 987,
+      "slide_id": null
+    },
+    {
+      "id": 4124,
+      "start_sec": 102.16,
+      "end_sec": 106.16,
+      "speaker": "Speaker ?",
+      "text": "But it's also included features like just-in-time compilation,",
+      "frame_id": 987,
+      "slide_id": null
+    },
+    {
+      "id": 4125,
+      "start_sec": 106.16,
+      "end_sec": 110.16,
+      "speaker": "Speaker ?",
+      "text": "or a more optimized just-in-time compilation,",
+      "frame_id": 987,
+      "slide_id": null
+    },
+    {
+      "id": 4126,
+      "start_sec": 110.16,
+      "end_sec": 114.16,
+      "speaker": "Speaker ?",
+      "text": "and the ability to ahead-of-time compile,",
+      "frame_id": 987,
+      "slide_id": null
+    },
+    {
+      "id": 4127,
+      "start_sec": 114.16,
+      "end_sec": 118.16,
+      "speaker": "Speaker ?",
+      "text": "and also running multiple languages on the same app.",
+      "frame_id": 987,
+      "slide_id": null
+    },
+    {
+      "id": 4128,
+      "start_sec": 118.16,
+      "end_sec": 124.16,
+      "speaker": "Speaker ?",
+      "text": "So ahead-of-time compilation is compiling code into a native executable",
+      "frame_id": 987,
+      "slide_id": null
+    },
+    {
+      "id": 4129,
+      "start_sec": 124.16,
+      "end_sec": 130.16,
+      "speaker": "Speaker ?",
+      "text": "that can run only on the target platform.",
+      "frame_id": 987,
+      "slide_id": null
+    },
+    {
+      "id": 4130,
+      "start_sec": 130.16,
+      "end_sec": 135.16,
+      "speaker": "Speaker ?",
+      "text": "And the grow VMs tool for this is native image.",
+      "frame_id": 987,
+      "slide_id": null
+    },
+    {
+      "id": 4131,
+      "start_sec": 135.16,
+      "end_sec": 139.16,
+      "speaker": "Speaker ?",
+      "text": "And just-in-time compilation is compiling code at runtime,",
+      "frame_id": 987,
+      "slide_id": null
+    },
+    {
+      "id": 4132,
+      "start_sec": 139.16,
+      "end_sec": 143.16,
+      "speaker": "Speaker ?",
+      "text": "which is what the standard JVM uses.",
+      "frame_id": 987,
+      "slide_id": null
+    },
+    {
+      "id": 4133,
+      "start_sec": 143.16,
+      "end_sec": 147.16,
+      "speaker": "Speaker ?",
+      "text": "And then PGO, or profile-guided optimization,",
+      "frame_id": 987,
+      "slide_id": null
+    },
+    {
+      "id": 4134,
+      "start_sec": 147.16,
+      "end_sec": 151.16,
+      "speaker": "Speaker ?",
+      "text": "is a technique used in ahead-of-time compilation",
+      "frame_id": 987,
+      "slide_id": null
+    },
+    {
+      "id": 4135,
+      "start_sec": 151.16,
+      "end_sec": 158.16,
+      "speaker": "Speaker ?",
+      "text": "because to optimize in a good way, you need more information.",
+      "frame_id": 987,
+      "slide_id": null
+    },
+    {
+      "id": 4136,
+      "start_sec": 158.16,
+      "end_sec": 162.16,
+      "speaker": "Speaker ?",
+      "text": "So PGO is a way to create profiles of the application",
+      "frame_id": 987,
+      "slide_id": null
+    },
+    {
+      "id": 4137,
+      "start_sec": 162.16,
+      "end_sec": 165.16,
+      "speaker": "Speaker ?",
+      "text": "and optimize from those profiles.",
+      "frame_id": 987,
+      "slide_id": null
+    },
+    {
+      "id": 4138,
+      "start_sec": 165.16,
+      "end_sec": 171.05,
+      "speaker": "Speaker ?",
+      "text": "Yes, and here is our resource question where the first one,",
+      "frame_id": 987,
+      "slide_id": null
+    },
+    {
+      "id": 4139,
+      "start_sec": 171.05,
+      "end_sec": 174.05,
+      "speaker": "Speaker ?",
+      "text": "how does the performance of a grow VMs native image",
+      "frame_id": 988,
+      "slide_id": null
+    },
+    {
+      "id": 4140,
+      "start_sec": 174.05,
+      "end_sec": 179.05,
+      "speaker": "Speaker ?",
+      "text": "compare to the standard JVM regarding execution speed?",
+      "frame_id": 988,
+      "slide_id": null
+    },
+    {
+      "id": 4141,
+      "start_sec": 179.05,
+      "end_sec": 184.05,
+      "speaker": "Speaker ?",
+      "text": "And this is compared just-in-time and ahead-of-time compilation.",
+      "frame_id": 988,
+      "slide_id": null
+    },
+    {
+      "id": 4142,
+      "start_sec": 184.05,
+      "end_sec": 188.05,
+      "speaker": "Speaker ?",
+      "text": "And the second one, how does native image impact resource usage",
+      "frame_id": 988,
+      "slide_id": null
+    },
+    {
+      "id": 4143,
+      "start_sec": 188.05,
+      "end_sec": 191.05,
+      "speaker": "Speaker ?",
+      "text": "compared to the standard JVM?",
+      "frame_id": 988,
+      "slide_id": null
+    },
+    {
+      "id": 4144,
+      "start_sec": 191.05,
+      "end_sec": 195.05,
+      "speaker": "Speaker ?",
+      "text": "And the last one, how do developers and the system administrator",
+      "frame_id": 988,
+      "slide_id": null
+    },
+    {
+      "id": 4145,
+      "start_sec": 195.05,
+      "end_sec": 198.05,
+      "speaker": "Speaker ?",
+      "text": "receive the integration of the grow VM",
+      "frame_id": 988,
+      "slide_id": null
+    },
+    {
+      "id": 4146,
+      "start_sec": 198.05,
+      "end_sec": 202.05,
+      "speaker": "Speaker ?",
+      "text": "ahead-of-time compilation into existing workflow",
+      "frame_id": 988,
+      "slide_id": null
+    },
+    {
+      "id": 4147,
+      "start_sec": 202.05,
+      "end_sec": 206.05,
+      "speaker": "Speaker ?",
+      "text": "and its impact on operational efficiency?",
+      "frame_id": 988,
+      "slide_id": null
+    },
+    {
+      "id": 4148,
+      "start_sec": 206.05,
+      "end_sec": 210.05,
+      "speaker": "Speaker ?",
+      "text": "And our research questions are based on the article",
+      "frame_id": 988,
+      "slide_id": null
+    },
+    {
+      "id": 4149,
+      "start_sec": 210.05,
+      "end_sec": 215.05,
+      "speaker": "Speaker ?",
+      "text": "that claims many things about grow VM ahead-of-time,",
+      "frame_id": 988,
+      "slide_id": null
+    },
+    {
+      "id": 4150,
+      "start_sec": 215.05,
+      "end_sec": 219.05,
+      "speaker": "Speaker ?",
+      "text": "improved performance and improved resource usage,",
+      "frame_id": 988,
+      "slide_id": null
+    },
+    {
+      "id": 4151,
+      "start_sec": 219.05,
+      "end_sec": 224.13,
+      "speaker": "Speaker ?",
+      "text": "and it's production ready.",
+      "frame_id": 988,
+      "slide_id": null
+    },
+    {
+      "id": 4152,
+      "start_sec": 224.13,
+      "end_sec": 226.13,
+      "speaker": "Speaker ?",
+      "text": "And for the broader interest,",
+      "frame_id": 989,
+      "slide_id": null
+    },
+    {
+      "id": 4153,
+      "start_sec": 226.13,
+      "end_sec": 230.13,
+      "speaker": "Speaker ?",
+      "text": "so grow VMs helps in reducing the environmental impact",
+      "frame_id": 989,
+      "slide_id": null
+    },
+    {
+      "id": 4154,
+      "start_sec": 230.13,
+      "end_sec": 234.13,
+      "speaker": "Speaker ?",
+      "text": "by making application run more efficiently",
+      "frame_id": 989,
+      "slide_id": null
+    },
+    {
+      "id": 4155,
+      "start_sec": 234.13,
+      "end_sec": 237.13,
+      "speaker": "Speaker ?",
+      "text": "and with efficiently mean that it uses just",
+      "frame_id": 989,
+      "slide_id": null
+    },
+    {
+      "id": 4156,
+      "start_sec": 237.13,
+      "end_sec": 242.13,
+      "speaker": "Speaker ?",
+      "text": "the necessary resources and services like classes and methods.",
+      "frame_id": 989,
+      "slide_id": null
+    },
+    {
+      "id": 4157,
+      "start_sec": 242.13,
+      "end_sec": 247.13,
+      "speaker": "Speaker ?",
+      "text": "And it will be consuming less energy",
+      "frame_id": 989,
+      "slide_id": null
+    },
+    {
+      "id": 4158,
+      "start_sec": 247.13,
+      "end_sec": 251.13,
+      "speaker": "Speaker ?",
+      "text": "and optimized resource utilization",
+      "frame_id": 989,
+      "slide_id": null
+    },
+    {
+      "id": 4159,
+      "start_sec": 251.13,
+      "end_sec": 255.13,
+      "speaker": "Speaker ?",
+      "text": "lead to lower operational cost and saving money",
+      "frame_id": 989,
+      "slide_id": null
+    },
+    {
+      "id": 4160,
+      "start_sec": 255.13,
+      "end_sec": 258.13,
+      "speaker": "Speaker ?",
+      "text": "on infrastructure and energy pills.",
+      "frame_id": 989,
+      "slide_id": null
+    },
+    {
+      "id": 4161,
+      "start_sec": 258.13,
+      "end_sec": 261.13,
+      "speaker": "Speaker ?",
+      "text": "And the grow VM is practically",
+      "frame_id": 989,
+      "slide_id": null
+    },
+    {
+      "id": 4162,
+      "start_sec": 261.13,
+      "end_sec": 266.13,
+      "speaker": "Speaker ?",
+      "text": "particularly beneficial for microservices architecture",
+      "frame_id": 989,
+      "slide_id": null
+    },
+    {
+      "id": 4163,
+      "start_sec": 266.13,
+      "end_sec": 271.13,
+      "speaker": "Speaker ?",
+      "text": "and improved startup times and resource efficiency,",
+      "frame_id": 989,
+      "slide_id": null
+    },
+    {
+      "id": 4164,
+      "start_sec": 271.13,
+      "end_sec": 276.13,
+      "speaker": "Speaker ?",
+      "text": "which are critical, crucial for scalable",
+      "frame_id": 989,
+      "slide_id": null
+    },
+    {
+      "id": 4165,
+      "start_sec": 276.13,
+      "end_sec": 281.94,
+      "speaker": "Speaker ?",
+      "text": "and responsive applications.",
+      "frame_id": 989,
+      "slide_id": null
+    },
+    {
+      "id": 4166,
+      "start_sec": 281.94,
+      "end_sec": 285.94,
+      "speaker": "Speaker ?",
+      "text": "And our resource methodology is the first one,",
+      "frame_id": 990,
+      "slide_id": null
+    },
+    {
+      "id": 4167,
+      "start_sec": 285.94,
+      "end_sec": 290.94,
+      "speaker": "Speaker ?",
+      "text": "quantitative data collection and qualitative data collection.",
+      "frame_id": 990,
+      "slide_id": null
+    },
+    {
+      "id": 4168,
+      "start_sec": 290.94,
+      "end_sec": 293.94,
+      "speaker": "Speaker ?",
+      "text": "So we use the performance benchmarks",
+      "frame_id": 990,
+      "slide_id": null
+    },
+    {
+      "id": 4169,
+      "start_sec": 293.94,
+      "end_sec": 296.94,
+      "speaker": "Speaker ?",
+      "text": "and the resource users' metrics",
+      "frame_id": 990,
+      "slide_id": null
+    },
+    {
+      "id": 4170,
+      "start_sec": 296.94,
+      "end_sec": 299.94,
+      "speaker": "Speaker ?",
+      "text": "to provide the price and the objective data",
+      "frame_id": 990,
+      "slide_id": null
+    },
+    {
+      "id": 4171,
+      "start_sec": 299.94,
+      "end_sec": 304.94,
+      "speaker": "Speaker ?",
+      "text": "on how different JVM configuration versus standard",
+      "frame_id": 990,
+      "slide_id": null
+    },
+    {
+      "id": 4172,
+      "start_sec": 304.94,
+      "end_sec": 306.94,
+      "speaker": "Speaker ?",
+      "text": "versus grow VMs prefer.",
+      "frame_id": 990,
+      "slide_id": null
+    },
+    {
+      "id": 4173,
+      "start_sec": 306.94,
+      "end_sec": 312.94,
+      "speaker": "Speaker ?",
+      "text": "And it will highlight the performance improvement",
+      "frame_id": 990,
+      "slide_id": null
+    },
+    {
+      "id": 4174,
+      "start_sec": 312.94,
+      "end_sec": 315.94,
+      "speaker": "Speaker ?",
+      "text": "or regulations.",
+      "frame_id": 990,
+      "slide_id": null
+    },
+    {
+      "id": 4175,
+      "start_sec": 315.94,
+      "end_sec": 318.94,
+      "speaker": "Speaker ?",
+      "text": "And for the qualitative data collection",
+      "frame_id": 990,
+      "slide_id": null
+    },
+    {
+      "id": 4176,
+      "start_sec": 318.94,
+      "end_sec": 321.94,
+      "speaker": "Speaker ?",
+      "text": "we use the semi-structured interviews",
+      "frame_id": 990,
+      "slide_id": null
+    },
+    {
+      "id": 4177,
+      "start_sec": 321.94,
+      "end_sec": 326.94,
+      "speaker": "Speaker ?",
+      "text": "where it's an offer in depth on understanding",
+      "frame_id": 990,
+      "slide_id": null
+    },
+    {
+      "id": 4178,
+      "start_sec": 326.94,
+      "end_sec": 329.94,
+      "speaker": "Speaker ?",
+      "text": "the practical challenges and benefits",
+      "frame_id": 990,
+      "slide_id": null
+    },
+    {
+      "id": 4179,
+      "start_sec": 329.94,
+      "end_sec": 334.94,
+      "speaker": "Speaker ?",
+      "text": "of integration grow VM into existing workflow",
+      "frame_id": 990,
+      "slide_id": null
+    },
+    {
+      "id": 4180,
+      "start_sec": 334.94,
+      "end_sec": 337.94,
+      "speaker": "Speaker ?",
+      "text": "and this type of open-ended questions",
+      "frame_id": 990,
+      "slide_id": null
+    },
+    {
+      "id": 4181,
+      "start_sec": 337.94,
+      "end_sec": 341.94,
+      "speaker": "Speaker ?",
+      "text": "will allow informants to the flexibility",
+      "frame_id": 990,
+      "slide_id": null
+    },
+    {
+      "id": 4182,
+      "start_sec": 341.94,
+      "end_sec": 344.94,
+      "speaker": "Speaker ?",
+      "text": "to share their views in their own words.",
+      "frame_id": 990,
+      "slide_id": null
+    },
+    {
+      "id": 4183,
+      "start_sec": 344.94,
+      "end_sec": 350.54,
+      "speaker": "Speaker ?",
+      "text": "So the benchmark suite we decided on",
+      "frame_id": 990,
+      "slide_id": null
+    },
+    {
+      "id": 4184,
+      "start_sec": 350.54,
+      "end_sec": 355.54,
+      "speaker": "Speaker ?",
+      "text": "was to use two use cases to test an application.",
+      "frame_id": 991,
+      "slide_id": null
+    },
+    {
+      "id": 4185,
+      "start_sec": 355.54,
+      "end_sec": 358.54,
+      "speaker": "Speaker ?",
+      "text": "The first use case we used was zero prefix hashing,",
+      "frame_id": 991,
+      "slide_id": null
+    },
+    {
+      "id": 4186,
+      "start_sec": 358.54,
+      "end_sec": 362.54,
+      "speaker": "Speaker ?",
+      "text": "which is a very CPU heavy use case.",
+      "frame_id": 991,
+      "slide_id": null
+    },
+    {
+      "id": 4187,
+      "start_sec": 362.54,
+      "end_sec": 368.54,
+      "speaker": "Speaker ?",
+      "text": "And then the second use case was text prediction algorithm",
+      "frame_id": 991,
+      "slide_id": null
+    },
+    {
+      "id": 4188,
+      "start_sec": 368.54,
+      "end_sec": 372.54,
+      "speaker": "Speaker ?",
+      "text": "which uses a large dataset to predict text,",
+      "frame_id": 991,
+      "slide_id": null
+    },
+    {
+      "id": 4189,
+      "start_sec": 372.54,
+      "end_sec": 376.54,
+      "speaker": "Speaker ?",
+      "text": "which is both CPU and memory intensive.",
+      "frame_id": 991,
+      "slide_id": null
+    },
+    {
+      "id": 4190,
+      "start_sec": 376.54,
+      "end_sec": 379.54,
+      "speaker": "Speaker ?",
+      "text": "Each test was run 100 times",
+      "frame_id": 991,
+      "slide_id": null
+    },
+    {
+      "id": 4191,
+      "start_sec": 379.54,
+      "end_sec": 384.54,
+      "speaker": "Speaker ?",
+      "text": "to get an accurate picture of both the stability",
+      "frame_id": 991,
+      "slide_id": null
+    },
+    {
+      "id": 4192,
+      "start_sec": 384.54,
+      "end_sec": 389.54,
+      "speaker": "Speaker ?",
+      "text": "of the performance and to be able to see",
+      "frame_id": 991,
+      "slide_id": null
+    },
+    {
+      "id": 4193,
+      "start_sec": 389.54,
+      "end_sec": 394.54,
+      "speaker": "Speaker ?",
+      "text": "the startup and warm-up times for the JVMs.",
+      "frame_id": 991,
+      "slide_id": null
+    },
+    {
+      "id": 4194,
+      "start_sec": 394.54,
+      "end_sec": 397.54,
+      "speaker": "Speaker ?",
+      "text": "Performance was monitored internally,",
+      "frame_id": 991,
+      "slide_id": null
+    },
+    {
+      "id": 4195,
+      "start_sec": 397.54,
+      "end_sec": 402.54,
+      "speaker": "Speaker ?",
+      "text": "but we tested them through API endpoints",
+      "frame_id": 991,
+      "slide_id": null
+    },
+    {
+      "id": 4196,
+      "start_sec": 402.54,
+      "end_sec": 406.54,
+      "speaker": "Speaker ?",
+      "text": "to make it easier to test.",
+      "frame_id": 991,
+      "slide_id": null
+    },
+    {
+      "id": 4197,
+      "start_sec": 406.54,
+      "end_sec": 408.54,
+      "speaker": "Speaker ?",
+      "text": "And then we also measured memory usage,",
+      "frame_id": 991,
+      "slide_id": null
+    },
+    {
+      "id": 4198,
+      "start_sec": 408.54,
+      "end_sec": 411.54,
+      "speaker": "Speaker ?",
+      "text": "both average and peak.",
+      "frame_id": 991,
+      "slide_id": null
+    },
+    {
+      "id": 4199,
+      "start_sec": 411.54,
+      "end_sec": 415.54,
+      "speaker": "Speaker ?",
+      "text": "And we also recorded compilation and build time",
+      "frame_id": 991,
+      "slide_id": null
+    },
+    {
+      "id": 4200,
+      "start_sec": 415.54,
+      "end_sec": 418.54,
+      "speaker": "Speaker ?",
+      "text": "or compilation time and build size.",
+      "frame_id": 991,
+      "slide_id": null
+    },
+    {
+      "id": 4201,
+      "start_sec": 418.54,
+      "end_sec": 423.54,
+      "speaker": "Speaker ?",
+      "text": "So the builds we compared were the normal hotspots",
+      "frame_id": 991,
+      "slide_id": null
+    },
+    {
+      "id": 4202,
+      "start_sec": 423.54,
+      "end_sec": 427.54,
+      "speaker": "Speaker ?",
+      "text": "just in time, the Gravium optimized just in time,",
+      "frame_id": 991,
+      "slide_id": null
+    },
+    {
+      "id": 4203,
+      "start_sec": 427.54,
+      "end_sec": 430.54,
+      "speaker": "Speaker ?",
+      "text": "and then for native images,",
+      "frame_id": 991,
+      "slide_id": null
+    },
+    {
+      "id": 4204,
+      "start_sec": 430.54,
+      "end_sec": 434.54,
+      "speaker": "Speaker ?",
+      "text": "one that had no profiled optimization,",
+      "frame_id": 991,
+      "slide_id": null
+    },
+    {
+      "id": 4205,
+      "start_sec": 434.54,
+      "end_sec": 437.54,
+      "speaker": "Speaker ?",
+      "text": "one that had on use case one,",
+      "frame_id": 991,
+      "slide_id": null
+    },
+    {
+      "id": 4206,
+      "start_sec": 437.54,
+      "end_sec": 439.54,
+      "speaker": "Speaker ?",
+      "text": "one that had PGO on use case two,",
+      "frame_id": 991,
+      "slide_id": null
+    },
+    {
+      "id": 4207,
+      "start_sec": 439.54,
+      "end_sec": 444.33,
+      "speaker": "Speaker ?",
+      "text": "and one that had full PGO.",
+      "frame_id": 991,
+      "slide_id": null
+    },
+    {
+      "id": 4208,
+      "start_sec": 444.33,
+      "end_sec": 448.33,
+      "speaker": "Speaker ?",
+      "text": "So here we can see from the graphs",
+      "frame_id": 992,
+      "slide_id": null
+    },
+    {
+      "id": 4209,
+      "start_sec": 448.33,
+      "end_sec": 453.33,
+      "speaker": "Speaker ?",
+      "text": "that we can see on the yellow and red lines",
+      "frame_id": 992,
+      "slide_id": null
+    },
+    {
+      "id": 4210,
+      "start_sec": 453.33,
+      "end_sec": 457.33,
+      "speaker": "Speaker ?",
+      "text": "that those are just in times,",
+      "frame_id": 992,
+      "slide_id": null
+    },
+    {
+      "id": 4211,
+      "start_sec": 457.33,
+      "end_sec": 462.33,
+      "speaker": "Speaker ?",
+      "text": "and they start up very high, very slow,",
+      "frame_id": 992,
+      "slide_id": null
+    },
+    {
+      "id": 4212,
+      "start_sec": 462.33,
+      "end_sec": 464.33,
+      "speaker": "Speaker ?",
+      "text": "and then once they warm up,",
+      "frame_id": 992,
+      "slide_id": null
+    },
+    {
+      "id": 4213,
+      "start_sec": 464.33,
+      "end_sec": 468.33,
+      "speaker": "Speaker ?",
+      "text": "they settle into a very good performance position.",
+      "frame_id": 992,
+      "slide_id": null
+    },
+    {
+      "id": 4214,
+      "start_sec": 468.33,
+      "end_sec": 473.33,
+      "speaker": "Speaker ?",
+      "text": "And we can see on the left that the Gravium just in time",
+      "frame_id": 992,
+      "slide_id": null
+    },
+    {
+      "id": 4215,
+      "start_sec": 473.33,
+      "end_sec": 476.33,
+      "speaker": "Speaker ?",
+      "text": "outperformed the full PGO,",
+      "frame_id": 992,
+      "slide_id": null
+    },
+    {
+      "id": 4216,
+      "start_sec": 476.33,
+      "end_sec": 480.33,
+      "speaker": "Speaker ?",
+      "text": "which is the fastest of the native images",
+      "frame_id": 992,
+      "slide_id": null
+    },
+    {
+      "id": 4217,
+      "start_sec": 480.33,
+      "end_sec": 482.33,
+      "speaker": "Speaker ?",
+      "text": "by about 16%.",
+      "frame_id": 992,
+      "slide_id": null
+    },
+    {
+      "id": 4218,
+      "start_sec": 482.33,
+      "end_sec": 486.33,
+      "speaker": "Speaker ?",
+      "text": "And we can see on the right that the native image",
+      "frame_id": 992,
+      "slide_id": null
+    },
+    {
+      "id": 4219,
+      "start_sec": 486.33,
+      "end_sec": 489.33,
+      "speaker": "Speaker ?",
+      "text": "actually outperformed the Gravium just in time,",
+      "frame_id": 992,
+      "slide_id": null
+    },
+    {
+      "id": 4220,
+      "start_sec": 489.33,
+      "end_sec": 493.33,
+      "speaker": "Speaker ?",
+      "text": "which was the fastest of the just in times.",
+      "frame_id": 992,
+      "slide_id": null
+    },
+    {
+      "id": 4221,
+      "start_sec": 493.33,
+      "end_sec": 497.33,
+      "speaker": "Speaker ?",
+      "text": "So we can see here that it really depends on the use case",
+      "frame_id": 992,
+      "slide_id": null
+    },
+    {
+      "id": 4222,
+      "start_sec": 497.33,
+      "end_sec": 500.33,
+      "speaker": "Speaker ?",
+      "text": "if native image can improve performance or not,",
+      "frame_id": 992,
+      "slide_id": null
+    },
+    {
+      "id": 4223,
+      "start_sec": 500.33,
+      "end_sec": 505.33,
+      "speaker": "Speaker ?",
+      "text": "but when it comes to the first few executions,",
+      "frame_id": 992,
+      "slide_id": null
+    },
+    {
+      "id": 4224,
+      "start_sec": 505.33,
+      "end_sec": 508.33,
+      "speaker": "Speaker ?",
+      "text": "it can be a lot faster.",
+      "frame_id": 992,
+      "slide_id": null
+    },
+    {
+      "id": 4225,
+      "start_sec": 508.33,
+      "end_sec": 513.33,
+      "speaker": "Speaker ?",
+      "text": "We can also see that PGO increases the performance by a lot",
+      "frame_id": 992,
+      "slide_id": null
+    },
+    {
+      "id": 4226,
+      "start_sec": 513.33,
+      "end_sec": 516.33,
+      "speaker": "Speaker ?",
+      "text": "in both use cases.",
+      "frame_id": 992,
+      "slide_id": null
+    },
+    {
+      "id": 4227,
+      "start_sec": 516.33,
+      "end_sec": 518.33,
+      "speaker": "Speaker ?",
+      "text": "When not using PGO,",
+      "frame_id": 992,
+      "slide_id": null
+    },
+    {
+      "id": 4228,
+      "start_sec": 518.33,
+      "end_sec": 526.78,
+      "speaker": "Speaker ?",
+      "text": "execution took about 1.8 to 2 times slower.",
+      "frame_id": 992,
+      "slide_id": null
+    },
+    {
+      "id": 4229,
+      "start_sec": 526.78,
+      "end_sec": 528.78,
+      "speaker": "Speaker ?",
+      "text": "And then we can see here,",
+      "frame_id": 994,
+      "slide_id": null
+    },
+    {
+      "id": 4230,
+      "start_sec": 528.78,
+      "end_sec": 530.78,
+      "speaker": "Speaker ?",
+      "text": "we can start with memory usage.",
+      "frame_id": 994,
+      "slide_id": null
+    },
+    {
+      "id": 4231,
+      "start_sec": 530.78,
+      "end_sec": 534.78,
+      "speaker": "Speaker ?",
+      "text": "The just in times were used a lot of memory.",
+      "frame_id": 994,
+      "slide_id": null
+    },
+    {
+      "id": 4232,
+      "start_sec": 534.78,
+      "end_sec": 538.78,
+      "speaker": "Speaker ?",
+      "text": "We can also see that Grav just in time used more memory,",
+      "frame_id": 994,
+      "slide_id": null
+    },
+    {
+      "id": 4233,
+      "start_sec": 538.78,
+      "end_sec": 541.78,
+      "speaker": "Speaker ?",
+      "text": "which is probably because of its more aggressive optimization",
+      "frame_id": 994,
+      "slide_id": null
+    },
+    {
+      "id": 4234,
+      "start_sec": 541.78,
+      "end_sec": 545.78,
+      "speaker": "Speaker ?",
+      "text": "and sacrificing memory to get better performance.",
+      "frame_id": 994,
+      "slide_id": null
+    },
+    {
+      "id": 4235,
+      "start_sec": 545.78,
+      "end_sec": 549.78,
+      "speaker": "Speaker ?",
+      "text": "And we can also see that the native images",
+      "frame_id": 994,
+      "slide_id": null
+    },
+    {
+      "id": 4236,
+      "start_sec": 549.78,
+      "end_sec": 552.78,
+      "speaker": "Speaker ?",
+      "text": "are pretty good in memory usage,",
+      "frame_id": 994,
+      "slide_id": null
+    },
+    {
+      "id": 4237,
+      "start_sec": 552.78,
+      "end_sec": 555.78,
+      "speaker": "Speaker ?",
+      "text": "but we can see that the more PGO you use,",
+      "frame_id": 994,
+      "slide_id": null
+    },
+    {
+      "id": 4238,
+      "start_sec": 555.78,
+      "end_sec": 557.78,
+      "speaker": "Speaker ?",
+      "text": "the more memory it uses.",
+      "frame_id": 994,
+      "slide_id": null
+    },
+    {
+      "id": 4239,
+      "start_sec": 557.78,
+      "end_sec": 560.78,
+      "speaker": "Speaker ?",
+      "text": "And we can see that the Grav just in time",
+      "frame_id": 994,
+      "slide_id": null
+    },
+    {
+      "id": 4240,
+      "start_sec": 560.78,
+      "end_sec": 562.78,
+      "speaker": "Speaker ?",
+      "text": "has a lot of peak memory usage,",
+      "frame_id": 994,
+      "slide_id": null
+    },
+    {
+      "id": 4241,
+      "start_sec": 562.78,
+      "end_sec": 564.78,
+      "speaker": "Speaker ?",
+      "text": "which was during the warm up,",
+      "frame_id": 994,
+      "slide_id": null
+    },
+    {
+      "id": 4242,
+      "start_sec": 564.78,
+      "end_sec": 570.78,
+      "speaker": "Speaker ?",
+      "text": "but then it settled in and stuck around the 100 mark",
+      "frame_id": 994,
+      "slide_id": null
+    },
+    {
+      "id": 4243,
+      "start_sec": 570.78,
+      "end_sec": 572.78,
+      "speaker": "Speaker ?",
+      "text": "during execution.",
+      "frame_id": 994,
+      "slide_id": null
+    },
+    {
+      "id": 4244,
+      "start_sec": 572.78,
+      "end_sec": 574.78,
+      "speaker": "Speaker ?",
+      "text": "And we can also see in the build size",
+      "frame_id": 994,
+      "slide_id": null
+    },
+    {
+      "id": 4245,
+      "start_sec": 574.78,
+      "end_sec": 578.78,
+      "speaker": "Speaker ?",
+      "text": "that just in times are much better on build size.",
+      "frame_id": 994,
+      "slide_id": null
+    },
+    {
+      "id": 4246,
+      "start_sec": 578.78,
+      "end_sec": 581.78,
+      "speaker": "Speaker ?",
+      "text": "It's much smaller than the native images,",
+      "frame_id": 994,
+      "slide_id": null
+    },
+    {
+      "id": 4247,
+      "start_sec": 581.78,
+      "end_sec": 583.78,
+      "speaker": "Speaker ?",
+      "text": "which were a lot bigger",
+      "frame_id": 994,
+      "slide_id": null
+    },
+    {
+      "id": 4248,
+      "start_sec": 583.78,
+      "end_sec": 585.78,
+      "speaker": "Speaker ?",
+      "text": "because they contain a lot more information",
+      "frame_id": 994,
+      "slide_id": null
+    },
+    {
+      "id": 4249,
+      "start_sec": 585.78,
+      "end_sec": 591.78,
+      "speaker": "Speaker ?",
+      "text": "and they contain the native code to execute.",
+      "frame_id": 994,
+      "slide_id": null
+    },
+    {
+      "id": 4250,
+      "start_sec": 591.78,
+      "end_sec": 593.78,
+      "speaker": "Speaker ?",
+      "text": "And we can see in compilation time",
+      "frame_id": 994,
+      "slide_id": null
+    },
+    {
+      "id": 4251,
+      "start_sec": 593.78,
+      "end_sec": 597.78,
+      "speaker": "Speaker ?",
+      "text": "that the native images are a lot slower to compile,",
+      "frame_id": 994,
+      "slide_id": null
+    },
+    {
+      "id": 4252,
+      "start_sec": 597.78,
+      "end_sec": 601.78,
+      "speaker": "Speaker ?",
+      "text": "even though this is a very small image.",
+      "frame_id": 994,
+      "slide_id": null
+    },
+    {
+      "id": 4253,
+      "start_sec": 601.78,
+      "end_sec": 606.78,
+      "speaker": "Speaker ?",
+      "text": "And the native images will never be faster",
+      "frame_id": 994,
+      "slide_id": null
+    },
+    {
+      "id": 4254,
+      "start_sec": 606.78,
+      "end_sec": 609.78,
+      "speaker": "Speaker ?",
+      "text": "because you first have to compile to a jar",
+      "frame_id": 994,
+      "slide_id": null
+    },
+    {
+      "id": 4255,
+      "start_sec": 609.78,
+      "end_sec": 612.78,
+      "speaker": "Speaker ?",
+      "text": "and then do the native image step.",
+      "frame_id": 994,
+      "slide_id": null
+    },
+    {
+      "id": 4256,
+      "start_sec": 612.78,
+      "end_sec": 616.78,
+      "speaker": "Speaker ?",
+      "text": "So it would always be slower than just compiling for adjusting time.",
+      "frame_id": 994,
+      "slide_id": null
+    },
+    {
+      "id": 4257,
+      "start_sec": 619.34,
+      "end_sec": 622.34,
+      "speaker": "Speaker ?",
+      "text": "Yes, analysis of findings.",
+      "frame_id": 995,
+      "slide_id": null
+    },
+    {
+      "id": 4258,
+      "start_sec": 622.34,
+      "end_sec": 624.34,
+      "speaker": "Speaker ?",
+      "text": "So for the performance native image",
+      "frame_id": 995,
+      "slide_id": null
+    },
+    {
+      "id": 4259,
+      "start_sec": 624.34,
+      "end_sec": 627.34,
+      "speaker": "Speaker ?",
+      "text": "can out from just in time in specific cases",
+      "frame_id": 995,
+      "slide_id": null
+    },
+    {
+      "id": 4260,
+      "start_sec": 627.34,
+      "end_sec": 672.79,
+      "speaker": "Speaker ?",
+      "text": "with PGO and online developer display spectrum",
+      "frame_id": 995,
+      "slide_id": null
+    },
+    {
+      "id": 4261,
+      "start_sec": 672.79,
+      "end_sec": 675.79,
+      "speaker": "Speaker ?",
+      "text": "of family tree with the Graal VM",
+      "frame_id": 996,
+      "slide_id": null
+    },
+    {
+      "id": 4262,
+      "start_sec": 675.79,
+      "end_sec": 679.79,
+      "speaker": "Speaker ?",
+      "text": "from basic to advanced and perceived benefits.",
+      "frame_id": 996,
+      "slide_id": null
+    },
+    {
+      "id": 4263,
+      "start_sec": 679.79,
+      "end_sec": 681.79,
+      "speaker": "Speaker ?",
+      "text": "So faster startup time.",
+      "frame_id": 996,
+      "slide_id": null
+    },
+    {
+      "id": 4264,
+      "start_sec": 681.79,
+      "end_sec": 683.79,
+      "speaker": "Speaker ?",
+      "text": "This is especially for application",
+      "frame_id": 996,
+      "slide_id": null
+    },
+    {
+      "id": 4265,
+      "start_sec": 683.79,
+      "end_sec": 688.79,
+      "speaker": "Speaker ?",
+      "text": "that need quick responsive like serverless functions",
+      "frame_id": 996,
+      "slide_id": null
+    },
+    {
+      "id": 4266,
+      "start_sec": 688.79,
+      "end_sec": 691.79,
+      "speaker": "Speaker ?",
+      "text": "and reduced memory usage",
+      "frame_id": 996,
+      "slide_id": null
+    },
+    {
+      "id": 4267,
+      "start_sec": 691.79,
+      "end_sec": 694.79,
+      "speaker": "Speaker ?",
+      "text": "where it's important for microservices",
+      "frame_id": 996,
+      "slide_id": null
+    },
+    {
+      "id": 4268,
+      "start_sec": 694.79,
+      "end_sec": 698.79,
+      "speaker": "Speaker ?",
+      "text": "that run in resource constrained environment",
+      "frame_id": 996,
+      "slide_id": null
+    },
+    {
+      "id": 4269,
+      "start_sec": 698.79,
+      "end_sec": 702.79,
+      "speaker": "Speaker ?",
+      "text": "and for the challenges they thought.",
+      "frame_id": 996,
+      "slide_id": null
+    },
+    {
+      "id": 4270,
+      "start_sec": 702.79,
+      "end_sec": 705.79,
+      "speaker": "Speaker ?",
+      "text": "So complex configuration.",
+      "frame_id": 996,
+      "slide_id": null
+    },
+    {
+      "id": 4271,
+      "start_sec": 705.79,
+      "end_sec": 707.79,
+      "speaker": "Speaker ?",
+      "text": "It requires significant efforts",
+      "frame_id": 996,
+      "slide_id": null
+    },
+    {
+      "id": 4272,
+      "start_sec": 707.79,
+      "end_sec": 711.79,
+      "speaker": "Speaker ?",
+      "text": "to configure for dynamic future like reflections",
+      "frame_id": 996,
+      "slide_id": null
+    },
+    {
+      "id": 4273,
+      "start_sec": 711.79,
+      "end_sec": 713.79,
+      "speaker": "Speaker ?",
+      "text": "and for the learning curve.",
+      "frame_id": 996,
+      "slide_id": null
+    },
+    {
+      "id": 4274,
+      "start_sec": 713.79,
+      "end_sec": 716.79,
+      "speaker": "Speaker ?",
+      "text": "So developers need to train",
+      "frame_id": 996,
+      "slide_id": null
+    },
+    {
+      "id": 4275,
+      "start_sec": 716.79,
+      "end_sec": 724.58,
+      "speaker": "Speaker ?",
+      "text": "to effectively use ahead of time compilation and PGO.",
+      "frame_id": 996,
+      "slide_id": null
+    },
+    {
+      "id": 4276,
+      "start_sec": 724.58,
+      "end_sec": 726.58,
+      "speaker": "Speaker ?",
+      "text": "So the value of our work",
+      "frame_id": 997,
+      "slide_id": null
+    },
+    {
+      "id": 4277,
+      "start_sec": 726.58,
+      "end_sec": 729.58,
+      "speaker": "Speaker ?",
+      "text": "is that Graal VMs ahead of time",
+      "frame_id": 997,
+      "slide_id": null
+    },
+    {
+      "id": 4278,
+      "start_sec": 729.58,
+      "end_sec": 732.58,
+      "speaker": "Speaker ?",
+      "text": "enhances JVM based applications",
+      "frame_id": 997,
+      "slide_id": null
+    },
+    {
+      "id": 4279,
+      "start_sec": 732.58,
+      "end_sec": 735.58,
+      "speaker": "Speaker ?",
+      "text": "especially by reducing memory usage",
+      "frame_id": 997,
+      "slide_id": null
+    },
+    {
+      "id": 4280,
+      "start_sec": 735.58,
+      "end_sec": 738.58,
+      "speaker": "Speaker ?",
+      "text": "which is important in microservices.",
+      "frame_id": 997,
+      "slide_id": null
+    },
+    {
+      "id": 4281,
+      "start_sec": 738.58,
+      "end_sec": 743.58,
+      "speaker": "Speaker ?",
+      "text": "PGO also ensures that performance isn't",
+      "frame_id": 997,
+      "slide_id": null
+    },
+    {
+      "id": 4282,
+      "start_sec": 743.58,
+      "end_sec": 746.58,
+      "speaker": "Speaker ?",
+      "text": "much worse in key use cases",
+      "frame_id": 997,
+      "slide_id": null
+    },
+    {
+      "id": 4283,
+      "start_sec": 746.58,
+      "end_sec": 748.58,
+      "speaker": "Speaker ?",
+      "text": "and sometimes better",
+      "frame_id": 997,
+      "slide_id": null
+    },
+    {
+      "id": 4284,
+      "start_sec": 748.58,
+      "end_sec": 751.58,
+      "speaker": "Speaker ?",
+      "text": "but it has drawbacks such as increasing memory",
+      "frame_id": 997,
+      "slide_id": null
+    },
+    {
+      "id": 4285,
+      "start_sec": 751.58,
+      "end_sec": 753.58,
+      "speaker": "Speaker ?",
+      "text": "increasing compilation time",
+      "frame_id": 997,
+      "slide_id": null
+    },
+    {
+      "id": 4286,
+      "start_sec": 753.58,
+      "end_sec": 756.58,
+      "speaker": "Speaker ?",
+      "text": "and increasing image size.",
+      "frame_id": 997,
+      "slide_id": null
+    },
+    {
+      "id": 4287,
+      "start_sec": 756.58,
+      "end_sec": 758.58,
+      "speaker": "Speaker ?",
+      "text": "And developers are concerned",
+      "frame_id": 997,
+      "slide_id": null
+    },
+    {
+      "id": 4288,
+      "start_sec": 758.58,
+      "end_sec": 762.58,
+      "speaker": "Speaker ?",
+      "text": "about the added configuration complexity.",
+      "frame_id": 997,
+      "slide_id": null
+    },
+    {
+      "id": 4289,
+      "start_sec": 762.58,
+      "end_sec": 765.58,
+      "speaker": "Speaker ?",
+      "text": "We can also note that performance is instant",
+      "frame_id": 997,
+      "slide_id": null
+    },
+    {
+      "id": 4290,
+      "start_sec": 765.58,
+      "end_sec": 767.58,
+      "speaker": "Speaker ?",
+      "text": "there is no warm up needed",
+      "frame_id": 997,
+      "slide_id": null
+    },
+    {
+      "id": 4291,
+      "start_sec": 767.58,
+      "end_sec": 772.58,
+      "speaker": "Speaker ?",
+      "text": "so they can be good for serverless functions",
+      "frame_id": 997,
+      "slide_id": null
+    },
+    {
+      "id": 4292,
+      "start_sec": 773.58,
+      "end_sec": 776.58,
+      "speaker": "Speaker ?",
+      "text": "and there is also a significant potential",
+      "frame_id": 997,
+      "slide_id": null
+    },
+    {
+      "id": 4293,
+      "start_sec": 776.58,
+      "end_sec": 780.58,
+      "speaker": "Speaker ?",
+      "text": "for cost and resource efficiency improvements",
+      "frame_id": 997,
+      "slide_id": null
+    },
+    {
+      "id": 4294,
+      "start_sec": 780.58,
+      "end_sec": 782.58,
+      "speaker": "Speaker ?",
+      "text": "in production environments.",
+      "frame_id": 997,
+      "slide_id": null
+    },
+    {
+      "id": 4295,
+      "start_sec": 782.58,
+      "end_sec": 789.3,
+      "speaker": "Speaker ?",
+      "text": "Yes, for the validity threats and future work",
+      "frame_id": 997,
+      "slide_id": null
+    },
+    {
+      "id": 4296,
+      "start_sec": 789.3,
+      "end_sec": 793.3,
+      "speaker": "Speaker ?",
+      "text": "so validity threats we thought",
+      "frame_id": 998,
+      "slide_id": null
+    },
+    {
+      "id": 4297,
+      "start_sec": 793.3,
+      "end_sec": 797.3,
+      "speaker": "Speaker ?",
+      "text": "that Graal VMs was released in 2019",
+      "frame_id": 998,
+      "slide_id": null
+    },
+    {
+      "id": 4298,
+      "start_sec": 797.3,
+      "end_sec": 802.3,
+      "speaker": "Speaker ?",
+      "text": "making it's a little bit new in the industry",
+      "frame_id": 998,
+      "slide_id": null
+    },
+    {
+      "id": 4299,
+      "start_sec": 802.3,
+      "end_sec": 805.3,
+      "speaker": "Speaker ?",
+      "text": "because it's a new technologies",
+      "frame_id": 998,
+      "slide_id": null
+    },
+    {
+      "id": 4300,
+      "start_sec": 805.3,
+      "end_sec": 808.3,
+      "speaker": "Speaker ?",
+      "text": "not many companies and developers",
+      "frame_id": 998,
+      "slide_id": null
+    },
+    {
+      "id": 4301,
+      "start_sec": 808.3,
+      "end_sec": 811.3,
+      "speaker": "Speaker ?",
+      "text": "have used it extensively",
+      "frame_id": 998,
+      "slide_id": null
+    },
+    {
+      "id": 4302,
+      "start_sec": 811.3,
+      "end_sec": 815.3,
+      "speaker": "Speaker ?",
+      "text": "so due to its limited adoption",
+      "frame_id": 998,
+      "slide_id": null
+    },
+    {
+      "id": 4303,
+      "start_sec": 815.3,
+      "end_sec": 818.3,
+      "speaker": "Speaker ?",
+      "text": "we had a small sample size of developers",
+      "frame_id": 998,
+      "slide_id": null
+    },
+    {
+      "id": 4304,
+      "start_sec": 818.3,
+      "end_sec": 822.3,
+      "speaker": "Speaker ?",
+      "text": "with hands-on experience using Graal VM",
+      "frame_id": 998,
+      "slide_id": null
+    },
+    {
+      "id": 4305,
+      "start_sec": 822.3,
+      "end_sec": 826.3,
+      "speaker": "Speaker ?",
+      "text": "and these results are specific",
+      "frame_id": 998,
+      "slide_id": null
+    },
+    {
+      "id": 4306,
+      "start_sec": 826.3,
+      "end_sec": 830.3,
+      "speaker": "Speaker ?",
+      "text": "to our software configuration used in our study",
+      "frame_id": 998,
+      "slide_id": null
+    },
+    {
+      "id": 4307,
+      "start_sec": 830.3,
+      "end_sec": 834.3,
+      "speaker": "Speaker ?",
+      "text": "so browser testing is needed",
+      "frame_id": 998,
+      "slide_id": null
+    },
+    {
+      "id": 4308,
+      "start_sec": 834.3,
+      "end_sec": 838.3,
+      "speaker": "Speaker ?",
+      "text": "to validate findings in varied environments.",
+      "frame_id": 998,
+      "slide_id": null
+    },
+    {
+      "id": 4309,
+      "start_sec": 838.3,
+      "end_sec": 841.3,
+      "speaker": "Speaker ?",
+      "text": "And then for future work",
+      "frame_id": 998,
+      "slide_id": null
+    },
+    {
+      "id": 4310,
+      "start_sec": 841.3,
+      "end_sec": 845.3,
+      "speaker": "Speaker ?",
+      "text": "we think that a good next step",
+      "frame_id": 998,
+      "slide_id": null
+    },
+    {
+      "id": 4311,
+      "start_sec": 845.3,
+      "end_sec": 847.3,
+      "speaker": "Speaker ?",
+      "text": "would be case studies",
+      "frame_id": 998,
+      "slide_id": null
+    },
+    {
+      "id": 4312,
+      "start_sec": 847.3,
+      "end_sec": 849.3,
+      "speaker": "Speaker ?",
+      "text": "on real-world applications",
+      "frame_id": 998,
+      "slide_id": null
+    },
+    {
+      "id": 4313,
+      "start_sec": 849.3,
+      "end_sec": 851.3,
+      "speaker": "Speaker ?",
+      "text": "to see how the performance",
+      "frame_id": 998,
+      "slide_id": null
+    },
+    {
+      "id": 4314,
+      "start_sec": 851.3,
+      "end_sec": 855.3,
+      "speaker": "Speaker ?",
+      "text": "and resource usage can be",
+      "frame_id": 998,
+      "slide_id": null
+    },
+    {
+      "id": 4315,
+      "start_sec": 855.3,
+      "end_sec": 858.3,
+      "speaker": "Speaker ?",
+      "text": "is affected by using ahead of time",
+      "frame_id": 998,
+      "slide_id": null
+    },
+    {
+      "id": 4316,
+      "start_sec": 858.3,
+      "end_sec": 862.3,
+      "speaker": "Speaker ?",
+      "text": "completion and also explore more use cases",
+      "frame_id": 998,
+      "slide_id": null
+    },
+    {
+      "id": 4317,
+      "start_sec": 862.3,
+      "end_sec": 864.3,
+      "speaker": "Speaker ?",
+      "text": "for ahead-of-time completion.",
+      "frame_id": 998,
+      "slide_id": null
+    },
+    {
+      "id": 4318,
+      "start_sec": 864.3,
+      "end_sec": 869.27,
+      "speaker": "Speaker ?",
+      "text": "Yes, thank you for listening",
+      "frame_id": 998,
+      "slide_id": null
+    },
+    {
+      "id": 4319,
+      "start_sec": 869.27,
+      "end_sec": 874.27,
+      "speaker": "Speaker ?",
+      "text": "and a special thanks for Lakmal and Park.",
+      "frame_id": 999,
+      "slide_id": null
+    },
+    {
+      "id": 4320,
+      "start_sec": 874.27,
+      "end_sec": 877.27,
+      "speaker": "Speaker ?",
+      "text": "Nice, thank you",
+      "frame_id": 999,
+      "slide_id": null
+    },
+    {
+      "id": 4321,
+      "start_sec": 877.27,
+      "end_sec": 880.27,
+      "speaker": "Speaker ?",
+      "text": "and a big applause for that.",
+      "frame_id": 999,
+      "slide_id": null
+    },
+    {
+      "id": 4322,
+      "start_sec": 880.27,
+      "end_sec": 885.64,
+      "speaker": "Speaker ?",
+      "text": "And do we have any questions",
+      "frame_id": 999,
+      "slide_id": null
+    },
+    {
+      "id": 4323,
+      "start_sec": 885.64,
+      "end_sec": 888.64,
+      "speaker": "Speaker ?",
+      "text": "in the audience or online, Lakmal?",
+      "frame_id": 999,
+      "slide_id": null
+    },
+    {
+      "id": 4324,
+      "start_sec": 888.64,
+      "end_sec": 901.91,
+      "speaker": "Speaker ?",
+      "text": "I think you started off with one of the",
+      "frame_id": 999,
+      "slide_id": null
+    },
+    {
+      "id": 4325,
+      "start_sec": 901.91,
+      "end_sec": 904.91,
+      "speaker": "Speaker ?",
+      "text": "Aida services, I wonder what happened to that track",
+      "frame_id": 999,
+      "slide_id": null
+    },
+    {
+      "id": 4326,
+      "start_sec": 904.91,
+      "end_sec": 907.91,
+      "speaker": "Speaker ?",
+      "text": "and what problems you encountered there?",
+      "frame_id": 999,
+      "slide_id": null
+    },
+    {
+      "id": 4327,
+      "start_sec": 907.91,
+      "end_sec": 912.91,
+      "speaker": "Speaker ?",
+      "text": "Yes, so during that track",
+      "frame_id": 999,
+      "slide_id": null
+    },
+    {
+      "id": 4328,
+      "start_sec": 912.91,
+      "end_sec": 915.91,
+      "speaker": "Speaker ?",
+      "text": "we got a build",
+      "frame_id": 999,
+      "slide_id": null
+    },
+    {
+      "id": 4329,
+      "start_sec": 915.91,
+      "end_sec": 918.91,
+      "speaker": "Speaker ?",
+      "text": "we compiled to a build",
+      "frame_id": 999,
+      "slide_id": null
+    },
+    {
+      "id": 4330,
+      "start_sec": 918.91,
+      "end_sec": 920.91,
+      "speaker": "Speaker ?",
+      "text": "and we set up a test environment",
+      "frame_id": 999,
+      "slide_id": null
+    },
+    {
+      "id": 4331,
+      "start_sec": 920.91,
+      "end_sec": 923.91,
+      "speaker": "Speaker ?",
+      "text": "but we have not gotten any tests",
+      "frame_id": 999,
+      "slide_id": null
+    },
+    {
+      "id": 4332,
+      "start_sec": 923.91,
+      "end_sec": 925.91,
+      "speaker": "Speaker ?",
+      "text": "to actually work",
+      "frame_id": 999,
+      "slide_id": null
+    },
+    {
+      "id": 4333,
+      "start_sec": 925.91,
+      "end_sec": 928.91,
+      "speaker": "Speaker ?",
+      "text": "it seems like the image is not really working",
+      "frame_id": 999,
+      "slide_id": null
+    },
+    {
+      "id": 4334,
+      "start_sec": 928.91,
+      "end_sec": 933.91,
+      "speaker": "Speaker ?",
+      "text": "so we have spent a lot of time trying to debug that",
+      "frame_id": 999,
+      "slide_id": null
+    },
+    {
+      "id": 4335,
+      "start_sec": 933.91,
+      "end_sec": 939.91,
+      "speaker": "Speaker ?",
+      "text": "but none of the things we have tried is working",
+      "frame_id": 999,
+      "slide_id": null
+    },
+    {
+      "id": 4336,
+      "start_sec": 939.91,
+      "end_sec": 944.91,
+      "speaker": "Speaker ?",
+      "text": "so we don't really know what to do",
+      "frame_id": 999,
+      "slide_id": null
+    },
+    {
+      "id": 4337,
+      "start_sec": 944.91,
+      "end_sec": 947.91,
+      "speaker": "Speaker ?",
+      "text": "so it was very hard to incorporate",
+      "frame_id": 999,
+      "slide_id": null
+    },
+    {
+      "id": 4338,
+      "start_sec": 947.91,
+      "end_sec": 949.91,
+      "speaker": "Speaker ?",
+      "text": "in production environments",
+      "frame_id": 999,
+      "slide_id": null
+    },
+    {
+      "id": 4339,
+      "start_sec": 949.91,
+      "end_sec": 955.24,
+      "speaker": "Speaker ?",
+      "text": "we thought.",
+      "frame_id": 999,
+      "slide_id": null
+    },
+    {
+      "id": 4340,
+      "start_sec": 955.24,
+      "end_sec": 956.24,
+      "speaker": "Speaker ?",
+      "text": "Any questions?",
+      "frame_id": 999,
+      "slide_id": null
+    },
+    {
+      "id": 4341,
+      "start_sec": 956.24,
+      "end_sec": 960.13,
+      "speaker": "Speaker ?",
+      "text": "Thanks again.",
+      "frame_id": 999,
+      "slide_id": null
+    }
+  ],
+  "slides_referenced": []
+}
