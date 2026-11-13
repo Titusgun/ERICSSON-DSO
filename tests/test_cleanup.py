@@ -156,3 +156,17 @@ def test_delete_always_goes_to_recycle_bin(monkeypatch):
 def test_watch_needs_upload_before_deleting(tmp_path):
     assert main(["--db", str(tmp_path / "d.db"), "--out", str(tmp_path / "out"), "watch", str(tmp_path / "in"),
                  "--rclone", "onedrive:x", "--delete-originals", "--once"]) == 1
+
+
+def test_video_with_frames_for_only_part_is_kept(setup, monkeypatch):
+    """Full transcript, but key frames only for the first 10 min of a longer video."""
+    args, cloud = setup
+    conn = connect(args.db)
+    sha = conn.execute("SELECT sha256 FROM files WHERE name = 'talk.mp4'").fetchone()[0]
+    conn.execute("UPDATE files SET duration_sec = 9300 WHERE name = 'talk.mp4'")
+    conn.commit()
+    conn.close()
+    frames_dir = cleanup.Path(args.out) / "frames" / sha[:12]
+    frames_dir.mkdir(parents=True)
+    (frames_dir / "frames_info.json").write_text(json.dumps({"max_seconds": 600}), encoding="utf-8")
+    assert "talk.mp4" not in planned_names(args)

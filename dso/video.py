@@ -96,6 +96,25 @@ def clear_old_frames(conn, file_id):
     conn.execute("DELETE FROM frames WHERE file_id = ?", (file_id,))
 
 
+# Written next to the key frames: which part of the video they cover. A long
+# video whose transcript is complete must not count as "done" when its key
+# frames were only taken for the first --max-seconds (dso cleanup reads it too).
+FRAMES_INFO = "frames_info.json"
+
+
+def frames_cover(out_dir, sha256, wanted_max_seconds):
+    """Do the key frames in out/frames/<sha12>/ cover the requested part?
+    Frames from before this file existed were always taken for the whole
+    video, so a missing file counts as "whole video"."""
+    path = out_dir / "frames" / sha12(sha256) / FRAMES_INFO
+    try:
+        with open(path, encoding="utf-8") as f:
+            done_max_seconds = json.load(f).get("max_seconds")
+    except (OSError, ValueError):
+        return True
+    return covers(done_max_seconds, wanted_max_seconds)
+
+
 def swap_frame_folders(new_dir, frames_dir):
     """Replaces out/frames/<sha12>/ with the freshly written <sha12>.new/.
     Only our own output in out/frames/ is touched, never user files."""
@@ -237,6 +256,8 @@ def extract_key_frames(conn, file_row, out_dir, max_seconds):
         frame_index = frame_index + 1
 
     cap.release()
+    with open(new_dir / FRAMES_INFO, "w", encoding="utf-8") as f:
+        json.dump({"max_seconds": max_seconds}, f)
     # Save the new rows first, then replace the pictures: if the run stops
     # before this point, the old rows and the old pictures are both still there.
     conn.commit()
@@ -394,12 +415,13 @@ def transcribe(conn, file_row, out_dir, model_name, max_seconds, model_holder):
 
 
 def already_processed(conn, file_row, out_dir, model_name, max_seconds):
-    """True if this video already has key frames in the DB and a transcript
-    cache made with the same model and --max-seconds. Then there is nothing new
-    to do: `dso all` and `dso watch` skip it instead of spending minutes on it."""
+    """True if this video already has key frames in the DB that cover the
+    requested part, and a transcript cache (same model) that covers it too.
+    Then there is nothing new to do: `dso all` and `dso watch` skip it instead
+    of spending minutes on it."""
     frame_count = conn.execute(
         "SELECT COUNT(*) FROM frames WHERE file_id = ?", (file_row["id"],)).fetchone()[0]
-    if frame_count == 0:
+    if frame_count == 0 or not frames_cover(out_dir, file_row["sha256"], max_seconds):
         return False
     json_path = out_dir / "transcripts" / f"{sha12(file_row['sha256'])}.json"
     return load_cached_transcript(json_path, model_name, max_seconds) is not None
