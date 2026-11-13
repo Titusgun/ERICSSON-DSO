@@ -138,3 +138,39 @@ def test_offboarding_after_dso_offboard(tmp_path):
     assert by_name["deck_b - Copy.pdf"]["owner"] == "jane"
     assert by_name["my_notes.pdf"]["verdict"] == "keep"
     assert by_name["my_notes.pdf"]["copy_at"] is None
+
+
+# ---------- /document/<sha12>: open a document at a page ----------
+
+def test_document_serves_the_original_pdf(client):
+    response = client.get("/document/9b1c22aa01ff")          # deck_a.pdf in the fixture DB
+    # The fixture row points at x/deck_a.pdf, which does not exist -> no original, no converted copy.
+    assert response.status_code == 404
+
+
+def test_document_pdf_and_converted(tmp_path):
+    import shutil
+    db_path = tmp_path / "dso.db"
+    out = tmp_path / "out"
+    pdf = tmp_path / "deck.pdf"
+    shutil.copy(FIXTURES / "docs" / "deck_a.pdf", pdf)
+    pptx = tmp_path / "deck.pptx"
+    pptx.write_bytes(b"not really a pptx")
+    (out / "converted").mkdir(parents=True)
+    shutil.copy(FIXTURES / "docs" / "deck_b.pdf", out / "converted" / "bbbbbbbbbbbb.pdf")
+    conn = connect(db_path)
+    conn.execute("INSERT INTO files (id, path, name, ext, kind, size_bytes, sha256, scanned_at) "
+                 "VALUES (1, ?, 'deck.pdf', 'pdf', 'document', 1, ?, 'now')", (pdf.as_posix(), "a" * 64))
+    conn.execute("INSERT INTO files (id, path, name, ext, kind, size_bytes, sha256, scanned_at) "
+                 "VALUES (2, ?, 'deck.pptx', 'pptx', 'document', 1, ?, 'now')", (pptx.as_posix(), "b" * 64))
+    conn.commit()
+    conn.close()
+    client = create_app(db_path, out).test_client()
+    original = client.get("/document/aaaaaaaaaaaa")
+    assert original.status_code == 200 and original.mimetype == "application/pdf"
+    assert original.data == pdf.read_bytes()
+    assert "attachment" not in original.headers.get("Content-Disposition", "")   # shown, not downloaded
+    converted = client.get("/document/bbbbbbbbbbbb")
+    assert converted.status_code == 200 and converted.data == (FIXTURES / "docs" / "deck_b.pdf").read_bytes()
+    assert client.get("/document/cccccccccccc").status_code == 404           # not registered
+    assert client.get("/document/aaaa%25").status_code == 404                # not a sha12
