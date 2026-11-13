@@ -6,7 +6,10 @@ For every file with kind='video' in the DB:
    - open the video with cv2.VideoCapture(path), read frames, look at 1 frame per second
      (frame_index % round(fps) == 0)
    - dhash_image() each sampled frame (convert BGR -> RGB -> PIL first)
-   - keep a frame if it is the first one, or its distance to the last KEPT frame is >= 6
+   - keep a frame if it is the first one, or if it differs from the last KEPT frame
+     (distance >= 6) AND the screen then stays still for a second (the next sample
+     looks the same). Fallback: if the screen never settles, keep one every 60 s.
+     See keep_decision() for why.
    - save kept frames as WebP: out/frames/<sha12>/f0001.webp (Pillow: img.save(p, "WEBP", quality=60))
    - insert into `frames` (t_sec, image_path, image_bytes, dhash)
    Fixture check: tests/fixtures/video/talk.mp4 -> 3 frames at t = 0, 8, 16.
@@ -29,8 +32,6 @@ For every file with kind='video' in the DB:
    file to force a new transcription.
 
 --max-seconds N (issue #17): only the first N seconds of each video are processed.
-   dso/cli.py (owner D) still has to add the option; until then args has no
-   max_seconds attribute and the whole video is processed.
 
 Re-run safe: DELETE FROM frames / segments WHERE file_id = ? before inserting.
 """
@@ -48,6 +49,11 @@ from dso.common.hashing import dhash_image, hamming, sha12
 # DATA_CONTRACT 6: keep a sampled frame if its dHash differs from the last KEPT
 # frame in at least this many bits (out of 64). Same slide = 0-4, new slide = 8+.
 KEEP_MIN_DIST = 6
+
+# If the screen keeps changing and never settles (camera on a person, a video
+# inside the shared screen), still keep one frame every this many seconds, so
+# `dso link` and the export always have a picture of what was on screen.
+MAX_GAP_SEC = 60
 
 # DATA_CONTRACT 3: key frames are WebP with quality 60.
 WEBP_QUALITY = 60
@@ -85,8 +91,59 @@ def clear_old_frames(conn, file_id, frames_dir):
             old_file.unlink()
 
 
+def keep_decision(prev, current, last_kept):
+    """Decides, at every 1-per-second sample, whether to keep a key frame.
+
+    prev, current and last_kept are dicts with "t_sec" and "hash" (prev is the
+    sample one second before current; last_kept is the last frame we saved).
+    Returns "prev", "current" or None (= keep nothing now).
+
+    Why not simply "keep every sample that differs from the last kept frame"?
+    On the real Teams recording that kept 840 frames in 2.5 h, mostly 1-2 s
+    apart: transitions, scrolling, Teams switching between the shared screen
+    and the speaker, a moving camera. Each of those passing moments became a
+    key frame. A slide is different: it STAYS on screen. So:
+
+    1. "prev": the screen changed at prev (differs from the last kept frame)
+       AND one second later it still looks the same (current is close to
+       prev) -> the screen settled on something new: keep prev. We keep prev,
+       not current, so the frame gets the time the change happened.
+    2. "current": fallback when the screen never settles. If it differs from
+       the last kept frame and that frame is MAX_GAP_SEC or more old, keep the
+       current sample anyway.
+
+    We do NOT skip a frame because it looks like an older kept frame
+    (A -> B -> A). Going back to an earlier slide must create a frame, or
+    `dso link` would point the transcript at slide B while A is on screen.
+    """
+    if prev is not None:
+        changed = hamming(prev["hash"], last_kept["hash"]) >= KEEP_MIN_DIST
+        settled = hamming(current["hash"], prev["hash"]) < KEEP_MIN_DIST
+        if changed and settled:
+            return "prev"
+    changed_now = hamming(current["hash"], last_kept["hash"]) >= KEEP_MIN_DIST
+    waited_long = current["t_sec"] - last_kept["t_sec"] >= MAX_GAP_SEC
+    if changed_now and waited_long:
+        return "current"
+    return None
+
+
+def save_frame(conn, file_row, frames_dir, short_id, number, sample):
+    """Writes one key frame as WebP and inserts its row into `frames`."""
+    file_name = f"f{number:04d}.webp"         # f0001.webp, f0002.webp, ...
+    sample["image"].save(frames_dir / file_name, "WEBP", quality=WEBP_QUALITY)
+    image_bytes = (frames_dir / file_name).stat().st_size
+    # Paths in the DB are relative to --out and use "/" (DATA_CONTRACT 3).
+    image_path = f"frames/{short_id}/{file_name}"
+    conn.execute(
+        """INSERT INTO frames (file_id, t_sec, image_path, image_bytes, dhash)
+           VALUES (?, ?, ?, ?, ?)""",
+        (file_row["id"], round(sample["t_sec"], 3), image_path, image_bytes, sample["hash"]))
+
+
 def extract_key_frames(conn, file_row, out_dir, max_seconds):
-    """Step 1 for one video: sample 1 frame per second, keep the ones that changed.
+    """Step 1 for one video: sample 1 frame per second, keep the ones where the
+    screen changed and then stayed still (see keep_decision()).
 
     Returns the number of kept frames, or None if the video could not be opened.
     """
@@ -112,7 +169,8 @@ def extract_key_frames(conn, file_row, out_dir, max_seconds):
     frames_dir.mkdir(parents=True, exist_ok=True)
 
     kept = 0
-    last_kept_hash = None
+    prev = None           # the sample one second ago: {"t_sec", "hash", "image"}
+    last_kept = None      # the last frame we saved:   {"t_sec", "hash", "image"}
     frame_index = 0
     next_progress = PROGRESS_EVERY_SEC
     while True:
@@ -134,22 +192,23 @@ def extract_key_frames(conn, file_row, out_dir, max_seconds):
         # OpenCV gives colours as Blue-Green-Red; Pillow expects Red-Green-Blue.
         rgb = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
         image = Image.fromarray(rgb)
-        frame_hash = dhash_image(image)
+        current = {"t_sec": t_sec, "hash": dhash_image(image), "image": image}
 
-        # Keep the first frame, and every frame that looks different enough
-        # from the last frame we kept (= a new slide or a new scene).
-        if last_kept_hash is None or hamming(frame_hash, last_kept_hash) >= KEEP_MIN_DIST:
+        if last_kept is None:
+            to_keep = current                       # always keep the very first frame
+        else:
+            decision = keep_decision(prev, current, last_kept)
+            if decision == "prev":
+                to_keep = prev
+            elif decision == "current":
+                to_keep = current
+            else:
+                to_keep = None
+        if to_keep is not None:
             kept = kept + 1
-            file_name = f"f{kept:04d}.webp"         # f0001.webp, f0002.webp, ...
-            image.save(frames_dir / file_name, "WEBP", quality=WEBP_QUALITY)
-            image_bytes = (frames_dir / file_name).stat().st_size
-            # Paths in the DB are relative to --out and use "/" (DATA_CONTRACT 3).
-            image_path = f"frames/{short_id}/{file_name}"
-            conn.execute(
-                """INSERT INTO frames (file_id, t_sec, image_path, image_bytes, dhash)
-                   VALUES (?, ?, ?, ?, ?)""",
-                (file_row["id"], round(t_sec, 3), image_path, image_bytes, frame_hash))
-            last_kept_hash = frame_hash
+            save_frame(conn, file_row, frames_dir, short_id, kept, to_keep)
+            last_kept = to_keep
+        prev = current
 
         if t_sec >= next_progress:
             print(f"[video]   {format_time(t_sec)} / {format_time(duration)}, {kept} key frames")
