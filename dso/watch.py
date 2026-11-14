@@ -21,7 +21,8 @@ Where the files come from:
     (distilled videos, exact copies, older revisions) to the cloud recycle bin.
     See dso/cleanup.py for the safety rules.
 
-Local files are never deleted.
+Without --rclone, --delete-originals works on the local folder: originals kept
+in reduced form are MOVED to <folder>.recycle/ next to it (never deleted).
 Stop it with Ctrl+C.
 
 This file does not import the other modules (AGENTS.md 3): dso/cli.py passes
@@ -311,6 +312,12 @@ def watch_cycle(args, steps, last, rclone_state=None, cleanup=None):
                     run_rclone(command)             # the cleanup log too
         if rclone_state is not None:
             rclone_state["reports"] = snapshot(Path(args.out) / "reports")   # just uploaded
+    elif ok and not remote and cleanup is not None and getattr(args, "delete_originals", False):
+        # Local demo without a cloud: originals kept in reduced form are moved to
+        # <folder>.recycle/ (dso/cleanup.py). Remember the folder as it is now,
+        # so the moved files do not count as a change at the next check.
+        if cleanup(args, True) > 0:
+            current = snapshot(folder)
     if not ok:
         return last                         # try again at the next check
     return current
@@ -327,10 +334,13 @@ def run_watch(args, steps, cleanup=None):
     if getattr(args, "upload", False) and not remote:
         print("[watch] --upload only works together with --rclone REMOTE:PATH")
         return 1
-    if getattr(args, "delete_originals", False) and not (remote and getattr(args, "upload", False)):
-        print("[watch] --delete-originals needs --rclone REMOTE:PATH and --upload: the reduced "
-              "form must be in the cloud before an original is removed")
+    if getattr(args, "delete_originals", False) and remote and not getattr(args, "upload", False):
+        print("[watch] with --rclone, --delete-originals needs --upload: the reduced form must "
+              "be in the cloud before an original is removed")
         return 1
+    if getattr(args, "delete_originals", False) and not remote:
+        print(f"[watch] local mode: originals kept in reduced form are MOVED to "
+              f"{folder.resolve().parent.as_posix()}/{folder.name}.recycle/ (never deleted)")
     if remote:
         kind = remote_type(remote)
         name = remote.split(":", 1)[0]

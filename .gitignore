@@ -29,3 +29,6 @@ Thumbs.db
 
 # Per-machine settings for `dso watch` (see dso.example.toml)
 dso.toml
+
+# Local cleanup recycle folders (dso cleanup / watch --delete-originals without rclone)
+*.recycle/

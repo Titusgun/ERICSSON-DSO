@@ -1,5 +1,12 @@
-"""`dso cleanup <folder> --rclone REMOTE:PATH [--apply]` (owner: D) - actually free
-storage in the cloud, after the content has been kept in reduced form.
+"""`dso cleanup <folder> [--rclone REMOTE:PATH] [--apply]` (owner: D) - actually free
+storage, after the content has been kept in reduced form.
+
+Two places, same rules:
+  --rclone REMOTE:PATH  the cloud folder that `dso watch --rclone` downloads into
+                        <folder>: originals go to the OneDrive / SharePoint recycle bin
+  without --rclone      the local watched <folder> itself (a demo without a cloud):
+                        originals are MOVED to <folder>.recycle/ next to it, never
+                        deleted - move a file back to restore it
 
 The brief: "clean out large files but still keep their information at minimum
 cost" and "deleted only if a duplicate already exists". For files that
@@ -19,15 +26,18 @@ Everything else (unique documents, the kept copies, the newest revisions) stays.
 
 Safety rules (DECISIONS.md, AGENTS.md 8):
   - without --apply it only prints the plan (dry run)
-  - only files inside the watched cloud folder; local files are never deleted
+  - only files inside the watched folder (cloud: the cloud folder; local: <folder>);
+    local files are only ever MOVED to <folder>.recycle/, never deleted
   - right before deleting, the cloud file must still be byte-identical to the
     file we processed (OneDrive's QuickXorHash of the cloud file = of our copy,
     and our copy's SHA-256 = the one in the DB)
   - files go to the OneDrive / SharePoint RECYCLE BIN (restorable, 93 days by
     default): --onedrive-hard-delete=false is always passed
-  - every deletion is logged in out/reports/cleanup.jsonl + cleanup.md
+  - local: right before moving, the file's SHA-256 must still be the one in the DB
+  - every deletion / move is logged in out/reports/cleanup.jsonl + cleanup.md
 """
 import json
+import shutil
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
@@ -205,6 +215,56 @@ def apply(items, remote):
     return entries
 
 
+def recycle_dir(folder):
+    """The local recycle folder: NEXT TO the watched folder, so the watcher does
+    not see the moved files as new ones (data/inbox -> data/inbox.recycle)."""
+    folder = Path(folder).resolve()
+    return folder.parent / (folder.name + ".recycle")
+
+
+def location(item, remote, folder):
+    """Where a planned file lives: its cloud path, or "local:<folder>/<file>"."""
+    if remote:
+        return cloud_file(remote, item["relative"])
+    return "local:" + Path(folder).as_posix().rstrip("/") + "/" + item["relative"]
+
+
+def removed(entry):
+    """True for log lines of files that really left: deleted in the cloud or
+    moved to the local recycle folder."""
+    return entry["result"].startswith("deleted") or entry["result"].startswith("moved")
+
+
+def apply_local(items, folder):
+    """Moves the planned local files to <folder>.recycle/ (same sub-folders),
+    after checking they are still the files we processed. Returns log entries."""
+    bin_dir = recycle_dir(folder)
+    entries = []
+    for item in items:
+        local = Path(item["path"])
+        if not local.is_file():
+            result = "skipped: the file is already gone"
+        elif sha256_file(local) != item["sha256"]:
+            result = "skipped: the file changed since it was processed"
+        else:
+            target = bin_dir / item["relative"]
+            number = 2
+            while target.exists():               # keep both if the name is taken
+                target = target.with_name(f"{Path(item['relative']).stem} ({number}){target.suffix}")
+                number += 1
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.move(str(local), str(target))
+            result = f"moved to {target.as_posix()} (move it back to restore)"
+        print(f"[cleanup] {result}: {item['relative']} ({human_size(item['size_bytes'])}) - {item['reason']}")
+        entries.append({
+            "time": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "file": item["name"], "cloud_path": location(item, None, folder),
+            "size_bytes": item["size_bytes"], "sha256": item["sha256"],
+            "reason": item["reason"], "kept_at": item["kept_at"], "result": result,
+        })
+    return entries
+
+
 def write_log(out_dir, entries):
     """Appends to out/reports/cleanup.jsonl and rewrites cleanup.md from it."""
     reports = out_dir / "reports"
@@ -221,13 +281,14 @@ def write_log(out_dir, entries):
                 all_entries.append(json.loads(line))
     freed = 0
     for entry in all_entries:
-        if entry["result"].startswith("deleted"):
+        if removed(entry):
             freed += entry["size_bytes"]
     lines = [
-        "# Cloud cleanup log",
+        "# Cleanup log",
         "",
-        f"**{human_size(freed)} freed in the cloud.** Deleted files are in the OneDrive / "
-        "SharePoint recycle bin (restorable, 93 days by default).",
+        f"**{human_size(freed)} freed.** Cloud files are in the OneDrive / SharePoint recycle bin "
+        "(restorable, 93 days by default); local files were moved to `<folder>.recycle/` "
+        "(move them back to restore).",
         "",
         "| Time (UTC) | File | Size | Why it could go | Kept | Result |",
         "|---|---|---:|---|---|---|",
@@ -252,7 +313,7 @@ def already_deleted(out_dir):
             if not line.strip():
                 continue
             entry = json.loads(line)
-            if not entry["result"].startswith("deleted"):
+            if not removed(entry):
                 continue
             if "sha256" in entry:
                 done.add((entry["cloud_path"], entry["sha256"]))
@@ -261,17 +322,19 @@ def already_deleted(out_dir):
     return done
 
 
-def was_deleted_before(item, remote, done):
-    """True if this exact file (same cloud path AND same content) was already
-    deleted by an earlier run. A NEW upload with the same name has other
-    content, so it is handled again."""
-    path = cloud_file(remote, item["relative"])
+def was_deleted_before(item, remote, done, folder=None):
+    """True if this exact file (same place AND same content) was already removed
+    by an earlier run. A NEW upload with the same name has other content, so it
+    is handled again."""
+    path = location(item, remote, folder)
     return (path, item["sha256"]) in done or (path, f"size:{item['size_bytes']}") in done
 
 
 def cleanup(args, do_apply):
-    """Plan (and with do_apply: delete) for args.folder / args.rclone.
-    Returns the number of cloud files deleted."""
+    """Plan (and with do_apply: remove) for args.folder - in the cloud folder
+    args.rclone, or, without rclone, in the local folder itself.
+    Returns the number of files removed."""
+    remote = getattr(args, "rclone", None)
     out_dir = Path(args.out)
     conn = connect(args.db)
     planned = plan(conn, Path(args.folder), out_dir)
@@ -282,7 +345,7 @@ def cleanup(args, do_apply):
     done = already_deleted(out_dir)
     items = []
     for item in planned:
-        if not was_deleted_before(item, args.rclone, done):
+        if not was_deleted_before(item, remote, done, args.folder):
             items.append(item)
     earlier = len(planned) - len(items)
     if len(items) == 0:
@@ -295,19 +358,23 @@ def cleanup(args, do_apply):
     total = 0
     for item in items:
         total += item["size_bytes"]
+    where = "the cloud recycle bin" if remote else recycle_dir(args.folder).as_posix()
     if not do_apply:
-        print(f"[cleanup] DRY RUN - would move {len(items)} cloud file(s), {human_size(total)}, "
-              "to the recycle bin (add --apply):")
+        print(f"[cleanup] DRY RUN - would move {len(items)} file(s), {human_size(total)}, "
+              f"to {where} (add --apply):")
         for item in items:
             print(f"[cleanup]   {item['relative']} ({human_size(item['size_bytes'])}) - {item['reason']}")
         return 0
-    entries = apply(items, args.rclone)
+    if remote:
+        entries = apply(items, remote)
+    else:
+        entries = apply_local(items, args.folder)
     freed = write_log(out_dir, entries)
     deleted = 0
     for entry in entries:
-        if entry["result"].startswith("deleted"):
+        if removed(entry):
             deleted += 1
-    print(f"[cleanup] {deleted} of {len(items)} deleted; {human_size(freed)} freed in the cloud "
+    print(f"[cleanup] {deleted} of {len(items)} removed to {where}; {human_size(freed)} freed "
           f"so far -> {(out_dir / 'reports' / 'cleanup.md').as_posix()}")
     return deleted
 

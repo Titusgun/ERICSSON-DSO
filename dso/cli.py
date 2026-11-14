@@ -77,13 +77,17 @@ def build_parser():
     p.add_argument("--upload", action="store_true", default=None,
                    help="with --rclone: copy exports + reports back to REMOTE:PATH/_dso_distilled")
     p.add_argument("--delete-originals", action="store_true", default=None,
-                   help="with --rclone and --upload: move cloud originals that are kept in reduced form "
-                        "(distilled videos, exact copies, older revisions) to the cloud recycle bin")
+                   help="remove originals that are kept in reduced form (whole distilled videos, exact "
+                        "copies, older revisions): with --rclone (+ --upload) to the cloud recycle bin, "
+                        "without --rclone moved to <folder>.recycle/")
     p.add_argument("--once", action="store_true", default=None, help="check once and stop (for tests)")
 
-    p = sub.add_parser("cleanup", help="free cloud storage: plan (dry run) or --apply")
+    p = sub.add_parser("cleanup", help="free storage (cloud recycle bin, or local <folder>.recycle): "
+                                       "plan (dry run) or --apply")
     p.add_argument("folder", help="the folder `dso watch --rclone` downloads into, e.g. data/cloud")
-    p.add_argument("--rclone", required=True, metavar="REMOTE:PATH", help="the cloud folder, e.g. \"onedrive:DSO demo\"")
+    p.add_argument("--rclone", default=None, metavar="REMOTE:PATH",
+                   help="the cloud folder, e.g. \"onedrive:DSO demo\"; without it: the local folder itself "
+                        "(files are moved to <folder>.recycle/)")
     p.add_argument("--apply", action="store_true",
                    help="really move the files to the cloud recycle bin (default: only show the plan)")
 

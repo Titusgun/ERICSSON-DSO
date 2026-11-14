@@ -64,10 +64,13 @@ If it needs a change elsewhere, it stops and writes that in the PR description.
   Do not paste real transcript text into prompts of online tools either.
   Use `tests/fixtures/` (synthetic) for anything shared.
 - Offboarding is always a DRY RUN. No code in this repo deletes or moves user files -
-  with ONE exception (team decision 13 Nov, DECISIONS.md): `dso cleanup --apply` /
-  `dso watch --delete-originals` may move files in the watched CLOUD folder to the cloud
-  recycle bin, and only distilled videos (whole video transcribed), exact copies and older
-  revisions, after a hash re-check, with a log. Local files are never deleted.
+  with ONE exception (team decisions 13 + 14 Nov, DECISIONS.md): `dso cleanup --apply` /
+  `dso watch --delete-originals` may remove originals whose content is kept in reduced form -
+  only distilled videos (whole video transcribed + key frames), exact copies (original kept)
+  and older revisions (newest kept), after a hash re-check, with a log, and only inside the
+  WATCHED folder: in the cloud into the cloud recycle bin; locally MOVED to `<folder>.recycle/`
+  next to it (restorable). Local files are never deleted, and nothing outside the watched
+  folder is touched.
 - The web UI binds to 127.0.0.1 only.
 
 ## 9. Workflow

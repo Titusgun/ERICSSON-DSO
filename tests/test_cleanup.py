@@ -110,7 +110,7 @@ def test_dry_run_deletes_nothing(setup, monkeypatch, capsys):
     deleted = fake_rclone(monkeypatch)
     assert main(["--db", args.db, "--out", args.out, "cleanup", args.folder, "--rclone", args.rclone]) == 0
     assert deleted == []
-    assert "DRY RUN - would move 3 cloud file(s)" in capsys.readouterr().out
+    assert "DRY RUN - would move 3 file(s), 29.0 B, to the cloud recycle bin" in capsys.readouterr().out
 
 
 def test_apply_deletes_and_logs(setup, monkeypatch):
@@ -122,7 +122,7 @@ def test_apply_deletes_and_logs(setup, monkeypatch):
     for name in ["deck (1).pdf", "talk.mp4"]:
         assert (cloud / name).is_file()                    # local files are never deleted
     log = (cleanup.Path(args.out) / "reports" / "cleanup.md").read_text(encoding="utf-8")
-    assert "freed in the cloud" in log and "exact copy of deck.pdf" in log and "recycle bin" in log
+    assert "freed." in log and "exact copy of deck.pdf" in log and "recycle bin" in log
 
 
 def test_changed_cloud_file_is_not_deleted(setup, monkeypatch):
@@ -216,3 +216,56 @@ def test_old_log_lines_without_sha_are_matched_by_size(tmp_path):
     assert cleanup.was_deleted_before(item, "onedrive:Demo", done)
     other = {"relative": "a.mp4", "sha256": "abc", "size_bytes": 999}
     assert not cleanup.was_deleted_before(other, "onedrive:Demo", done)
+
+
+# ---------- local mode (no cloud): MOVE to <folder>.recycle ----------
+
+def local(args):
+    """The same setup, but without a cloud remote."""
+    return Namespace(db=args.db, out=args.out, folder=args.folder, rclone=None)
+
+
+def test_local_dry_run_moves_nothing(setup, capsys):
+    args, cloud = setup
+    cleanup.cleanup(local(args), False)
+    assert "DRY RUN - would move 3 file(s)" in capsys.readouterr().out
+    assert (cloud / "talk.mp4").is_file() and not cleanup.recycle_dir(cloud).exists()
+
+
+def test_local_apply_moves_to_recycle_folder(setup):
+    args, cloud = setup
+    assert cleanup.cleanup(local(args), True) == 3
+    bin_dir = cleanup.recycle_dir(cloud)
+    assert bin_dir == cloud.parent / "cloud.recycle"                 # NEXT TO the folder, not inside
+    for name in ["deck (1).pdf", "final.pptx", "talk.mp4"]:
+        assert not (cloud / name).exists() and (bin_dir / name).is_file()   # moved, not deleted
+    for name in ["deck.pdf", "final2.pptx", "notes.pdf", "long.mp4"]:
+        assert (cloud / name).is_file()                              # kept copies + unique files stay
+    log = (cleanup.Path(args.out) / "reports" / "cleanup.md").read_text(encoding="utf-8")
+    assert "moved to" in log and "move it back to restore" in log
+    assert cleanup.cleanup(local(args), True) == 0                   # second run: nothing new
+
+
+def test_local_changed_file_is_not_moved(setup):
+    args, cloud = setup
+    (cloud / "talk.mp4").write_bytes(b"replaced after processing")
+    cleanup.cleanup(local(args), True)
+    assert (cloud / "talk.mp4").is_file()
+
+
+def test_local_name_clash_in_recycle_folder(setup):
+    args, cloud = setup
+    bin_dir = cleanup.recycle_dir(cloud)
+    bin_dir.mkdir()
+    (bin_dir / "talk.mp4").write_bytes(b"an older recycled file")
+    cleanup.cleanup(local(args), True)
+    assert (bin_dir / "talk.mp4").read_bytes() == b"an older recycled file"   # never overwritten
+    assert (bin_dir / "talk (2).mp4").is_file()
+
+
+def test_watch_local_delete_originals_is_allowed(tmp_path, capsys):
+    folder = tmp_path / "inbox"
+    folder.mkdir()
+    assert main(["--db", str(tmp_path / "d.db"), "--out", str(tmp_path / "out"),
+                 "watch", str(folder), "--delete-originals", "--once", "--config", str(tmp_path / "none.toml")]) == 0
+    assert "MOVED to" in capsys.readouterr().out

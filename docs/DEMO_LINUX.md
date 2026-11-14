@@ -81,7 +81,7 @@ cd ~/Projects/dso-py
 # to the OneDrive recycle bin
 systemd-inhibit --what=sleep:idle --why="dso demo" uv run dso watch data/cloud --rclone "onedrive:DSO demo" --source onedrive --interval 10 --upload --delete-originals
 # offline fallback
-systemd-inhibit --what=sleep:idle --why="dso demo" uv run dso watch data/inbox --interval 10
+systemd-inhibit --what=sleep:idle --why="dso demo" uv run dso watch data/inbox --interval 10 --delete-originals   # moves originals to data/inbox.recycle/
 ```
 `--delete-originals` frees the space for real (recycle bin, restorable 93 days; log in
 `_dso_distilled/reports/cleanup.md`). Videos are processed whole by default and only then

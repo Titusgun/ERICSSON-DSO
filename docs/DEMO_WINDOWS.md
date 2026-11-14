@@ -96,7 +96,7 @@ uv run dso watch "$env:OneDriveCommercial\DSO demo" --source onedrive --interval
 #    content is kept (distilled videos, copies, old revisions) to the OneDrive recycle bin
 uv run dso watch data\cloud --rclone "onedrive:DSO demo" --source onedrive --interval 10 --upload --delete-originals
 # offline fallback
-uv run dso watch data\inbox --interval 10
+uv run dso watch data\inbox --interval 10 --delete-originals   # moves originals to data\inbox.recycle\
 ```
 `--delete-originals` (only with B) frees the space for real: recycle bin, restorable 93 days,
 log in `_dso_distilled/reports/cleanup.md`. Videos are processed whole by default and only then
