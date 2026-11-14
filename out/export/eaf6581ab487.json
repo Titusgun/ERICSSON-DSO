@@ -2,19 +2,145 @@
   "schema_version": 1,
   "source": {
     "file_name": "SD-WAN Orchestration_commercial presentation_final.pptx",
-    "path": "data/SD-WAN Orchestration_commercial presentation_final.pptx",
+    "path": "data/cloud/SD-WAN Orchestration_commercial presentation_final.pptx",
     "sha256": "eaf6581ab487c74fbfdefdda155d364320a1500a5c4afc427672affad570fc08",
     "size_bytes": 3682554,
     "kind": "document",
-    "system": "local",
+    "system": "onedrive",
     "doc_number": null,
     "revision": null,
-    "author": null,
-    "date": null
+    "author": "EANAFRE Ana Freitas",
+    "date": "2026-11-12T13:49:20"
   },
-  "generated_at": "2026-11-13T14:40:02Z",
+  "generated_at": "2026-11-14T14:36:25Z",
   "duration_sec": null,
   "frames": [],
   "segments": [],
-  "slides_referenced": []
+  "slides_referenced": [
+    {
+      "slide_id": "eaf6581ab487:1:edfe5cd3",
+      "text": "EANAFRE Ana Freitas | BDGSDE [Ana Freitas] | 6/221 09-FGB 101 0800 Uen | C | 2019-10-11 | Open | Page 1\nSD-WAN is an \norchestration game\n— Speaker name — Organization YYYY-MM-DD\nEricsson SD-WAN orchestration",
+      "image": "slides/eaf6581ab487/p001.webp"
+    },
+    {
+      "slide_id": "eaf6581ab487:2:669a01e7",
+      "text": "EANAFRE Ana Freitas | BDGSDE [Ana Freitas] | 6/221 09-FGB 101 0800 Uen | C | 2019-10-11 | Open | Page 2\nEnterprises in the \ndigital transformation era\nSD-WAN – programmable, flexible and reliable connectivity\nMoving services to cloud\nNew customers’ buying journeys\nNetwork transformation towards 5G\nSuperior customer experience\n“Organizations with \ndigital-ready \nnetworks are \nrealizing two to \nthree times the \nrevenue growth of \norganizations \nwithout such \nnetworks.” - IDC",
+      "image": "slides/eaf6581ab487/p002.webp"
+    },
+    {
+      "slide_id": "eaf6581ab487:3:76cd7d83",
+      "text": "EANAFRE Ana Freitas | BDGSDE [Ana Freitas] | 6/221 09-FGB 101 0800 Uen | C | 2019-10-11 | Open | Page 3\nTransformation has begun –\nwhat enterprises seek\nSecure services\nalong with optimal \napplication/network \nperformance and \nuser experience\nAgility to easily scale\nat low cost\nDecentralized \nworkforces adapting\nto more flexible\nenvironments\nVisible performance \nand voice usage,\ndata and video traffic \nvia unique customer \nweb portals\n“Between 30 percent and 50 percent of large enterprises have begun \nadopting SD-WAN.” – Global Data\nLarge\nenterprises",
+      "image": "slides/eaf6581ab487/p003.webp"
+    },
+    {
+      "slide_id": "eaf6581ab487:4:60a25e8c",
+      "text": "EANAFRE Ana Freitas | BDGSDE [Ana Freitas] | 6/221 09-FGB 101 0800 Uen | C | 2019-10-11 | Open | Page 4\nWhat is SD-WAN?\n— Software-Defined networking in Wide Area \nNetworks (SD-WAN) is the answer to the \nlimitations of Wide Area Networks (WAN) in \nthe cloud era\n— SD-WAN expands the connectivity options\nby adding mobility and keeps costs low while \nproviding flexibility through cloud-based \nservices in this new enterprise hybrid \nenvironment\n6/221 09-FGB 101 0800 Uen | B | SD-WAN is an orchestration game | | Commercial in Confidence | Page 4",
+      "image": "slides/eaf6581ab487/p004.webp"
+    },
+    {
+      "slide_id": "eaf6581ab487:5:d9a718fa",
+      "text": "EANAFRE Ana Freitas | BDGSDE [Ana Freitas] | 6/221 09-FGB 101 0800 Uen | C | 2019-10-11 | Open | Page 8\nSD-WAN managed services: \nnow the preferred deployment model\n2014 2015 2016 2017 2018 2019 2020 2021\n0%\n20%\n40%\n60%\n80%\n100%\n120%\nSource: Appledore Research CSP Managed DIY / OTT\nSubstitution of CSP managed SD-WAN services\n Note: this is 1% - market is growing rapidly\nEarly on, all SD-WAN was targeted to \nenterprises, and delivered “Over the \nTop” (OTT)\nIn briefings, many CSPs \nReffered to 2017 as a “launch \nand establish” year As CSPs become recognized, we see \ngrowth becoming meaningful in 2018–\n19\nAnd over time we believe that SD-WAN will \nbecome not just a revenue source, but a driver of \nsynergistic revenues\nSD-WAN is a \nmulti-vendor business.\nService providers need \norchestration to handle \ncomplexity and assure \nend-to-end quality \nof service.\nChanging mix of SD-WAN delivery/purchase options",
+      "image": "slides/eaf6581ab487/p005.webp"
+    },
+    {
+      "slide_id": "eaf6581ab487:6:94640ca6",
+      "text": "EANAFRE Ana Freitas | BDGSDE [Ana Freitas] | 6/221 09-FGB 101 0800 Uen | C | 2019-10-11 | Open | Page 9\nService provider offerings for enterprises\nGuaranteed \nconnectivity between \nbranch offices and \nheadquarters\nReliable connectivity \nenhanced with \nsecurity services\nFlexibility to add \nremote and mobile \nworkers to the \nenterprise network\nOrchestrating SD-WAN \nand enterprise \napplications across \nmultiple clouds\nConnectivity Security Mobility Multi-cloud",
+      "image": "slides/eaf6581ab487/p006.webp"
+    },
+    {
+      "slide_id": "eaf6581ab487:7:04168d6e",
+      "text": "EANAFRE Ana Freitas | BDGSDE [Ana Freitas] | 6/221 09-FGB 101 0800 Uen | C | 2019-10-11 | Open | Page 10\nConnectivity – Adding new branches\nCPE is delivered and connected \non site\nSelection of SD-WAN service \nand connectivity options\nSD-WAN service is automatically \ninstantiated and configured\nAccess to the portal\nQuality and peformance of SD-WAN \nservice are monitored\n2\n4\n5\n6\n7\n1\nMonitor service level agreement (SLA) \nthrough the portal\n8\nAutomated closed loop actions can be \nperfomed to correct SLA deviations\n3\nOrdering of selected services and \ncorresponding equipment\n6/221 09-FGB 101 0800 Uen | B | SD-WAN is an orchestration game | | Commercial in Confidence | Page 10",
+      "image": "slides/eaf6581ab487/p007.webp"
+    },
+    {
+      "slide_id": "eaf6581ab487:8:72186d2a",
+      "text": "EANAFRE Ana Freitas | BDGSDE [Ana Freitas] | 6/221 09-FGB 101 0800 Uen | C | 2019-10-11 | Open | Page 11\nSecurity - Secure and optimized \nconnectivity\nSelection of value-added services \n(for instance, security)\nValue-added services are automatically \ninstantiated and configured\nAccess to the portal\nQuality and peformance of value\u0002added services are monitored\n3\n4\n5\n6\n1\n7\n2\nOrdering of selected services\nMonitor service level agreement (SLA) of the \nvalue-added services through the portal\nAutomated closed loop actions for the value-added \nservices can be perfomed to correct SLA deviations\n6/221 09-FGB 101 0800 Uen | B | SD-WAN is an orchestration game | | Commercial in Confidence | Page 11",
+      "image": "slides/eaf6581ab487/p008.webp"
+    },
+    {
+      "slide_id": "eaf6581ab487:9:caaefb2a",
+      "text": "EANAFRE Ana Freitas | BDGSDE [Ana Freitas] | 6/221 09-FGB 101 0800 Uen | C | 2019-10-11 | Open | Page 12\nMobility - Connecting remote or mobile \nworkforce\nSelection of subscribers entitled to \nenterprise services and mobility\nEnterprise services/mobility and \nsubscribers’ profiles are automatically \nconfigured in operator’s network\nAccess to the portal\nQuality and peformance of SD-WAN \nand Enterprise services for remote or \nmobile workforce are monitored\n2\n3\n4\n5\n1\n6\nMonitor service level agreement (SLA) \nthrough the portal\nAutomated closed loop actions can be \nperfomed to correct SLA deviations\n6/221 09-FGB 101 0800 Uen | B | SD-WAN is an orchestration game | | Commercial in Confidence | Page 12",
+      "image": "slides/eaf6581ab487/p009.webp"
+    },
+    {
+      "slide_id": "eaf6581ab487:10:92c5a3e6",
+      "text": "EANAFRE Ana Freitas | BDGSDE [Ana Freitas] | 6/221 09-FGB 101 0800 Uen | C | 2019-10-11 | Open | Page 13\nMulti-cloud – SD-WAN and Enterprise \nservices in multi-cloud environment\nSelection of multi-cloud (on-prem, private or \npublic cloud) SD-WAN and Enterprise services\nSD-WAN and Enterprise services are \nautomatically instantiated and configured \nin different locations and clouds\nAccess to the portal\nQuality and peformance of SD-WAN \nand Enterprise services are monitored\n2\n3\n4\n5\n1\n6\nMonitor service level agreement (SLA) \nthrough the portal\nAutomated closed loop actions can be \nperfomed to correct SLA deviations\n6/221 09-FGB 101 0800 Uen | B | SD-WAN is an orchestration game | | Commercial in Confidence | Page 13",
+      "image": "slides/eaf6581ab487/p010.webp"
+    },
+    {
+      "slide_id": "eaf6581ab487:11:f7775b57",
+      "text": "EANAFRE Ana Freitas | BDGSDE [Ana Freitas] | 6/221 09-FGB 101 0800 Uen | C | 2019-10-11 | Open | Page 14\nEricsson SD-WAN orchestration\nSD-WAN CPE-VNF \nCatalog Management\nBilling\nSD-WAN Controller (vendor 1)\nUniversal CPE\nCustomer Relationship Management\nOrder Management\nService Assurance\nSD-WAN CPE-VNF\nSD-WAN Controller (vendor 2)\nUniversal CPE\nSecurity SD-WAN CPE-VNF\nNFV infrastructure\nPacket Core VNF\nAnalytics\nInventory\nVNF Manager (vendor 3)\nVNF\nService Orchestration \nOffice 365\nGoogle Azure\nSalesforce\nAWS",
+      "image": "slides/eaf6581ab487/p011.webp"
+    },
+    {
+      "slide_id": "eaf6581ab487:12:1a45d67a",
+      "text": "EANAFRE Ana Freitas | BDGSDE [Ana Freitas] | 6/221 09-FGB 101 0800 Uen | C | 2019-10-11 | Open | Page 15\nEricsson SD-WAN orchestration benefits\nAutomation\nSimplified \nmanagement\nAgility\nRevenue \nGrowth\nSD-WAN\nMulti-vendor support \nto enable service \nproviders to choose \nbest of breed\nAutomate all phases \nfrom ordering and \ndeployment to closed\u0002loop assurance\nPre-integration with an \necosystem of vendors \nto enable faster time\u0002to-market\nA full suite of mobile \nenterprise services \nbeyond SD-WAN\n6/221 09-FGB 101 0800 Uen | B | SD-WAN is an orchestration game | | Commercial in Confidence | Page 15",
+      "image": "slides/eaf6581ab487/p012.webp"
+    },
+    {
+      "slide_id": "eaf6581ab487:13:c552fce6",
+      "text": "EANAFRE Ana Freitas | BDGSDE [Ana Freitas] | 6/221 09-FGB 101 0800 Uen | C | 2019-10-11 | Open | Page 16\nService providers journey to SD-WAN \nManaged Services\nSimplified management \nin a multi-vendor \nenvironment Compliance with \nprocurement \nrequirements Workload placement is \nflexible while \nmaintaining reliability Unlocking full \n5G potential\nPure SD-WAN\nVA Services\nCloud-based\nMix underlay",
+      "image": "slides/eaf6581ab487/p013.webp"
+    },
+    {
+      "slide_id": "eaf6581ab487:14:81a79372",
+      "text": "EANAFRE Ana Freitas | BDGSDE [Ana Freitas] | 6/221 09-FGB 101 0800 Uen | C | 2019-10-11 | Open | Page 17\nPure SD-WAN - Orchestrating solutions \nfrom different vendors\nuCPE \nvendor 1\nuCPE \nvendor 2\nuCPE \nvendor 3\nEnterprise \n1\nEnterprise \n2\nEnterprise \n3\nSD-WAN Overlay\nInternet\n4G/5G MPLS\nSD-WAN \nVNF\nSD-WAN \nVNF\nSD-WAN \nVNF\nSD-WAN \nVNF\nSD-WAN \nVNF\nSD-WAN \nVNF",
+      "image": "slides/eaf6581ab487/p014.webp"
+    },
+    {
+      "slide_id": "eaf6581ab487:15:ba715a27",
+      "text": "EANAFRE Ana Freitas | BDGSDE [Ana Freitas] | 6/221 09-FGB 101 0800 Uen | C | 2019-10-11 | Open | Page 18\nValue-added services - Orchestrating \napplications on top of the SD-WAN solution\nSecurit\ny\nSecurit\ny\nuCPE \nvendor 1\nuCPE \nvendor 2\nuCPE \nvendor 3\nEnterprise \n1\nEnterprise \n2\nEnterprise \n3\nSD-WAN Overlay\nInternet\n4G/5G MPLS\nSD-WAN \nVNF\nSD-WAN \nVNF\nSD-WAN \nVNF\nSD-WAN \nVNF\nSD-WAN \nVNF\nSD-WAN \nVNF",
+      "image": "slides/eaf6581ab487/p015.webp"
+    },
+    {
+      "slide_id": "eaf6581ab487:16:c2593776",
+      "text": "EANAFRE Ana Freitas | BDGSDE [Ana Freitas] | 6/221 09-FGB 101 0800 Uen | C | 2019-10-11 | Open | Page 19\nCloud-based services - Orchestrating a \nmulti-cloud environment\nvEPC\nvIMS\nvHSS\nNetwork \nSlicing\nPrivate \ncloud\nPublic \ncloud\nSD-WAN \nVNF\nSecurit\ny\nSecurit\ny\nuCPE \nvendor 1\nuCPE \nvendor 2\nuCPE \nvendor 3\nEnterprise \n1\nEnterprise \n2\nEnterprise \n3\nSD-WAN Overlay\nInternet\n4G/5G MPLS\nSD-WAN \nVNF\nSD-WAN \nVNF\nSD-WAN \nVNF\nSD-WAN \nVNF\nSD-WAN \nVNF\nSD-WAN \nVNF",
+      "image": "slides/eaf6581ab487/p016.webp"
+    },
+    {
+      "slide_id": "eaf6581ab487:17:07934365",
+      "text": "EANAFRE Ana Freitas | BDGSDE [Ana Freitas] | 6/221 09-FGB 101 0800 Uen | C | 2019-10-11 | Open | Page 20\nLTE/5G and FWA - Ochestrating a mix of \nSD-WAN underlay\nUE\nFWA\n5G/LTE\nTelco \ncloud\nSD-WAN \nVNF\nvEPC\nvIMS\nvHSS\nNetwork \nSlicing\nPrivate \ncloud\nPublic \ncloud\nSD-WAN \nVNF\nSecurit\ny\nSecurit\ny\nuCPE \nvendor 1\nuCPE \nvendor 2\nEnterprise \n1\nEnterprise \n2\nEnterprise \n3\nSD-WAN Overlay\nInternet\n4G/5G MPLS\nSD-WAN \nVNF\nSD-WAN \nVNF\nSD-WAN \nVNF\nSD-WAN \nVNF\nSD-WAN \nVNF\nSD-WAN \nVNF",
+      "image": "slides/eaf6581ab487/p017.webp"
+    },
+    {
+      "slide_id": "eaf6581ab487:18:b80c757c",
+      "text": "EANAFRE Ana Freitas | BDGSDE [Ana Freitas] | 6/221 09-FGB 101 0800 Uen | C | 2019-10-11 | Open | Page 21\nCustomer case –\nVerizon virtual network services\nChallenge\nCreate new value for enterprise \ncustomers. Add capabilities to the \ncustomer digital journey in a more \nagile and adaptable way.\nSolution\nEricsson Dynamic Orchestration \nsupports the full life cycle of service \nimplementation and assurance. Third \nparties can rapidly onboard SD-WAN \ninto Verizon’s catalog.\nValue\nMulti-vendor orchestration solution, \nbundled with value-added services, \nwith closed-loop assurance for best \nservice quality for a \ncustomer-centric experience.\n6/221 09-FGB 101 0800 Uen | B | SD-WAN is an orchestration game | | Commercial in Confidence | Page 21",
+      "image": "slides/eaf6581ab487/p018.webp"
+    },
+    {
+      "slide_id": "eaf6581ab487:19:5c246b05",
+      "text": "EANAFRE Ana Freitas | BDGSDE [Ana Freitas] | 6/221 09-FGB 101 0800 Uen | C | 2019-10-11 | Open | Page 22\nCustomer case –\nVerizon virtual network services\nMulti-vendor environment\nSecurity\n— Fortinet\n— Juniper\n— Palo Alto\n— Cisco\n— Versa\nSD-WAN\n— Viptela\n— Versa\n— Cisco\nWAN optimizer\n— Cisco\n— Riverbed\n* Based on monolith in current \nsolution\nEricsson Orchestrator\nDynamic Orchestration\nVNF CPE-VNF CPE-VNF VNF\nEnterprise branch offices\nVIM\nHardware\nVIM\nHardware\nService config. management NFVO G-VNFM\n3PP VNF Assurance*\nVerizon DC\nSD-WAN\nVNFM\nSD-WAN \nanalytics\nSD-WAN \ncontroller\nPNF\nEnterprise \nself-mgmt*\nVNF \nonboarding\nExisting OSS\nInventory Order manager Service and product catalog\nvResource assurance\nService Orchestration",
+      "image": "slides/eaf6581ab487/p019.webp"
+    },
+    {
+      "slide_id": "eaf6581ab487:20:1e5c6a54",
+      "text": "EANAFRE Ana Freitas | BDGSDE [Ana Freitas] | 6/221 09-FGB 101 0800 Uen | C | 2019-10-11 | Open | Page 23\nEricsson SD-WAN orchestration\nEricsson SD-WAN orchestration\nOpen solution\nNo vendor lock-in through\n open interfaces and configurable \nintegration points \nMulti-domain\nOrchestration of services \nand slices across access, \ntransport and core\nModel-driven\nAgility and flexibility through \nmodel-driven orchestration \nwith generic workflows \nStandard compliant \nETSI/MANO, TMF, MEF \nand ONAP alignment\nMulti-vendor\nProven deployment of\n over 200 VNFs in a variety\n of cloud environments",
+      "image": "slides/eaf6581ab487/p020.webp"
+    },
+    {
+      "slide_id": "eaf6581ab487:21:36238e05",
+      "text": "EANAFRE Ana Freitas | BDGSDE [Ana Freitas] | 6/221 09-FGB 101 0800 Uen | C | 2019-10-11 | Open | Page 24\nEricsson SD-WAN orchestration –\nvalues\nFast planning, rollout and management \nof on-prem and cloud services and life \ncycle from a centralized location\nEnable operator business agility\nOffer security and business applications \n“as a service”, bundled with connectivity \nlinks between central office and branches\nProvide enterprise value-added services\nMachine learning and AI to rapidly \nidentify, predict and fix faults to assure \nquality of service\nImprove customer experience",
+      "image": "slides/eaf6581ab487/p021.webp"
+    },
+    {
+      "slide_id": "eaf6581ab487:22:2328a2cb",
+      "text": "EANAFRE Ana Freitas | BDGSDE [Ana Freitas] | 6/221 09-FGB 101 0800 Uen | C | 2019-10-11 | Open | Page 25\nSummary: SD-WAN is an \norchestration game\nManaged services are the preferred model\nSD-WAN is a multivendor ecosystem\nEricsson is building a complete solution\n6/221 09-FGB 101 0800 Uen | B | SD-WAN is an orchestration game | | Commercial in Confidence | Page 25",
+      "image": "slides/eaf6581ab487/p022.webp"
+    },
+    {
+      "slide_id": "eaf6581ab487:23:afd91e3b",
+      "text": "EANAFRE Ana Freitas | BDGSDE [Ana Freitas] | 6/221 09-FGB 101 0800 Uen | C | 2019-10-11 | Open | Page 26\nSD-WAN orchestration blogs\n6/221 09-FGB 101 0800 Uen | B | SD-WAN is an orchestration game | | Commercial in Confidence | Page 26",
+      "image": "slides/eaf6581ab487/p023.webp"
+    },
+    {
+      "slide_id": "eaf6581ab487:24:96b80cc8",
+      "text": "EANAFRE Ana Freitas | BDGSDE [Ana Freitas] | 6/221 09-FGB 101 0800 Uen | C | 2019-10-11 | Open | Page 27\nSD-WAN orchestration reports\n6/221 09-FGB 101 0800 Uen | B | SD-WAN is an orchestration game | | Commercial in Confidence | Page 27",
+      "image": "slides/eaf6581ab487/p024.webp"
+    },
+    {
+      "slide_id": "eaf6581ab487:25:f7dd894d",
+      "text": "www.ericsson.com/dynamic-orchestration",
+      "image": "slides/eaf6581ab487/p025.webp"
+    }
+  ]
 }

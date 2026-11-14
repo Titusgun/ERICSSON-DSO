@@ -2,17 +2,17 @@
   "schema_version": 1,
   "source": {
     "file_name": "Ericsson Response Introduction[64]  -  Read-Only.pdf",
-    "path": "data/Ericsson Response Introduction[64]  -  Read-Only.pdf",
+    "path": "data/cloud/Ericsson Response Introduction[64]  -  Read-Only.pdf",
     "sha256": "a0ce9da497f54799f1377cc0143ae4e8023725d46a843aca7e8823bff64272da",
     "size_bytes": 8780449,
     "kind": "document",
-    "system": "local",
+    "system": "onedrive",
     "doc_number": null,
     "revision": null,
     "author": null,
-    "date": null
+    "date": "2023-03-29T17:15:20"
   },
-  "generated_at": "2026-11-13T14:40:02Z",
+  "generated_at": "2026-11-14T14:36:25Z",
   "duration_sec": null,
   "frames": [],
   "segments": [],

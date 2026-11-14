@@ -2,17 +2,17 @@
   "schema_version": 1,
   "source": {
     "file_name": "C2L_Presentation_Hackathon_RevB.pdf",
-    "path": "data/C2L_Presentation_Hackathon_RevB.pdf",
+    "path": "data/cloud/C2L_Presentation_Hackathon_RevB.pdf",
     "sha256": "0811454811e263e361418e76370906c1127c8e167e8ed228df468f22d252c94c",
     "size_bytes": 3542778,
     "kind": "document",
-    "system": "local",
+    "system": "onedrive",
     "doc_number": null,
     "revision": null,
-    "author": null,
-    "date": null
+    "author": "EPKWILK",
+    "date": "2023-03-29T20:31:07"
   },
-  "generated_at": "2026-11-13T14:40:02Z",
+  "generated_at": "2026-11-14T14:36:25Z",
   "duration_sec": null,
   "frames": [],
   "segments": [],
