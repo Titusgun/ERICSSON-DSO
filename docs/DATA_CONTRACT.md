@@ -1,4 +1,4 @@
-# Data contract v1.3
+# Data contract v1.4
 
 SHARED FILE. Change only in a `contract:` PR, together with `dso/common/schema.sql`.
 
@@ -22,6 +22,11 @@ chunks, section 8) and `reports/ai_readiness.md`; `db.connect()` adds columns th
 contract added to an existing table (`ADDED_COLUMNS` in `dso/common/db.py`), so an old
 `out/dso.db` keeps working - a new column only needs a line there, no deleting the DB.
 
+**v1.4 (14 Nov, no schema change):** documents what was built after v1.3 - new step
+`speakers` (segments.speaker = "Speaker N"); `cleanup` and `watch --delete-originals`
+(cloud recycle bin, AGENTS.md 8); `watch` settings from `dso.toml`, whole videos by default;
+`frames/<sha12>/frames_info.json`; `slide_image` in search results; `GET /document/<sha12>`.
+
 ## 1. Pipeline order and who reads/writes what
 Every step is a `dso` subcommand (`uv run dso <command>`). Global options:
 `--db` (default `out/dso.db`) and `--out` (default `out`), given BEFORE the command:
@@ -31,6 +36,7 @@ Every step is a `dso` subcommand (`uv run dso <command>`). Global options:
 |---|---|---|---|---|
 | 1 | `ingest <folder> [--source S] [--owner O]` | B | files on disk | `files` |
 | 2 | `video [--model small] [--max-seconds N] [--force]` | A | `files` kind='video' | `frames`, `segments`, `files.duration_sec`, `out/frames/`, `out/transcripts/` |
+| 2b | `speakers` | A | `files` kind='video', `segments`, `out/transcripts/` | `segments.speaker`, `out/speakers/` |
 | 3 | `docs` | B | `files` kind='document' | `slides`, `files.author`, `files.doc_date`, `out/slides/`, `out/converted/` |
 | 4 | `dedup` | B | `files`, `slides` | `duplicates` |
 | 5 | `link` | C | `frames`, `slides`, `segments` | `frames.slide_id/match_dist`, `segments.frame_id` |
@@ -40,17 +46,29 @@ Every step is a `dso` subcommand (`uv run dso <command>`). Global options:
 | 9 | `offboard <folder> [--simulated]` | D | `files` | `out/reports/offboarding.md` + `.json` (DRY RUN) |
 | 10 | `savings` | D | `files`, sizes under `out/` | `savings`, `out/reports/savings.md` |
 | – | `web [--port 5000] [--ui DIST]` | D | DB + `out/` (read only) | – |
-| – | `all <folder> [--model small] [--max-seconds N] [--force]` | D | runs 1–6, 8, 10 | |
-| – | `watch <folder> [--interval 30] [--rclone REMOTE:PATH] [--upload]` + `all`'s options | D | runs `all` when the folder changes | with `--upload`: exports + reports to `REMOTE:PATH/_dso_distilled` |
+| – | `all <folder> [--model small] [--max-seconds N] [--force]` | D | runs 1, 2, 2b, 3–6, 8, 10 | |
+| – | `watch [folder] [--interval 30] [--rclone REMOTE:PATH] [--upload] [--delete-originals] [--config dso.toml]` + `all`'s options | D | runs `all` when the folder changes; settings from `dso.toml` (typed flags win) | with `--upload`: exports + reports to `REMOTE:PATH/_dso_distilled`; with `--delete-originals`: runs `cleanup --apply` after the upload |
+| – | `cleanup <folder> --rclone REMOTE:PATH [--apply]` | D | `files`, `duplicates`, `out/` | cloud originals kept in reduced form → cloud recycle bin (only with `--apply`); `out/reports/cleanup.jsonl` + `.md` |
 
 `--max-seconds N`: `video` (and `all`) process only the first N seconds of each video,
 for fast testing (#17). Default: the whole file. Default whisper model is the multilingual
 `small` (recordings contain Swedish during breaks).
 
-`video` skips a video that already has key frames in the DB and a transcript cache
-(`out/transcripts/<sha12>.json`) for the same model and `--max-seconds`; `--force` redoes it.
-So `all` and `watch` only spend time on new videos. `watch` never deletes anything, locally
-or in the cloud; `--upload` (opt-in) only writes into `_dso_distilled/`.
+`video` skips a video whose key frames (`frames_info.json`) and transcript cache cover the
+requested part (same model; a whole-video result covers any `--max-seconds`); `--force` redoes
+it. So `all` and `watch` only spend time on new videos. `speakers` follows the part the
+transcript covers and caches its result the same way.
+
+`segments.speaker` is "Speaker N" (numbered by first appearance in that video) after
+`speakers`, or "Speaker ?" (unknown: no voice found, music, or the step did not run). Voices
+heard for under 30 s in a video are not counted as speakers.
+
+`watch` never deletes local files. `--upload` (opt-in) writes into `_dso_distilled/`;
+`--delete-originals` (opt-in, only with `--upload`) moves cloud originals whose content is kept
+in reduced form to the cloud recycle bin: videos whose key frames AND transcript cover the whole
+video, exact copies (the original stays), older revisions (the newest stays). Right before
+deleting, the cloud file must still be byte-identical (QuickXorHash) to what was processed.
+Videos are processed whole by default; a partly processed video is never deleted.
 
 Every command must be safe to run twice. Delete your own old rows first; links from other
 tables to them become NULL automatically (`ON DELETE SET NULL`, see `schema.sql`) and are
@@ -77,12 +95,14 @@ possibly different text order).
 out/
   dso.db
   frames/<sha12>/f0001.webp        key frames of one video (WebP, quality 60)
+  frames/<sha12>/frames_info.json  {"max_seconds": N or null}: which part the key frames cover
   transcripts/<sha12>.json         raw faster-whisper segments
+  speakers/<sha12>.json            raw speaker turns (sherpa-onnx), model + threshold + max_seconds
   converted/<sha12>.pdf            PPTX/DOCX converted to PDF (also the manual-export path)
   slides/<sha12>/p001.webp         rendered PDF pages
   export/<sha12>.json, <sha12>.md  AI-ready export per recording / document
   export/corpus.jsonl              all chunks of all files, one JSON object per line (section 8)
-  reports/savings.md, ai_readiness.md, offboarding.md, offboarding.json (offboarding.json = the same result
+  reports/savings.md, ai_readiness.md, cleanup.md, cleanup.jsonl, offboarding.md, offboarding.json (offboarding.json = the same result
                                    for GET /api/offboarding, written by `offboard`)
 ```
 If `out/converted/<sha12>.pdf` already exists, `docs` uses it and does not convert again.
@@ -186,9 +206,13 @@ an older revision. `reports/ai_readiness.md` lists the measured coverage.
 ## 9. Search result (`dso.search.search(conn, q)` → list of dicts; `--json` prints it)
 ```json
 [{"kind": "segment", "file": "Event day 1.mp4", "sha12": "3fa9c0d1e2b4", "t_sec": 96.0,
-  "frame_image": "frames/3fa9c0d1e2b4/f0012.webp", "slide_id": "…", "snippet": "…[latency]…"}]
+  "frame_image": "frames/3fa9c0d1e2b4/f0012.webp", "slide_id": "…",
+  "slide_image": "slides/9b1c22aa01ff/p002.webp", "snippet": "…[latency]…"}]
 ```
-`t_sec` and `frame_image` are null for slide results. `sha12` identifies the file
+`t_sec` and `frame_image` are null for slide results. `slide_image` is the slide's picture: the
+hit's own slide for slide results, the matched slide for segment results (null without one).
+The page of a slide is the middle part of `slide_id`; `GET /document/<sha12>` (dso web) serves
+that document as PDF (original or converted), so `/document/<sha12>#page=N` opens it there. `sha12` identifies the file
 (file names are not unique); the API and UI use it to open a recording.
 
 ## 10. Savings scenarios (`dso savings`, table `savings`)
