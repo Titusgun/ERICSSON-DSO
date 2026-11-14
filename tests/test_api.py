@@ -174,3 +174,36 @@ def test_document_pdf_and_converted(tmp_path):
     assert converted.status_code == 200 and converted.data == (FIXTURES / "docs" / "deck_b.pdf").read_bytes()
     assert client.get("/document/cccccccccccc").status_code == 404           # not registered
     assert client.get("/document/aaaa%25").status_code == 404                # not a sha12
+
+
+def test_offboarding_several_leavers_and_copies_in_other_leavers(tmp_path):
+    """Two leavers: both are in the combined report (the web UI shows all), and a
+    file whose only other copy is in the OTHER leaver's folder must be kept."""
+    import shutil
+    from dso.cli import main
+    db_path = tmp_path / "dso.db"
+    out = tmp_path / "out"
+    base = ["--db", str(db_path), "--out", str(out)]
+    leavers = tmp_path / "offboarding"
+    for name in ["Māris Līveris", "Jacop Leaver"]:
+        (leavers / name).mkdir(parents=True)
+        (leavers / name / "my_notes.txt").write_text("same notes in both folders", encoding="utf-8")
+    shutil.copy(FIXTURES / "docs" / "deck_a.pdf", leavers / "Jacop Leaver" / "deck_a.pdf")
+    assert main(base + ["ingest", str(FIXTURES / "docs"), "--source", "sharepoint"]) == 0
+    for name in ["Māris Līveris", "Jacop Leaver"]:
+        assert main(base + ["ingest", str(leavers / name), "--source", "offboarding", "--owner", name]) == 0
+        assert main(base + ["offboard", str(leavers / name), "--simulated"]) == 0
+
+    reports = out / "reports"
+    assert (reports / "offboarding" / "Māris Līveris.json").is_file()
+    assert (reports / "offboarding" / "Jacop Leaver.json").is_file()
+    data = create_app(db_path, out).test_client().get("/api/offboarding").get_json()
+    assert sorted(data["owners"]) == ["Jacop Leaver", "Māris Līveris"]
+    assert data["total_files"] == 3
+    verdicts = {}
+    for f in data["files"]:
+        verdicts[(f["owner"], f["name"])] = f["verdict"]
+    assert verdicts[("Jacop Leaver", "deck_a.pdf")] == "safe to delete"       # company copy exists
+    assert verdicts[("Jacop Leaver", "my_notes.txt")] == "keep"               # only copy: another leaver
+    assert verdicts[("Māris Līveris", "my_notes.txt")] == "keep"
+    assert "2 leaver(s)" in (reports / "offboarding.md").read_text(encoding="utf-8")

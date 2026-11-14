@@ -239,6 +239,24 @@ def record_download(state, ok, now, interval):
           f"Check the login: rclone lsd {name}:")
 
 
+def upload_changed_reports(args, remote, state):
+    """With --upload: copies out/reports/ to the cloud when anything in it changed
+    since the last upload - also reports made by other commands, like a
+    `dso offboard` run while watch was waiting. The first check only remembers
+    the current state (the pipeline run uploads everything anyway)."""
+    if not getattr(args, "upload", False) or state is None:
+        return
+    reports = snapshot(Path(args.out) / "reports") if (Path(args.out) / "reports").is_dir() else {}
+    if "reports" not in state:
+        state["reports"] = reports
+        return
+    if reports == state["reports"]:
+        return
+    print(f"[watch] reports changed - uploading them to {remote.rstrip('/')}/{DISTILLED_FOLDER}/reports ...")
+    if run_rclone(rclone_upload_commands(Path(args.out), remote)[1]):
+        state["reports"] = reports
+
+
 def watch_cycle(args, steps, last, rclone_state=None, cleanup=None):
     """One check: download (if --rclone), compare with the last snapshot, run
     the pipeline if something changed. Returns the snapshot to remember: the
@@ -257,6 +275,8 @@ def watch_cycle(args, steps, last, rclone_state=None, cleanup=None):
             # output off the screen); progress while something downloads.
             ok = download_new_files(remote, folder)
             record_download(rclone_state, ok, now, args.interval)
+        # Reports made outside watch (e.g. `dso offboard`) reach the cloud too.
+        upload_changed_reports(args, remote, rclone_state)
 
     current = snapshot(folder)
     if current == last:
@@ -289,6 +309,8 @@ def watch_cycle(args, steps, last, rclone_state=None, cleanup=None):
             elif cleanup(args, True) > 0:
                 for command in rclone_upload_commands(Path(args.out), remote):
                     run_rclone(command)             # the cleanup log too
+        if rclone_state is not None:
+            rclone_state["reports"] = snapshot(Path(args.out) / "reports")   # just uploaded
     if not ok:
         return last                         # try again at the next check
     return current

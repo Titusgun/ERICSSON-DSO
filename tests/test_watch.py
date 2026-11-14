@@ -191,3 +191,21 @@ def test_new_files_are_announced_and_downloaded(monkeypatch, tmp_path, capsys):
     assert watch.download_new_files("onedrive:Demo", tmp_path) is True
     assert len(commands) == 2 and "--stats-one-line" in commands[1]    # real download with progress
     assert "downloading 2 new/changed file(s), 1.5 GB" in capsys.readouterr().out
+
+
+def test_changed_reports_are_uploaded(tmp_path, monkeypatch):
+    """A `dso offboard` run while watch waits: the new report reaches the cloud."""
+    uploads = []
+    monkeypatch.setattr(watch, "run_rclone", lambda command: uploads.append(command) or True)
+    out = tmp_path / "out"
+    (out / "reports").mkdir(parents=True)
+    (out / "reports" / "savings.md").write_text("old", encoding="utf-8")
+    args = Namespace(out=str(out), upload=True)
+    state = {}
+    watch.upload_changed_reports(args, "onedrive:Demo", state)        # first check: only remembers
+    assert uploads == []
+    watch.upload_changed_reports(args, "onedrive:Demo", state)        # nothing changed
+    assert uploads == []
+    (out / "reports" / "offboarding.md").write_text("new leaver", encoding="utf-8")
+    watch.upload_changed_reports(args, "onedrive:Demo", state)        # changed -> upload reports
+    assert len(uploads) == 1 and uploads[0][-1] == "onedrive:Demo/_dso_distilled/reports"
