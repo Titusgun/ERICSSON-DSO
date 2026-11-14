@@ -199,6 +199,7 @@ def apply(items, remote):
         entries.append({
             "time": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "file": item["name"], "cloud_path": target, "size_bytes": item["size_bytes"],
+            "sha256": item["sha256"],
             "reason": item["reason"], "kept_at": item["kept_at"], "result": result,
         })
     return entries
@@ -238,15 +239,58 @@ def write_log(out_dir, entries):
     return freed
 
 
+def already_deleted(out_dir):
+    """What earlier runs already moved to the recycle bin, from cleanup.jsonl:
+    a set of (cloud path, content). Content = the SHA-256, or "size:<bytes>" for
+    log lines written before the SHA-256 was logged."""
+    done = set()
+    log = out_dir / "reports" / "cleanup.jsonl"
+    if not log.is_file():
+        return done
+    with open(log, encoding="utf-8") as f:
+        for line in f:
+            if not line.strip():
+                continue
+            entry = json.loads(line)
+            if not entry["result"].startswith("deleted"):
+                continue
+            if "sha256" in entry:
+                done.add((entry["cloud_path"], entry["sha256"]))
+            else:
+                done.add((entry["cloud_path"], f"size:{entry['size_bytes']}"))
+    return done
+
+
+def was_deleted_before(item, remote, done):
+    """True if this exact file (same cloud path AND same content) was already
+    deleted by an earlier run. A NEW upload with the same name has other
+    content, so it is handled again."""
+    path = cloud_file(remote, item["relative"])
+    return (path, item["sha256"]) in done or (path, f"size:{item['size_bytes']}") in done
+
+
 def cleanup(args, do_apply):
     """Plan (and with do_apply: delete) for args.folder / args.rclone.
     Returns the number of cloud files deleted."""
     out_dir = Path(args.out)
     conn = connect(args.db)
-    items = plan(conn, Path(args.folder), out_dir)
+    planned = plan(conn, Path(args.folder), out_dir)
     conn.close()
+    # Files removed by an earlier run are still in the DB (and in our local
+    # copy), so plan() finds them again - but they are already gone from the
+    # cloud. Leave them out instead of logging "skipped" after every restart.
+    done = already_deleted(out_dir)
+    items = []
+    for item in planned:
+        if not was_deleted_before(item, args.rclone, done):
+            items.append(item)
+    earlier = len(planned) - len(items)
     if len(items) == 0:
-        print("[cleanup] nothing to remove: no distilled videos, exact copies or older revisions")
+        if earlier > 0:
+            print(f"[cleanup] nothing new to remove ({earlier} removed by earlier runs, "
+                  f"see {(out_dir / 'reports' / 'cleanup.md').as_posix()})")
+        else:
+            print("[cleanup] nothing to remove: no distilled videos, exact copies or older revisions")
         return 0
     total = 0
     for item in items:

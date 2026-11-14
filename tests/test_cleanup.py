@@ -170,3 +170,49 @@ def test_video_with_frames_for_only_part_is_kept(setup, monkeypatch):
     frames_dir.mkdir(parents=True)
     (frames_dir / "frames_info.json").write_text(json.dumps({"max_seconds": 600}), encoding="utf-8")
     assert "talk.mp4" not in planned_names(args)
+
+
+# ---------- files deleted by an earlier run ----------
+
+def test_second_run_does_not_repeat_deleted_files(setup, monkeypatch, capsys):
+    """After a restart, the files deleted last time are not checked or logged again."""
+    args, cloud = setup
+    deleted = fake_rclone(monkeypatch)
+    cleanup.cleanup(args, True)
+    assert len(deleted) == 3
+    log = cleanup.Path(args.out) / "reports" / "cleanup.jsonl"
+    lines_before = len(log.read_text(encoding="utf-8").splitlines())
+    capsys.readouterr()
+    assert cleanup.cleanup(args, True) == 0
+    assert len(deleted) == 3                                          # nothing deleted again
+    assert len(log.read_text(encoding="utf-8").splitlines()) == lines_before   # nothing logged again
+    assert "nothing new to remove (3 removed by earlier runs" in capsys.readouterr().out
+
+
+def test_new_upload_with_the_same_name_is_handled_again(setup, monkeypatch):
+    args, cloud = setup
+    deleted = fake_rclone(monkeypatch)
+    cleanup.cleanup(args, True)
+    # Someone uploads another "deck (1).pdf" - same name, different content.
+    conn = connect(args.db)
+    conn.execute("UPDATE files SET sha256 = ? WHERE name = 'deck (1).pdf'", ("f" * 64,))
+    conn.commit()
+    conn.close()
+    items = cleanup.plan(connect(args.db), args.folder, cleanup.Path(args.out))
+    done = cleanup.already_deleted(cleanup.Path(args.out))
+    copy = [item for item in items if item["name"] == "deck (1).pdf"]
+    assert len(copy) == 1                                             # dedup still calls it a copy
+    assert not cleanup.was_deleted_before(copy[0], args.rclone, done) # new content -> handled again
+
+
+def test_old_log_lines_without_sha_are_matched_by_size(tmp_path):
+    reports = tmp_path / "reports"
+    reports.mkdir()
+    (reports / "cleanup.jsonl").write_text(json.dumps({
+        "time": "t", "file": "a.mp4", "cloud_path": "onedrive:Demo/a.mp4", "size_bytes": 123,
+        "reason": "x", "kept_at": "y", "result": "deleted (in the recycle bin)"}) + "\n", encoding="utf-8")
+    done = cleanup.already_deleted(tmp_path)
+    item = {"relative": "a.mp4", "sha256": "abc", "size_bytes": 123}
+    assert cleanup.was_deleted_before(item, "onedrive:Demo", done)
+    other = {"relative": "a.mp4", "sha256": "abc", "size_bytes": 999}
+    assert not cleanup.was_deleted_before(other, "onedrive:Demo", done)
