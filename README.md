@@ -192,8 +192,7 @@ Good to know:
 - Switching folders keeps the earlier results. Files from the old folder stay in the
   database and the web interface; the new folder's files are added.
 - Network drives and synced folders are only read. --delete-originals only removes
-  files in the cloud folder given with rclone, into the cloud recycle bin. Local files and
-  network drives are never touched.
+  files in the cloud folder given with rclone, into the cloud recycle bin.
 - A large video still being copied to the folder isn't processed half-finished. dso watch
   waits until the file stops changing.
 
